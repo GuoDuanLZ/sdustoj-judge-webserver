@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+  <head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+    <title>{% block title %}{% endblock %}</title>
+
+      <script src='{% static "assets/jquery.min.js" %}'></script>
+    <script src='{% static "assets/bootstrap/js/tether.min.js" %}'></script>
+    <script src='{% static "assets/bootstrap/js/bootstrap.min.js" %}'></script>
+    <script src='{% static "js/global.js" %}'></script>
+    <script src='{% static "assets/dataTables/js/jquery.dataTables.min.js" %}'></script>
+    <script src='{% static "assets/dataTables/js/datatable.bootstrap.js" %}'></script>
+    <script src='{% static "js/tablemeta.js" %}'></script>
+      {% block script %}{% endblock %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href='{% static "assets/bootstrap/css/bootstrap.css" %}'>
+    <link rel="stylesheet" href='{% static "css/input.css" %}'>
+    <link rel="stylesheet" href='{% static "css/global.css" %}'>
+      <link rel="stylesheet" href='{% static "assets/dataTables/css/jquery.dataTables.min.css" %}'>
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+    <!--[if lte IE 8 ]>
+    <div class="alert alert-danger" role="alert">
+      <strong>IE9及以下版本并不在网站支持范围内</strong>，您将无法获得完 整的用户体验。请使用最新版本的Chrome或火狐浏览器访问此网站。
+    </div>
+    <![endif]-->
+
+    {% block meta_body %}{% endblock %}
+    {% block body_script %}{% endblock %}
+    {% block Modle%}{% endblock %}
+  </body>
+</html>

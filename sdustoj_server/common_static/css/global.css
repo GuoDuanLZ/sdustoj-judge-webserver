@@ -1,0 +1,184 @@
+/*!
+ * 修改自Bootstrap Docs (http://getbootstrap.com)中的代码
+ * 原代码来自：http://v4-alpha.getbootstrap.com/assets/css/docs.min.css
+ * 原作者为 The Bootstrap Authors 以及 Twitter, Inc.
+ */
+.no-border {
+  padding: 0px;
+  margin: 0px;
+}
+
+.bd-pageheader-xs {
+  padding: 1rem 7px;
+  margin-bottom: 1.5rem;
+  color: #cdbfe3;
+  text-align: center;
+  background-color: #005DA3;
+}
+
+.bd-pageheader-xs .container {
+  position: relative;
+}
+
+.bd-pageheader-xs h1 {
+  font-size: 3rem;
+  font-weight: normal;
+  color: #fff;
+}
+
+.bd-pageheader-xs p {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+@media (min-width: 544px) {
+  .bd-pageheader-xs {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 3rem;
+    text-align: left;
+  }
+  .bd-pageheader-xs .carbonad {
+    margin: 2rem 0 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .bd-pageheader-xs h1 {
+    font-size: 4rem;
+  }
+  .bd-pageheader-xs p {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .bd-pageheader-xs h1,
+  .bd-pageheader-xs p {
+    margin-right: 380px;
+  }
+  .bd-pageheader-xs .carbonad {
+    position: absolute;
+    top: 0;
+    right: .75rem;
+    margin: 0 !important;
+  }
+}
+
+.bd-pageheader {
+  padding: 1rem 7px;
+  margin-bottom: 1.5rem;
+  color: #cdbfe3;
+  text-align: center;
+  background-color: #005DA3;
+}
+
+.bd-pageheader .container {
+  position: relative;
+}
+
+.bd-pageheader h1 {
+  font-size: 3rem;
+  font-weight: normal;
+  color: #fff;
+}
+
+.bd-pageheader p {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+@media (min-width: 544px) {
+  .bd-pageheader {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 3rem;
+    text-align: left;
+  }
+  .bd-pageheader .carbonad {
+    margin: 2rem 0 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .bd-pageheader h1 {
+    font-size: 4rem;
+  }
+  .bd-pageheader p {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .bd-pageheader h1,
+  .bd-pageheader p {
+    margin-right: 380px;
+  }
+  .bd-pageheader .carbonad {
+    position: absolute;
+    top: 0;
+    right: .75rem;
+    margin: 0 !important;
+  }
+}
+
+.bd-pageheader-default {
+  padding: 2rem 15px;
+  color: #cdbfe3;
+  text-align: center;
+  background-color: #005DA3;
+}
+
+.bd-pageheader-default .container {
+  position: relative;
+}
+
+.bd-pageheader-default h1 {
+  font-size: 3rem;
+  font-weight: normal;
+  color: #fff;
+}
+
+.bd-pageheader-default p {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+@media (min-width: 544px) {
+  .bd-pageheader-default {
+
+    text-align: left;
+  }
+  .bd-pageheader-default .carbonad {
+    margin: 2rem 0 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .bd-pageheader-default h1 {
+    font-size: 4rem;
+  }
+  .bd-pageheader-default p {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .bd-pageheader-default h1,
+  .bd-pageheader-default p {
+    margin-right: 380px;
+  }
+  .bd-pageheader-default .carbonad {
+    position: absolute;
+    top: 0;
+    right: .75rem;
+    margin: 0 !important;
+  }
+}
+
+.margin-top {
+  margin-top: 3rem;
+}

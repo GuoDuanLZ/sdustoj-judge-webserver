@@ -1,0 +1,58 @@
+{% extends "html/meta/detail_page.html" %}
+
+{% load staticfiles %}
+
+{% block title %}个人详情{% endblock %}
+
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div>
+            <h1>&nbsp;&nbsp;欢迎,&nbsp;&nbsp;
+                {%if user_info.firstname and user_info.lastname%}
+                <small>{{ user_info.lastname}}&nbsp;{{user_info.firstname}}</small>
+                {% else %}
+                <small>{{ user_info.username }}</small>
+                {% endif %}
+            </h1>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block nav-left-items %}
+<li class="nav-item">
+    <a class="nav-link active">个人信息</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{%url 'persontopassword' %}">修改密码</a>
+</li>
+{% endblock %}
+
+{% block form %}
+<form id="userform" onsubmit="return false;">
+    <div class="form-group">
+        <label for="username">用户名：</label>
+        <input type="text" class="form-control" id="username" value="{{user_info.username}}" disabled>
+    </div>
+    <div class="form-group">
+        <label for="firstname">真实名字：</label>
+        <input type="text" class="form-control" id="firstname" value="{{user_info.firstname}}" maxlength="30">
+    </div>
+    <div class="form-group">
+        <label for="lastname">真实姓氏：</label>
+        <input type="text" class="form-control" id="lastname" value="{{user_info.lastname}}" maxlength="30">
+    </div>
+    <div class="form-group">
+        <label for="email">email：</label>
+        <input type="text" class="form-control" id="email" value="{{user_info.email}}">
+    </div>
+    <div class="form-group pull-xs-right">
+        <input type="submit" id="submit" class="btn btn-primary" value="提交">
+    </div>
+</form>
+
+{% endblock %}
+{%block script%}
+<script src='{% static "js/personal.js" %}'></script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "html/meta/detail_page.html" %}
+
+{% load staticfiles %}
+
+{% block pageheader_default %}-default{% endblock %}
+
+{% block nav-left-items %}
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="nav-link" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                <h5>题元管理</h5>
+            </a>
+        </div>
+
+        <div id="collapseOne" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <ul class="list-group nav nav-pills nav-stacked">
+                    {%block left-nav%}
+
+                    {% endblock %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="panel-group" id="accordion2">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="nav-link" data-toggle="collapse" data-parent="#accordion" href="#collapseOne2">
+                <h5>题元管理</h5>
+            </a>
+        </div>
+        <div id="collapseOne2" class="panel-collapse collapse">
+            <div class="panel-body">
+                <ul class="list-group nav nav-pills nav-stacked">
+                    <li class="nav-link">
+                        <a class="nav-link" href="{%url 'problem-add'%}">题元显示</a>
+                    </li>
+                    <li class="nav-link">
+                        <a class="nav-link" href="#collapseOne">题元添加</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="col-lg-8">
+        {% block form %}
+
+        {% endblock %}
+    </div>
+    <div class="col-lg-4"></div>
+    </br>
+</div>
+{% endblock%}
+ {% block Modle%}{% endblock %}
+{% block script %}{% endblock %}
+ {% block body_script %}{% endblock %}

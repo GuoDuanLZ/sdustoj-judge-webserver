@@ -1,0 +1,51 @@
+{% extends "html/meta/meta_page.html" %}
+
+{% load staticfiles %}
+
+{% block title %}登录{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href='{% static "css/sign_in.css" %}'>
+{% endblock %}
+
+{% block meta_body %}
+<div class="container">
+  <center>
+    <a href="/home/">
+      <img src='{% static "img/School-White.png" %}' alt="SDUST" width="64" height="64" style="margin: 25px;">
+    </a>
+    <h3 id="h-message" class="text-muted" style="margin-bottom: 20px;">
+      <font color="white">登录到SDUST Online Judge评测端</font>
+    </h3>
+
+    <div class="row">
+      <div class="col-lg-3 col-md-2 col-xs-1"></div>
+      <div class="jumbotron col-lg-6 col-md-8 col-xs-10 bg-faded">
+        <form method="post" id="form-sign-in" onsubmit="return false;">
+          {% csrf_token %}
+          <div id="div-username" class="form-group row">
+            <label class="col-sm-3 form-control-label" for="input-username">用户名</label>
+            <div class="col-sm-9">
+              <input type="text" maxlength="30" class="form-control" id="input-username" placeholder="请输入用户名">
+            </div>
+          </div>
+          <div id="div-password" class="form-group row" style="margin-bottom: 40px;">
+            <label class="col-sm-3 form-control-label" for="input-password">密码</label>
+            <div class="col-sm-9  ">
+              <input type="password" maxlength="32" class="form-control" id="input-password" placeholder="请输入密码">
+            </div>
+          </div>
+          <span class="input-group-btn">
+            <button id="btn-sign-in" class="btn btn-primary col-xs-12" type="submit">登录</button>
+          </span>
+        </form>
+      </div>
+      <div class="col-lg-3 col-md-2"></div>
+    </div>
+  </center>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src='{% static "js/sign_in.js" %}'></script>
+{% endblock %}
