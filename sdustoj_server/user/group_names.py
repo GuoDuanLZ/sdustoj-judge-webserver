@@ -1,0 +1,5 @@
+site_admin = 'SiteAdmin'
+problem_admin = 'ProblemAdmin'
+category_admin = 'CategoryAdmin'
+judge_admin = 'JudgeAdmin'
+client_admin = 'ClientAdmin'

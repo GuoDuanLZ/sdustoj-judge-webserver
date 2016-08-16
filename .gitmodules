@@ -1,0 +1,3 @@
+[submodule "sdustoj_server/utils"]
+	path = sdustoj_server/utils
+	url = git@github.com:KWY-Q/rest-framework-utils.git
