@@ -10,6 +10,9 @@ from .problem_viewsets import LimitListViewSet, LimitDetailViewSet
 from .problem_viewsets import TestDataReadOnlyViewSet, TestDataRelationViewSet
 from .problem_viewsets import DescriptionInProblemViewSet, SampleInProblemViewSet
 
+from .category_viewsets import CategoryListViewSet, CategoryDetailViewSet
+from .category_viewsets import NodeListViewSet, NodeDetailViewSet
+
 router = routers.SimpleRouter()
 
 # Meta Problem #########################################################################################################
@@ -37,8 +40,16 @@ problem_router.register('test-data-rel', TestDataRelationViewSet, base_name='tes
 problem_router.register('description', DescriptionInProblemViewSet, base_name='description')
 problem_router.register('sample', SampleInProblemViewSet, base_name='sample')
 
+# Category #############################################################################################################
+router.register('categories', CategoryListViewSet, base_name='categories')
+router.register('categories', CategoryDetailViewSet, base_name='categories')
+cat_router = routers.NestedSimpleRouter(router, r'categories', lookup='category')
+# ----- Component ---------------------------------------------------------------------------------
+cat_router.register('nodes', NodeListViewSet, base_name='nodes')
+cat_router.register('nodes', NodeDetailViewSet, base_name='nodes')
 
 urlpatterns = []
 urlpatterns += router.urls
 urlpatterns += meta_router.urls
 urlpatterns += problem_router.urls
+urlpatterns += cat_router.urls
