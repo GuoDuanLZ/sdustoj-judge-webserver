@@ -215,7 +215,7 @@ class Node(Resource, StatusMixin):
     category = models.ForeignKey(to=Category, related_name='node', to_field='id')
     id = models.BigAutoField(primary_key=True)
 
-    parent = models.ForeignKey(to='self', related_name='children', to_field='id')
+    parent = models.ForeignKey(to='self', related_name='children', to_field='id', null=True)
 
     problem = models.ManyToManyField(to=Problem, related_name='node',
                                      through='ProblemCategoryNode', through_fields=('node', 'problem'))
