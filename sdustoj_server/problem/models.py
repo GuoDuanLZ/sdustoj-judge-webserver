@@ -195,3 +195,41 @@ class ProblemVirtualJudge(ModifyInfo):
                                 on_delete=models.CASCADE)
     virtual_judge = models.ForeignKey(to=VirtualJudge, related_name='problem_relation', to_field='id',
                                       on_delete=models.CASCADE)
+
+
+# Category #############################################################################################################
+
+class Category(Resource, SourceMixin, StatusMixin):
+    id = models.BigAutoField(primary_key=True)
+
+    problem = models.ManyToManyField(to=Problem, related_name='category',
+                                     through='ProblemCategoryNode', through_fields=('category', 'problem'))
+
+    number_node = models.IntegerField(default=0)
+    number_problem = models.IntegerField(default=0)
+
+
+# ----- Components --------------------------------------------------------------------------------
+
+class Node(Resource, StatusMixin):
+    category = models.ForeignKey(to=Category, related_name='node', to_field='id')
+    id = models.BigAutoField(primary_key=True)
+
+    parent = models.ForeignKey(to='self', related_name='children', to_field='id')
+
+    problem = models.ManyToManyField(to=Problem, related_name='node',
+                                     through='ProblemCategoryNode', through_fields=('node', 'problem'))
+
+    number_node = models.IntegerField(default=0)
+    number_problem = models.IntegerField(default=0)
+
+
+# ----- Relations ---------------------------------------------------------------------------------
+
+class ProblemCategoryNode(ModifyInfo):
+    category = models.ForeignKey(to=Category, related_name='problem_relation', to_field='id')
+    problem = models.ForeignKey(to=Problem, related_name='node_relation', to_field='id')
+    node = models.ForeignKey(to=Node, related_name='problem_relation', to_field='id')
+
+
+# Submission ###########################################################################################################

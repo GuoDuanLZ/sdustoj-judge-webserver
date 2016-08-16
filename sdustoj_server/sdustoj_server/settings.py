@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'user',
     'judge',
     'problem',
+
+    'web',
 ]
 
 MIDDLEWARE = [
