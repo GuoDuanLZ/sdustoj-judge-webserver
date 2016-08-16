@@ -1,0 +1,34 @@
+{% extends "html/meta/main_page.html" %}
+
+{% load staticfiles %}
+
+{% block pageheader_default %}-default{% endblock %}
+
+{% block main_body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 margin-top">
+            <ul class="nav nav-pills nav-stacked">
+                {% block nav-left-items %}
+                {% endblock %}
+            </ul>
+        </div>
+        <div class="col-sm-9 margin-top">
+            {% block body %}
+            <div class="container">
+            <div class="col-lg-8">
+                {% block form %}
+
+                {% endblock %}
+            </div>
+            <div class="col-lg-4"></div>
+            </br>
+        </div>
+            {% endblock %}
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block script %}{% endblock %}

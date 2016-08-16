@@ -1,0 +1,55 @@
+{% extends "html/meta/problem_page.html" %}
+
+{% load staticfiles %}
+
+{% block title %}题库管理{% endblock %}
+{%block css%}
+{%endblock%}
+{% block script%}
+    <script src='{% static "js/problem.js" %}'> </script>
+{% endblock %}
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div><h2>题库管理</h2></div>
+    </div>
+</div>
+{% endblock %}
+{%block left-nav%}
+<li class="nav-link">
+    <a class="nav-link active">题元显示</a>
+</li>
+<li class="nav-link">
+    <a class="nav-link" href="{%url 'problem-add'%}">题元添加</a>
+</li>
+<li class="nav-link">
+    <!--<p class="nav-link" href="#collapseOne" style="margin-bottom: 0px;color: #55595c" >题元修改</p>-->
+     <a class="nav-link" readonly="true" style="color: #a2afc8">题元修改</a>
+</li>
+    {% endblock %}
+
+    {% block body %}
+
+    <div class="container">
+        <table id="example" class="display table">
+            <thead>
+
+            <tr>
+                <th>Title</th>
+                <th id="order2">Meta_id</th>
+                <th>Source</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>Introduction</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tfoot>
+            </tfoot>
+
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    {% endblock %}

@@ -1,0 +1,201 @@
+{% extends "html/meta/problem_page.html" %}
+{% block title %}题元详情{% endblock %}
+{% load staticfiles %}
+{%block css%}
+{%endblock%}
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div><h2>题元详情{{meta_id}}</h2></div>
+    </div>
+</div>
+{% endblock%}
+{%block left-nav%}
+<li class="nav-link">
+    <a class="nav-link active">题元显示</a>
+</li>
+<li class="nav-link">
+    <a class="nav-link" href="{%url 'problem-add'%}">题元添加</a>
+</li>
+<li class="nav-link">
+    <!--<p class="nav-link" href="#collapseOne" style="margin-bottom: 0px;color: #55595c" >题元修改</p>-->
+     <a class="nav-link" readonly="true" style="color: #a2afc8">题元修改</a>
+</li>
+    {% endblock%}
+{%block body%}
+<nav role="navigation">
+ <ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#detail" role="tab">详细信息</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#description" role="tab" id="a_description">描述详情</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#sample" role="tab">样例详情</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#test_data" role="tab">测试数据详情</a>
+  </li>
+     <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#problem" role="tab">问题详情</a>
+  </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active" id="detail" role="tabpanel">
+      <p id="meta_id_hidden" hidden>{{meta_id}}</p>
+      <table class="table table-striped">
+          <thead>
+          <tr>
+              <th><center>名称</center></th>
+              <th><center>属性</center></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <th>题目</th>
+              <td id="title"></td>
+          </tr>
+           <tr>
+               <th >Meta_id</th>
+               <td id="meta_id"></td>
+           </tr>
+          <tr>
+               <th>Source</th>
+               <td id="source"></td>
+           </tr>
+          <tr>
+                <th>Author</th>
+               <td id="author"></td>
+           </tr>
+          <tr>
+               <th>Status</th>
+               <td id="status"></td>
+           </tr>
+          <tr>
+                <th>Introduction</th>
+               <td id="introduction"></td>
+           </tr>
+          <tr>
+              <th>Number_description</th>
+               <td id="N_description"></td>
+           </tr>
+          <tr>
+                <th>Number_sample</th>
+               <td id="N_sample"></td>
+           </tr>
+          <tr>
+                <th>Number_test_data</th>
+               <td id="N_test_data"></td>
+           </tr>
+          <tr>
+                <th>Number_problem</th>
+               <td id="N_problem"></td>
+           </tr>
+          </tbody>
+      </table>
+  </div>
+
+
+  <div class="tab-pane" id="description" role="tabpanel" >
+      <div class="col-xs-12 pull-xs-left">
+              <button class="btn btn-outline-primary">添加</button>
+              <button class="btn btn-outline-primary">编辑</button>
+              <button class="btn btn-outline-primary">修改</button>
+      </div>
+      <div class="row">
+
+           <ul id="ul_description" class="list-group">
+               <div class="col-xs-6">
+               <form>
+                </form>
+               </div>
+           </ul>
+      </div>
+
+  </div>
+  <div class="tab-pane" id="sample" role="tabpanel">...</div>
+  <div class="tab-pane" id="test_data" role="tabpanel">...</div>
+    <div class="tab-pane" id="problem" role="tabpanel">...</div>
+</div>
+</nav>
+{%endblock%}
+{% block script %}
+<script>
+    $(function () {
+        meta_id=$('#meta_id_hidden').text();
+       $.ajax({
+                url: "/api-server/meta-problems/"+meta_id+"/",
+                type: "GET",
+                dataType: "json",
+                data: {
+                },
+                success: function (response) {
+//                     datas=json.dumps(response);
+//                   data=json.load(response);
+//                    alert(datas);
+//                    alert(data);
+                    $('#title').text(response.title);
+                    $('#meta_id').text(response.meta_id);
+                    $('#source').text(response.source);
+                    $('#author').text(response.author);
+                    $('#introduction').text(response.introduction);
+                    $('#status').text(response.status);
+                    $('#N_description').text(response.number_description);
+                    $('#N_sample').text(response.number_sample);
+                    $('#N_test_data').text(response.number_test_data);
+                    $('#N_problem').text(response.number_problem);
+
+
+
+                },
+                error: function (response) {
+
+                }
+
+       });
+        $('#a_description').one('click',function () {
+            $.ajax({
+                url: "/api-server/meta-problems/",
+                type: "GET",
+                dataType: "json",
+                data: {
+                },
+                success: function(data){
+                    $.each(data.results,function (i,item) {
+                       $('#ul_description form').append('<div class="input-group"> <span class="input-group-addon">'
+        +'<input type="radio" name="descriptions">'+
+     '</span><li class="list-group-item">'+item.introduction+'</li> </div>');
+                    });
+                },
+                error: function (response) {
+                    alert('ff');
+                }
+            });
+        })
+
+             var old = null; //用来保存原来的对象
+    $("#ul_description").on('click','form input[name="descriptions"]',function(){
+        // /循环绑定事件
+        if(this.checked){
+            old = this; //如果当前对象选中，保存该对象
+        }
+        this.onclick = function(){
+            if(this == old){//如果点击的对象原来是选中的，取消选中
+                this.checked = false;
+                old = null;
+
+            } else{
+                old = this;
+            }
+        }
+    });
+    });
+
+</script>
+{% endblock %}
+
+ {% block body_script %}
+    {% endblock %}

@@ -1,0 +1,114 @@
+{% extends "html/meta/detail_page.html" %}
+
+{% load staticfiles %}
+
+{% block title %}AJAX表格示例{% endblock %}
+
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div><h2>这是通过AJAX请求API显示数据到表格中的例子</h2></div>
+    </div>
+</div>
+{% endblock %}
+{% block nav-left-items %}
+<li class="nav-item">
+    <a class="nav-link active" href="javascript:void(0)">示例表格</a>
+</li>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th id="order3">Office</th>
+            <th>Age</th>
+            <th>Start date</th>
+            <th id="order6">Salary</th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+{% block script%}
+<script>
+//    if(typeof(sessionStorage.search)!="undefined")
+//            {
+//                tablelength=parseInt(sessionStorage.limit);
+//                tableorder=sessionStorage.ordering;
+//                tablestart=parseInt(sessionStorage.start);
+//                tablesearch=sessionStorage.search;
+//            }
+    $(function () {
+        $('#order6').click(function () {
+            console.log(tableorder);
+            if (tableorder == 'meta_id')
+                tableorder = '-meta_id';
+            else
+                tableorder = 'meta_id';
+        });
+        $('#order3').click(function () {
+            console.log(tableorder);
+            if (tableorder == 'create_time')
+                tableorder = '-create_time';
+            else
+                tableorder = 'create_time';
+        });
+        var table = $('#example').DataTable({
+            columnDefs: [
+                {"orderable": false, "targets": 0},
+                {"orderable": false, "targets": 1},
+                {"orderable": true, "targets": 2},
+                {"orderable": false, "targets": 3},
+                {"orderable": false, "targets": 4}
+            ],
+            ajax: {
+                url: '/api-server/meta-problems/',
+                dataSrc: function (result) {
+                    result.recordsFiltered = result.count;
+
+                    return result.results;
+                },
+                data: function (d) {
+//                    sessionStorage.search = tablesearch;
+//                    sessionStorage.ordering = tableorder;
+//                    sessionStorage.limit = tablelength;
+//                    sessionStorage.start = tablestart;
+                    d.offset = tablestart;
+                    d.limit = tablelength;
+                    d.search = tablesearch;
+                    d.ordering = tableorder;
+                }
+            },
+            columns: [
+                {data: "title"},
+                {data: "introduction"},
+                {data: "create_time"},
+                {data: "source"},
+                {data: "status"},
+                {data: "meta_id"}
+            ]
+        });
+        table.on('length.dt', function (e, settings, len) {
+            tablelength = len;
+        });
+        table.on('page.dt', function (e, settings) {
+            tablestart = (table.page()) * tablelength;
+        });
+        table.on('search.dt', function () {
+            tablesearch = table.search();
+            tablestart = 0;
+        });
+    });
+</script>
+{% endblock %}

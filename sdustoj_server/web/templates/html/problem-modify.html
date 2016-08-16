@@ -1,0 +1,59 @@
+{% extends "html/meta/problem_page.html" %}
+{% load staticfiles %}
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div><h2>题元修改</h2></div>
+    </div>
+</div>
+{% endblock %}
+{%block left-nav%}
+<li class="nav-link">
+    <a class="nav-link " href="{%url 'problem'%}">题元显示</a>
+</li>
+<li class="nav-link">
+    <a class="nav-link " href="{%url 'problem-add'%}">题元添加</a>
+</li>
+<li class="nav-link">
+    <a class="nav-link active"  >题元修改</a>
+</li>
+{% endblock %}
+{% block form%}
+<form onsubmit="return false;">
+    <div class="form-group">
+        <label for="title">Title：</label>
+        <input type="text" class="form-control" id="title" value="">
+    </div>
+    <div class="form-group">
+        <label for="meta_id">Meta_id：</label>
+        <input type="text" class="form-control" id="meta_id" value={{meta_id}} disabled>
+    </div>
+    <div class="form-group">
+        <label for="source">Source：</label>
+        <input type="text" class="form-control" id="source" value="">
+    </div>
+    <div class="form-group">
+        <label for="status">Status：</label>
+        <select class="form-control" id="status">
+            <option value="0">available</option>
+            <option value="1">unavailable</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="author">Author：</label>
+        <input type="text" class="form-control" id="author" value="">
+    </div>
+    <div class="form-group">
+        <label for="introduction">Introduction:</label>
+        <textarea class="form-control" value="" id="introduction" rows="4"></textarea>
+    </div>
+    <div class="form-group pull-xs-right">
+        <button class="btn btn-primary" id="maketrue">确定</button>
+        <button class="btn btn-primary" id="cancel">取消</button>
+    </div>
+</form>
+{% endblock %}
+{% block script %}
+<script src='{% static "js/problem-modify.js" %}'>
+</script>
+{% endblock %}

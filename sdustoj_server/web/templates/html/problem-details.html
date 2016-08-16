@@ -1,0 +1,376 @@
+{% extends "html/meta/problem_page.html" %}
+{% block title %}题元详情{% endblock %}
+{% load staticfiles %}
+{%block css%}
+{%endblock%}
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div><h2>题元详情{{meta_id}}</h2></div>
+    </div>
+</div>
+{% endblock%}
+{%block left-nav%}
+<li class="nav-link">
+    <a class="nav-link active">题元显示</a>
+</li>
+<li class="nav-link">
+    <a class="nav-link" href="{%url 'problem-add'%}">题元添加</a>
+</li>
+<li class="nav-link">
+    <!--<p class="nav-link" href="#collapseOne" style="margin-bottom: 0px;color: #55595c" >题元修改</p>-->
+    <a class="nav-link" readonly="true" style="color: #a2afc8">题元修改</a>
+</li>
+{% endblock%}
+{%block body%}
+<nav role="navigation">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#detail" role="tab">详细信息</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#description" role="tab" id="a_description">描述详情</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sample" role="tab" id="a_sample">样例详情</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#test_data" role="tab" id="a_test_data">测试数据详情</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#problem" role="tab" id="a_problem">问题列表</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="detail" role="tabpanel">
+            <p id="meta_id_hidden" hidden>{{meta_id}}</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>
+                        <center>名称</center>
+                    </th>
+                    <th>
+                        <center>属性</center>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>题目</th>
+                    <td id="title"></td>
+                </tr>
+                <tr>
+                    <th>Id</th>
+                    <td id="id"></td>
+                </tr>
+                <tr>
+                    <th>Source</th>
+                    <td id="source"></td>
+                </tr>
+                <tr>
+                    <th>Author</th>
+                    <td id="author"></td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td id="status"></td>
+                </tr>
+                <tr>
+                    <th>Introduction</th>
+                    <td id="introduction"></td>
+                </tr>
+                <tr>
+                    <th>Number_description</th>
+                    <td id="N_description"></td>
+                </tr>
+                <tr>
+                    <th>Number_sample</th>
+                    <td id="N_sample"></td>
+                </tr>
+                <tr>
+                    <th>Number_test_data</th>
+                    <td id="N_test_data"></td>
+                </tr>
+                <tr>
+                    <th>Number_problem</th>
+                    <td id="N_problem"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="tab-pane" id="description" role="tabpanel">
+            <div class="row pull-xs-right">
+                <button class="btn btn-outline-info" style="margin: 10px;margin-right: 100px">添加</button>
+            </div>
+            <table id="des_table" class="display table">
+                <thead>
+
+                <tr>
+                    <th>Title</th>
+                    <th>status</th>
+                    <th>Introduction</th>
+                    <th>Description_id</th>
+                    <th>Meta_problem</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tfoot>
+                </tfoot>
+
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="sample" role="tabpanel">
+            <table id="sample_table" class="display table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>status</th>
+                    <th>Introduction</th>
+                    <th>Sample_id</th>
+                    <th>Meta_problem</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tfoot>
+                </tfoot>
+
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="test_data" role="tabpanel">
+            <table id="test_data_table" class="display table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>status</th>
+                    <th>Introduction</th>
+                    <th>Test_id</th>
+                    <th>IN</th>
+                    <th>OUT</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tfoot>
+                </tfoot>
+
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="problem" role="tabpanel"></div>
+    </div>
+</nav>
+{%endblock%}
+{% block Modle%}
+    <!--描述的模态框-->
+<div class="modal fade" id="des_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">描述修改</h4>
+      </div>
+      <div class="modal-body">
+          <form>
+             <input >
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">保存</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <!--样例的模态框-->
+<div class="modal fade" id="sim_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">样例修改</h4>
+      </div>
+      <div class="modal-body">
+          <form>
+             <input >
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">保存</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <!--测试数据的模态框-->
+<div class="modal fade" id="test_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">测试数据修改</h4>
+      </div>
+      <div class="modal-body">
+          <form>
+             <input >
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">保存</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    $(function () {
+        Id = $('#meta_id_hidden').text();
+        $.ajax({
+            url: "/api-server/meta-problems/" + Id + "/",
+            type: "GET",
+            dataType: "json",
+            data: {},
+            success: function (response) {
+                $('#title').text(response.title);
+                $('#id').text(response.id);
+                $('#source').text(response.source);
+                $('#author').text(response.author);
+                $('#introduction').text(response.introduction);
+                $('#status').text(response.status);
+                $('#N_description').text(response.number_description);
+                $('#N_sample').text(response.number_sample);
+                $('#N_test_data').text(response.number_test_data);
+                $('#N_problem').text(response.number_problem);
+
+            },
+            error: function (response) {
+
+            }
+
+        });
+        var des_table = $('#des_table').DataTable({
+            scrollX: false,
+            scrollCollapse: false,
+            scrolly: false,
+            searching: false,
+            paging: false,
+            ordering: false,
+            ajax: {
+                url: "/api-server/meta-problems/" + Id + "/descriptions",
+                dataSrc: function (result) {
+                    result.recordsFiltered = result.count;
+                    return result.results;
+                },
+                data: function (d) {
+                }
+            },
+            columns: [
+                {data: "title"},
+                {data: "status"},
+                {data: "introduction"},
+                {data: "id"},
+                {data: "meta_problem"},
+                {
+                    data: "null",
+                    width: "150px",
+                    render: function (data, type, row, meta) {
+                        return '<button id="des_modify" type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#des_Modal">修改</button> &nbsp; <button type="button" id="delete" class="btn btn-outline-danger btn-sm" >删除</button>';
+                    }
+                }
+            ]
+        });
+        $('#a_description').on('shown.bs.tab', function (e) {
+            //当切换tab时，强制重新计算列宽
+            des_table.columns.adjust().draw();
+        });
+        var sam_table = $('#sample_table').DataTable({
+            scrollX: false,
+            scrollCollapse: false,
+            scrolly: false,
+            searching: false,
+            paging: false,
+            ordering: false,
+            ajax: {
+                url: "/api-server/meta-problems/" + Id + "/samples",
+                dataSrc: function (result) {
+                    result.recordsFiltered = result.count;
+                    return result.results;
+                },
+                data: function (d) {
+                }
+            },
+            columns: [
+                {data: "title"},
+                {data: "status"},
+                {data: "introduction"},
+                {data: "id"},
+                {data: "meta_problem"},
+                {
+                    data: "null",
+                    width: "150px",
+                    render: function (data, type, row, meta) {
+                        return '<button id="sim_modify" type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#sim_Modal">修改</button> &nbsp; <button type="button" id="delete" class="btn btn-outline-danger btn-sm" >删除</button>';
+                    }
+                }
+            ]
+        });
+        $('#a_sample').on('shown.bs.tab', function (e) {
+            //当切换tab时，强制重新计算列宽
+            sam_table.columns.adjust().draw();
+        });
+        var test_table = $('#test_data_table').DataTable({
+            scrollX: false,
+            scrollCollapse: false,
+            scrolly: false,
+            searching: false,
+            paging: false,
+            ordering: false,
+            ajax: {
+                url: "/api-server/meta-problems/" + Id + "/test-data",
+                dataSrc: function (result) {
+                    result.recordsFiltered = result.count;
+                    return result.results;
+                },
+                data: function (d) {
+                }
+            },
+            columns: [
+                {data: "title"},
+                {data: "status"},
+                {data: "introduction"},
+                {data: "id"},
+                {data: "in_preview"},
+                {data: "out_preview"},
+                {
+                    data: "null",
+                    width: "150px",
+                    render: function (data, type, row, meta) {
+                        return '<button id="test_modify" type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#test_Modal">修改</button> &nbsp; <button type="button" id="delete" class="btn btn-outline-danger btn-sm" >删除</button>';
+                    }
+                }
+            ]
+        });
+        $('#a_test_data').on('shown.bs.tab', function (e) {
+            //当切换tab时，强制重新计算列宽
+            test_table.columns.adjust().draw();
+        });
+        $('#')
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "html/meta/main_page.html" %}
+
+{% load staticfiles %}
+
+{% block title %}主页 - SDUST OJ 评测端{% endblock %}
+
+{% block pageheader %}
+<div class="container">
+  <div class="row">
+    <div class="col-xs-2"></div>
+    <a href="/home/">
+      <img class="no-border" src='{% static "img/School-White.png" %}' alt="SDUST" width="64" height="64">
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+  <center><h2 class="text-muted">欢迎登录SDUST Online Judge评测端.</h2></center>
+</div>
+
+{% endblock %}
