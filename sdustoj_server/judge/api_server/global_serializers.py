@@ -7,12 +7,12 @@ from ..models import Environment
 class EnvironmentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Environment
-        field = '__all__'
+        fields = '__all__'
         read_only_fields = resource_read_only
 
 
 class EnvironmentDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Environment
-        field = '__all__'
+        fields = '__all__'
         read_only_fields = resource_read_only + ('eid',)

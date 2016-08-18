@@ -1,10 +1,13 @@
 from utils.models import ModifyInfo, Resource, SourceMixin, StatusMixin
 from django.db import models
 
-from .documents import TestData as TestDataMongo
+from .documents import TestData as TestDataMongo, Code as CodeMongo
 from sdustoj_server.conf_parser import TEST_DATA_READ_MAX
 
 from judge.models import Environment
+from client.models import Client
+
+from django.contrib.postgres import fields as postgres_fields
 
 
 # Meta Problem #########################################################################################################
@@ -163,6 +166,9 @@ class Problem(Resource, SourceMixin, StatusMixin):
     number_category = models.IntegerField(default=0)
     number_node = models.IntegerField(default=0)
 
+    def __str__(self):
+        return 'Problem ' + str(self.id) + ' - ' + str(self.title)
+
 
 # ----- Components --------------------------------------------------------------------------------
 
@@ -170,7 +176,7 @@ class Limit(Resource, StatusMixin):
     problem = models.ForeignKey(to=Problem, related_name='limit', to_field='id')
     id = models.BigAutoField(primary_key=True)
 
-    environment = models.ForeignKey(to=Environment, related_name='limit', to_field='id')
+    environment = models.ForeignKey(to=Environment, related_name='limit', to_field='eid')
 
     time_limit = models.IntegerField(default=-1)
     memory_limit = models.IntegerField(default=-1)
@@ -233,3 +239,125 @@ class ProblemCategoryNode(ModifyInfo):
 
 
 # Submission ###########################################################################################################
+
+class Submission(models.Model):
+    RESULT_CHOICES = (
+        ('PD', 'Pending'),
+        ('RPD', 'Pending Rejudge'),
+        ('DC', 'Decorating'),
+        ('CP', 'Compiling'),
+        ('RN', 'Running'),
+        ('JG', 'Judging'),
+        ('RJ', 'Running & Judging'),
+
+        ('IW', 'Invalid Word'),
+        ('RF', 'Restrained Function'),
+        ('DF', 'Decoration Failed'),
+
+        ('CLLE', 'Code Length Limit Exceeded'),
+        ('CE', 'Compile Error'),
+
+        ('AC', 'Accepted'),
+        ('PE', 'Presentation Error'),
+        ('WA', 'Wrong Answer'),
+        ('TLE', 'Time Limit Exceeded'),
+        ('MLE', 'Memory Limit Exceeded'),
+        ('OLE', 'Output Limit Exceeded'),
+        ('RE', 'Runtime Error'),
+
+        ('SE', 'Submission Error'),
+
+        ('UE', 'Unknown Error'),
+    )
+    RESULT_TYPE = (
+        ('WT', 'Waiting'),
+        ('AC', 'Correct'),
+        ('NE', 'Network Error'),
+        ('CE', 'Code Error'),
+        ('RE', 'Running Error'),
+        ('JE', 'Judging Error'),
+        ('UE', 'Unknown Error'),
+    )
+    id = models.BigAutoField(primary_key=True)
+
+    client = models.ForeignKey(to=Client, related_name='submission', to_field='name', null=True)
+    user = models.CharField(max_length=128, null=True)
+    extra = models.CharField(max_length=128, null=True)
+
+    problem = models.ForeignKey(to=Problem, related_name='submission', to_field='id')
+    environment = models.ForeignKey(to=Environment, related_name='submission', to_field='eid')
+    language = models.CharField(max_length=32)
+
+    result = models.CharField(max_length=4, choices=RESULT_CHOICES, default='PD')
+    result_type = models.CharField(max_length=2, default='WT')
+
+    memory = models.IntegerField(null=True)
+    time = models.IntegerField(null=True)
+    code_length = models.IntegerField(null=True)
+
+    submit_time = models.DateTimeField(auto_now_add=True)
+    last_judge_time = models.DateTimeField(auto_now=True)
+
+
+class SubmissionTestInfo(models.Model):
+    class TestInfo(object):
+        def __init__(self, tid, result):
+            self.tid = tid
+            self.result = result
+
+    id = models.BigAutoField(primary_key=True)
+
+    submission = models.OneToOneField(to=Submission, related_name='test_info', to_field='id')
+    test_info = postgres_fields.JSONField()
+
+
+class SubmissionCode(models.Model):
+    class File(object):
+        def __init__(self, name='', is_code=False, file_str=None):
+            self.name = name
+            self.is_code = is_code
+            self.file_str = file_str
+
+        def to_dict(self):
+            return {
+                'name': self.name,
+                'is_code': self.is_code,
+            }
+
+    id = models.BigAutoField(primary_key=True)
+
+    submission = models.ForeignKey(to=Submission, related_name='code', to_field='id')
+    file = postgres_fields.JSONField()
+
+    mongo_data = None
+    code = None
+
+    def get_mongo_data(self, name):
+        if self.mongo_data is None:
+            self.mongo_data = CodeMongo.objects.filter(sid=str(self.submission_id), name=name).first()
+            if self.mongo_data is None:
+                self.mongo_data = False
+        return self.mongo_data
+
+    def get_code(self, name):
+        if self.code is not None:
+            return self.code
+        data = self.get_mongo_data(name)
+        if data is False:
+            self.code = ''
+        else:
+            self.code = data.code.read()
+            if self.code is None:
+                self.code = ''
+            else:
+                self.code = self.code.decode('utf-8')
+        return self.code
+
+    def set_code(self, name, code):
+        data = self.get_mongo_data(name)
+        if data is False:
+            self.mongo_data = CodeMongo(sid=str(self.submission_id), name=name)
+            self.mongo_data.save()
+            data = self.mongo_data
+        data.code = code.encode('utf-8')
+        data.save()

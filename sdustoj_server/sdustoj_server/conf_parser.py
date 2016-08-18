@@ -22,3 +22,4 @@ REDIS_SETTINGS = get_config('redis')
 
 GLOBAL_SETTINGS = get_config('global')
 TEST_DATA_READ_MAX = int(GLOBAL_SETTINGS['testdata_readmax'])
+MAX_OLEN = int(GLOBAL_SETTINGS['max_output_length'])

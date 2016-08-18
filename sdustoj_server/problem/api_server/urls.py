@@ -13,6 +13,10 @@ from .problem_viewsets import DescriptionInProblemViewSet, SampleInProblemViewSe
 from .category_viewsets import CategoryListViewSet, CategoryDetailViewSet
 from .category_viewsets import NodeListViewSet, NodeDetailViewSet
 
+from .submission_viewsets import SubmissionListViewSet, SubmissionDetailViewSet
+from .submission_viewsets import SubmissionTestViewSet, SubmissionFilesViewSet
+from .submission_viewsets import SubmissionCodeViewSet
+
 router = routers.SimpleRouter()
 
 # Meta Problem #########################################################################################################
@@ -48,8 +52,18 @@ cat_router = routers.NestedSimpleRouter(router, r'categories', lookup='category'
 cat_router.register('nodes', NodeListViewSet, base_name='nodes')
 cat_router.register('nodes', NodeDetailViewSet, base_name='nodes')
 
+# Submission ###########################################################################################################
+router.register('submissions', SubmissionListViewSet, base_name='submissions')
+router.register('submissions', SubmissionDetailViewSet, base_name='submissions')
+sub_router = routers.NestedSimpleRouter(router, r'submissions', lookup='submission')
+sub_router.register('tests', SubmissionTestViewSet, base_name='test-info')
+sub_router.register('files', SubmissionFilesViewSet, base_name='files')
+sub_router.register('codes', SubmissionCodeViewSet, base_name='codes')
+
+
 urlpatterns = []
 urlpatterns += router.urls
 urlpatterns += meta_router.urls
 urlpatterns += problem_router.urls
 urlpatterns += cat_router.urls
+urlpatterns += sub_router.urls
