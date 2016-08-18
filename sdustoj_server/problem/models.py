@@ -7,6 +7,9 @@ from sdustoj_server.conf_parser import TEST_DATA_READ_MAX
 from judge.models import Environment
 
 
+#ty#
+from django.contrib.postgres import fields as postgres_fields
+
 # Meta Problem #########################################################################################################
 
 class MetaProblem(Resource, SourceMixin, StatusMixin):
@@ -108,7 +111,7 @@ class TestData(Resource, StatusMixin):
     def set_test_in(self, test_in):
         data = self.get_mongo_data()
         if data is False:
-            self.mongo_data = TestDataMongo(tid=str(self.id), mid=str(self.meta_problem_id))
+            self.mongo_data = TestDataMongo(tid=str(self.id), mid=str(self.id))
             self.mongo_data.save()
             data = self.mongo_data
         data.fin = test_in.encode('utf-8')
@@ -117,7 +120,7 @@ class TestData(Resource, StatusMixin):
     def set_test_out(self, test_out):
         data = self.get_mongo_data()
         if data is False:
-            self.mongo_data = TestDataMongo(tid=str(self.id), mid=str(self.meta_problem_id))
+            self.mongo_data = TestDataMongo(tid=str(self.id), mid=str(self.id))
             self.mongo_data.save()
             data = self.mongo_data
         data.fout = test_out.encode('utf-8')
@@ -162,6 +165,9 @@ class Problem(Resource, SourceMixin, StatusMixin):
     number_limit = models.IntegerField(default=0)
     number_category = models.IntegerField(default=0)
     number_node = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.title)+'  '+str(self.id);
 
 
 # ----- Components --------------------------------------------------------------------------------
@@ -233,3 +239,70 @@ class ProblemCategoryNode(ModifyInfo):
 
 
 # Submission ###########################################################################################################
+class Submission(models.Model):
+    RESULT_CHOICES = (
+        ('PD', 'Pending'),
+        ('RPD', 'Pending Rejudge'),
+        ('DC', 'Decorating'),
+        ('CP', 'Compiling'),
+        ('RN', 'Running'),
+        ('JG', 'Judging'),
+        ('RJ', 'Running & Judging'),
+
+        ('IW', 'Invalid Word'),
+        ('RF', 'Restrained Function'),
+        ('DF', 'Decoration Failed'),
+
+        ('CLLE', 'Code Length Limit Exceeded'),
+        ('CE', 'Compile Error'),
+
+        ('AC', 'Accepted'),
+        ('PE', 'Presentation Error'),
+        ('WA', 'Wrong Answer'),
+        ('TLE', 'Time Limit Exceeded'),
+        ('MLE', 'Memory Limit Exceeded'),
+        ('OLE', 'Output Limit Exceeded'),
+        ('RE', 'Runtime Error'),
+
+        ('SE', 'Submission Error'),
+    )
+    RESULT_TYPE = (
+        ('WT', 'Waiting'),
+        ('AC', 'Correct'),
+        ('NE', 'Network Error'),
+        ('CE', 'Code Error'),
+        ('RE', 'Running Error'),
+        ('JE', 'Judging Error'),
+    )
+    id = models.BigAutoField(primary_key=True)
+
+    web_client = models.CharField(max_length=32,null=True)
+    user = models.CharField(max_length=32)
+
+    problem = models.ForeignKey(to='Problem', related_name='submission', to_field='id')
+    environment = models.CharField(max_length=32,null=True)
+    language = models.CharField(max_length=32,null=True)
+
+    result = models.CharField(max_length=4, default='PD',null=True)
+    result_type = models.CharField(max_length=2, default='WT',null=True)
+
+    memory = models.IntegerField(null=True)
+    time = models.IntegerField(null=True)
+    code_length = models.IntegerField(null=True)
+
+    submit_time = models.DateTimeField(auto_now_add=True)
+    last_judge_time = models.DateTimeField(auto_now=True)
+
+    test_info = models.OneToOneField(to='SubmissionTest', related_name='submission', to_field='id')
+
+
+class SubmissionCode(models.Model):
+    submission = models.ForeignKey(to=Submission, related_name='code', to_field='id') #ty#
+    name = models.CharField(max_length=255, null=True)
+    code = models.TextField()
+
+
+class SubmissionTest(models.Model):
+    test_info = postgres_fields.JSONField()
+    def __str__(self):
+        return self.test_info;
