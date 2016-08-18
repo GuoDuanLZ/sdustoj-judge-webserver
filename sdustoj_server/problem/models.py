@@ -209,6 +209,10 @@ class Category(Resource, SourceMixin, StatusMixin):
     number_problem = models.IntegerField(default=0)
 
 
+def __str__(self):
+    return 'category ' + str(self.id)
+
+
 # ----- Components --------------------------------------------------------------------------------
 
 class Node(Resource, StatusMixin):
@@ -222,6 +226,9 @@ class Node(Resource, StatusMixin):
 
     number_node = models.IntegerField(default=0)
     number_problem = models.IntegerField(default=0)
+
+    def __str__(self):
+        return 'node ' + str(self.id)
 
 
 # ----- Relations ---------------------------------------------------------------------------------

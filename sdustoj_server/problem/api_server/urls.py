@@ -12,7 +12,7 @@ from .problem_viewsets import DescriptionInProblemViewSet, SampleInProblemViewSe
 
 from .category_viewsets import CategoryListViewSet, CategoryDetailViewSet
 from .category_viewsets import NodeListViewSet, NodeDetailViewSet
-
+from .category_viewsets import ProblemCategoryNodeViewSet
 router = routers.SimpleRouter()
 
 # Meta Problem #########################################################################################################
@@ -47,6 +47,11 @@ cat_router = routers.NestedSimpleRouter(router, r'categories', lookup='category'
 # ----- Component ---------------------------------------------------------------------------------
 cat_router.register('nodes', NodeListViewSet, base_name='nodes')
 cat_router.register('nodes', NodeDetailViewSet, base_name='nodes')
+cat_router.register('node-rel', ProblemCategoryNodeViewSet, base_name='node-rel')
+nod_router = routers.NestedSimpleRouter(cat_router, r'nodes', lookup="node")
+
+nod_router.register(r'problems', ProblemListViewSet, base_name='problems')
+nod_router.register(r'problems', ProblemDetailViewSet, base_name='problems')
 
 urlpatterns = []
 urlpatterns += router.urls

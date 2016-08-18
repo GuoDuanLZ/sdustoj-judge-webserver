@@ -1,5 +1,5 @@
 from django.db import models
-from utils.models import ModifyInfo, StatusMixin
+from utils.models import ModifyInfo,StatusMixin
 
 
 class Environment(ModifyInfo, StatusMixin):
