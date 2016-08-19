@@ -56,7 +56,7 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
 class ProblemReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
-        exclude = ('meta_problem',)
+        fields = '__all__'
 
 
 class LimitListSerializer(serializers.ModelSerializer):
