@@ -12,16 +12,26 @@
                 <h5>题元管理</h5>
             </a>
         </div>
-
-        <div id="collapseOne" class="panel-collapse collapse in">
+         {%block left-one-nav%}
+        <div id="collapseOne" class="panel-collapse collapse">
             <div class="panel-body">
                 <ul class="list-group nav nav-pills nav-stacked">
-                    {%block left-nav%}
 
-                    {% endblock %}
+                    <li class="nav-link">
+                        <a class="nav-link" href="{%url 'problem'%}">题元显示</a>
+                    </li>
+                    <li class="nav-link">
+                        <a class="nav-link" href="{%url 'problem-add'%}">题元添加</a>
+                    </li>
+                    <li class="nav-link">
+                        <!--<p class="nav-link" href="#collapseOne" style="margin-bottom: 0px;color: #55595c" >题元修改</p>-->
+                        <a class="nav-link" readonly="true" style="color: #a2afc8">题元修改</a>
+                    </li>
+
                 </ul>
             </div>
         </div>
+        {% endblock %}
     </div>
 
 </div>
@@ -29,21 +39,21 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <a class="nav-link" data-toggle="collapse" data-parent="#accordion" href="#collapseOne2">
-                <h5>题元管理</h5>
+                <h5>题目管理</h5>
             </a>
         </div>
+         {%block left-two-nav%}
         <div id="collapseOne2" class="panel-collapse collapse">
             <div class="panel-body">
                 <ul class="list-group nav nav-pills nav-stacked">
+
                     <li class="nav-link">
-                        <a class="nav-link" href="{%url 'problem-add'%}">题元显示</a>
-                    </li>
-                    <li class="nav-link">
-                        <a class="nav-link" href="#collapseOne">题元添加</a>
+                        <a class="nav-link" href="{%url 'problems'%}">题目显示</a>
                     </li>
                 </ul>
             </div>
         </div>
+        {% endblock %}
     </div>
 </div>
 {% endblock %}
@@ -56,7 +66,6 @@
         {% endblock %}
     </div>
     <div class="col-lg-4"></div>
-    </br>
 </div>
 {% endblock%}
  {% block Modle%}{% endblock %}

@@ -2,6 +2,12 @@
 {% block title %}题元详情{% endblock %}
 {% load staticfiles %}
 {%block css%}
+<style>
+    table.data_table th
+    {
+        text-align:center;
+    }
+</style>
 {%endblock%}
 {% block pageheader %}
 <div class="container">
@@ -10,17 +16,20 @@
     </div>
 </div>
 {% endblock%}
-{%block left-nav%}
-<li class="nav-link">
-    <a class="nav-link active">题元显示</a>
-</li>
-<li class="nav-link">
-    <a class="nav-link" href="{%url 'problem-add'%}">题元添加</a>
-</li>
-<li class="nav-link">
-    <!--<p class="nav-link" href="#collapseOne" style="margin-bottom: 0px;color: #55595c" >题元修改</p>-->
-    <a class="nav-link" readonly="true" style="color: #a2afc8">题元修改</a>
-</li>
+{%block left-one-nav%}
+<div id="collapseOne" class="panel-collapse collapse in">
+    <div class="panel-body">
+        <li class="nav-link">
+            <a class="nav-link active">题元显示</a>
+        </li>
+        <li class="nav-link">
+            <a class="nav-link" href="{%url 'problem-add'%}">题元添加</a>
+        </li>
+        <li class="nav-link">
+            <a class="nav-link" id="nav_a_modify" href="">题元修改</a>
+        </li>
+    </div>
+</div>
 {% endblock%}
 {%block body%}
 <nav role="navigation">
@@ -105,9 +114,9 @@
 
         <div class="tab-pane" id="description" role="tabpanel">
             <div class="row pull-xs-right">
-                <button class="btn btn-outline-info" style="margin: 10px;margin-right: 100px">添加</button>
+                <button id="d_add" class="btn btn-outline-info" data-toggle="modal" data-target="#des_Modal" style="margin: 10px;margin-right: 100px">添加</button>
             </div>
-            <table id="des_table" class="display table">
+            <table id="des_table" class="data_table display table table-bordered">
                 <thead>
 
                 <tr>
@@ -127,7 +136,10 @@
             </table>
         </div>
         <div class="tab-pane" id="sample" role="tabpanel">
-            <table id="sample_table" class="display table">
+            <div class="row pull-xs-right">
+                <button id="s_add" data-toggle="modal" data-target="#sam_Modal" class="btn btn-outline-info" style="margin: 10px;margin-right: 100px">添加</button>
+            </div>
+            <table id="sample_table" class="data_table display table table-bordered">
                 <thead>
                 <tr>
                     <th>Title</th>
@@ -146,15 +158,17 @@
             </table>
         </div>
         <div class="tab-pane" id="test_data" role="tabpanel">
-            <table id="test_data_table" class="display table">
+            <div class="row pull-xs-right">
+                <button id="t_add" data-toggle="modal" data-target="#test_Modal" class="btn btn-outline-info" style="margin: 10px;margin-right: 100px">添加</button>
+            </div>
+            <table id="test_data_table" class="data_table display table table-bordered">
                 <thead>
                 <tr>
                     <th>Title</th>
                     <th>status</th>
                     <th>Introduction</th>
                     <th>Test_id</th>
-                    <th>IN</th>
-                    <th>OUT</th>
+                    <th>Meta_problem</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -165,7 +179,30 @@
                 </tbody>
             </table>
         </div>
-        <div class="tab-pane" id="problem" role="tabpanel"></div>
+        <div class="tab-pane" id="problem" role="tabpanel">
+        <div class="row pull-xs-right">
+          <button class="btn btn-outline-info" style="margin: 10px;margin-right: 100px" onclick="javascript:window.location.href='/pro-add?id='+{{meta_id}}">添加</button>
+        </div>
+        <table id="problem_table" class="data_table display table table-bordered" >
+            <thead>
+            <tr>
+            <th>title</th>
+            <th>status</th>
+            <th>introduction</th>
+            <th>id</th>
+            <th>source</th>
+            <th>author</th>
+            <th>操作</th>
+            </tr>
+            </thead>
+            <tfoot>
+
+            </tfoot>
+            <tbody>
+            </tbody>
+            <!-- title ,id ,-->
+        </table>
+        </div>
     </div>
 </nav>
 {%endblock%}
@@ -178,39 +215,91 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="myModalLabel">描述修改</h4>
+        <h4 class="modal-title" id="myModalLabel">Description</h4>
       </div>
+      <form>
       <div class="modal-body">
-          <form>
-             <input >
-          </form>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Title</label>
+        <div class="col-sm-10">
+          <input type="text" id="d_title" class="form-control" required="required">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Introduction</label>
+        <div class="col-sm-10">
+          <input type="text" id="d_introduction" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Status</label>
+        <div class="col-sm-10">
+          <select class="form-control" id="d_status">
+            <option value="1">available</option>
+            <option value="0">unavailable</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Content</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" id="d_content"></textarea>
+        </div>
+      </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">保存</button>
+        <button id="d_save" type="button" class="btn btn-primary">保存</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
     <!--样例的模态框-->
-<div class="modal fade" id="sim_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="sam_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button id="hide" type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">样例修改</h4>
+        <h4 class="modal-title" id="s_header">Sample</h4>
       </div>
+      <form>
       <div class="modal-body">
-          <form>
-             <input >
-          </form>
+          <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Title</label>
+              <div class="col-sm-10">
+                  <input type="text" id="s_title" class="form-control" required="required">
+              </div>
+          </div>
+          <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Introduction</label>
+              <div class="col-sm-10">
+                  <input type="text" id="s_introduction" class="form-control">
+              </div>
+          </div>
+          <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Status</label>
+              <div class="col-sm-10">
+                  <select class="form-control" id="s_status">
+                      <option value="1">available</option>
+                      <option value="0">unavailable</option>
+                  </select>
+              </div>
+          </div>
+          <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Content</label>
+              <div class="col-sm-10">
+                  <textarea id="s_content" class="form-control"></textarea>
+              </div>
+          </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">保存</button>
+        <button id="s_save" type="button" class="btn btn-primary">保存</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
@@ -222,155 +311,57 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">测试数据修改</h4>
+        <h4 class="modal-title">Test</h4>
       </div>
+      <form>
       <div class="modal-body">
-          <form>
-             <input >
-          </form>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Title</label>
+        <div class="col-sm-10">
+          <input type="text" id="t_title" class="form-control" required="required">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Introduction</label>
+        <div class="col-sm-10">
+          <input type="text" id="t_introduction" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Status</label>
+        <div class="col-sm-10">
+          <select class="form-control" id="t_status">
+            <option value="1">available</option>
+            <option value="0">unavailable</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Test in</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" id="test_in"></textarea>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Test out</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" id="test_out"></textarea>
+        </div>
+      </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">保存</button>
+        <button id="t_save" type="button" class="btn btn-primary">保存</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
 {% endblock %}
 {% block script %}
-<script>
-    $(function () {
-        Id = $('#meta_id_hidden').text();
-        $.ajax({
-            url: "/api-server/meta-problems/" + Id + "/",
-            type: "GET",
-            dataType: "json",
-            data: {},
-            success: function (response) {
-                $('#title').text(response.title);
-                $('#id').text(response.id);
-                $('#source').text(response.source);
-                $('#author').text(response.author);
-                $('#introduction').text(response.introduction);
-                $('#status').text(response.status);
-                $('#N_description').text(response.number_description);
-                $('#N_sample').text(response.number_sample);
-                $('#N_test_data').text(response.number_test_data);
-                $('#N_problem').text(response.number_problem);
-
-            },
-            error: function (response) {
-
-            }
-
-        });
-        var des_table = $('#des_table').DataTable({
-            scrollX: false,
-            scrollCollapse: false,
-            scrolly: false,
-            searching: false,
-            paging: false,
-            ordering: false,
-            ajax: {
-                url: "/api-server/meta-problems/" + Id + "/descriptions",
-                dataSrc: function (result) {
-                    result.recordsFiltered = result.count;
-                    return result.results;
-                },
-                data: function (d) {
-                }
-            },
-            columns: [
-                {data: "title"},
-                {data: "status"},
-                {data: "introduction"},
-                {data: "id"},
-                {data: "meta_problem"},
-                {
-                    data: "null",
-                    width: "150px",
-                    render: function (data, type, row, meta) {
-                        return '<button id="des_modify" type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#des_Modal">修改</button> &nbsp; <button type="button" id="delete" class="btn btn-outline-danger btn-sm" >删除</button>';
-                    }
-                }
-            ]
-        });
-        $('#a_description').on('shown.bs.tab', function (e) {
-            //当切换tab时，强制重新计算列宽
-            des_table.columns.adjust().draw();
-        });
-        var sam_table = $('#sample_table').DataTable({
-            scrollX: false,
-            scrollCollapse: false,
-            scrolly: false,
-            searching: false,
-            paging: false,
-            ordering: false,
-            ajax: {
-                url: "/api-server/meta-problems/" + Id + "/samples",
-                dataSrc: function (result) {
-                    result.recordsFiltered = result.count;
-                    return result.results;
-                },
-                data: function (d) {
-                }
-            },
-            columns: [
-                {data: "title"},
-                {data: "status"},
-                {data: "introduction"},
-                {data: "id"},
-                {data: "meta_problem"},
-                {
-                    data: "null",
-                    width: "150px",
-                    render: function (data, type, row, meta) {
-                        return '<button id="sim_modify" type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#sim_Modal">修改</button> &nbsp; <button type="button" id="delete" class="btn btn-outline-danger btn-sm" >删除</button>';
-                    }
-                }
-            ]
-        });
-        $('#a_sample').on('shown.bs.tab', function (e) {
-            //当切换tab时，强制重新计算列宽
-            sam_table.columns.adjust().draw();
-        });
-        var test_table = $('#test_data_table').DataTable({
-            scrollX: false,
-            scrollCollapse: false,
-            scrolly: false,
-            searching: false,
-            paging: false,
-            ordering: false,
-            ajax: {
-                url: "/api-server/meta-problems/" + Id + "/test-data",
-                dataSrc: function (result) {
-                    result.recordsFiltered = result.count;
-                    return result.results;
-                },
-                data: function (d) {
-                }
-            },
-            columns: [
-                {data: "title"},
-                {data: "status"},
-                {data: "introduction"},
-                {data: "id"},
-                {data: "in_preview"},
-                {data: "out_preview"},
-                {
-                    data: "null",
-                    width: "150px",
-                    render: function (data, type, row, meta) {
-                        return '<button id="test_modify" type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#test_Modal">修改</button> &nbsp; <button type="button" id="delete" class="btn btn-outline-danger btn-sm" >删除</button>';
-                    }
-                }
-            ]
-        });
-        $('#a_test_data').on('shown.bs.tab', function (e) {
-            //当切换tab时，强制重新计算列宽
-            test_table.columns.adjust().draw();
-        });
-        $('#')
-    })
-</script>
+<script src='{% static "js/problem-detail/detail.js" %}'></script>
+<script src='{% static "js/problem-detail/description.js" %}'></script>
+<script src='{% static "js/problem-detail/sample.js" %}'></script>
+<script src='{% static "js/problem-detail/test_data.js" %}'></script>
+<script src='{% static "js/problem-detail/problems-list.js" %}'></script>
 {% endblock %}

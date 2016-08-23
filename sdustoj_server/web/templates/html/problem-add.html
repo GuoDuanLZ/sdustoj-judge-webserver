@@ -10,16 +10,20 @@
     </div>
 </div>
 {% endblock %}
-{%block left-nav%}
-<li class="nav-link">
-    <a class="nav-link " href="{%url 'problem'%}">题元显示</a>
-</li>
-<li class="nav-link">
-    <a class="nav-link active">题元添加</a>
-</li>
-<li class="nav-link">
-    <a class="nav-link" readonly="true" style="color: #a2afc8">题元修改</a>
-</li>
+{%block left-one-nav%}
+<div id="collapseOne" class="panel-collapse collapse in">
+    <div class="panel-body">
+        <li class="nav-link">
+            <a class="nav-link " href="{%url 'problem'%}">题元显示</a>
+        </li>
+        <li class="nav-link">
+            <a class="nav-link active">题元添加</a>
+        </li>
+        <li class="nav-link">
+            <a class="nav-link" readonly="true" style="color: #a2afc8">题元修改</a>
+        </li>
+    </div>
+</div>
 {% endblock %}
 {% block form%}
 <form onsubmit="return false;">

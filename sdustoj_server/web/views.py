@@ -67,7 +67,7 @@ def ajax_user(request):
 
 def tablerender(request):
         return  render(request,"html/table_example.html")
-def problemManager(request):
+def problemManage(request):
     if request.user.is_authenticated():
         return render_with_user_info(request, 'html/problem.html')
     else:
@@ -89,5 +89,30 @@ def problemDetail(request):
     meta_id=request.GET['id']
     if request.user.is_authenticated():
         return render_with_user_info(request, 'html/problem-details.html' ,{'meta_id':meta_id})
+    else:
+        return render_with_user_info(request, 'html/sign_in.html')
+
+def problemsManage(request):
+    if request.user.is_authenticated():
+        return render_with_user_info(request, 'html/problems.html')
+    else:
+        return render_with_user_info(request, 'html/sign_in.html')
+def problemsAdd(request):
+    meta_id=request.GET['id']
+    if request.user.is_authenticated():
+        return render_with_user_info(request, 'html/problems-add.html',{'meta_id':meta_id})
+    else:
+        return render_with_user_info(request, 'html/sign_in.html')
+def problemsDetail(request):
+    problem_id = request.GET['id']
+    if request.user.is_authenticated():
+        return render_with_user_info(request, 'html/problems-details.html', {'id': problem_id})
+    else:
+        return render_with_user_info(request, 'html/sign_in.html')
+def problemsModify(request):
+    problem_id = request.GET['problem_id']
+    meta_id=request.GET['meta_id']
+    if request.user.is_authenticated():
+        return render_with_user_info(request, 'html/problems-modify.html', {'id': problem_id ,'meta_id':meta_id})
     else:
         return render_with_user_info(request, 'html/sign_in.html')

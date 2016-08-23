@@ -9,7 +9,7 @@ $(document).ready(function () {
                 dataType: "json",
                 data: {
                     title: $('#title').val(),
-                    id: $('#id').val(),
+                     id: $('#id').val(),
                     source: $('#source').val(),
                     status: $('#status').val() == "available" ? 0 : 1,
                     author: $('#author').val(),

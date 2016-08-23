@@ -1,0 +1,264 @@
+{% extends "html/meta/problem_page.html" %}
+{% block title %}题目详情{% endblock %}
+{% load staticfiles %}
+{%block css%}
+{%endblock%}
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div><h2>题目详情{{meta_id}}</h2></div>
+    </div>
+</div>
+{% endblock%}
+{%block left-two-nav%}
+<div id="collapseOne" class="panel-collapse collapse in">
+    <div class="panel-body">
+        <li class="nav-link">
+            <a class="nav-link active">题目显示</a>
+        </li>
+    </div>
+</div>
+{% endblock%}
+{%block body%}
+<nav role="navigation">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#detail" role="tab">详细信息</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#description" role="tab" id="a_description">题目描述</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#test_data" role="tab" id="a_test_data">题目测试数据</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#limit" role="tab" id="a_limit">题目限制</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="detail" role="tabpanel">
+            <p id="id_hidden" hidden>{{id}}</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>
+                        <center>名称</center>
+                    </th>
+                    <th>
+                        <center>属性</center>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>题目</th>
+                    <td id="title"></td>
+                </tr>
+                <tr>
+                    <th>Id</th>
+                    <td id="id"></td>
+                </tr>
+                <tr>
+                    <th>Source</th>
+                    <td id="source"></td>
+                </tr>
+                <tr>
+                    <th>Author</th>
+                    <td id="author"></td>
+                </tr>
+                <tr>
+                    <th>Meta_problem</th>
+                    <td id="meta_id"></td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td id="status"></td>
+                </tr>
+                <tr>
+                    <th>Introduction</th>
+                    <td id="introduction"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="description" role="tabpanel">
+            <!--<div class="panel panel-default">-->
+            <!--<div class="panel-heading">描述</div>-->
+            <!--<div class="panel-body" id="des_panerl">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="panel panel-default">-->
+            <!--<div class="panel-heading">样例</div>-->
+            <!--<div class="panel-body" id="sam_panerl">-->
+            <!--</div>-->
+            <!--</div>-->
+            <div class="list-group">
+                <a class="list-group-item list-group-item-success">
+                    <h5 class="list-group-item-heading">描述</h5>
+                    <p class="list-group-item-text" id="des_panerl"></p>
+                </a>
+                <a class="list-group-item list-group-item-info">
+                    <h5 class="list-group-item-heading">样例</h5>
+                    <p class="list-group-item-text" id="sam_panerl"></p>
+                </a>
+            </div>
+        </div>
+        <div class="tab-pane" id="test_data" role="tabpanel">
+            <div class="row pull-xs-right">
+                <button id="test_modify" class="btn btn-outline-info" style="margin: 10px;margin-right: 100px">添加
+                </button>
+                <!--<button id="test_true" class="btn btn-outline-info" disabled="true" style="margin: 10px;margin-right: 100px">确定</button>-->
+            </div>
+            <table id="test_data_table" class="display table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>status</th>
+                    <th>Introduction</th>
+                    <th>Test_id</th>
+                    <th>Meta_problem</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tfoot>
+                </tfoot>
+
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="limit" role="tabpanel">
+            <div class="row pull-xs-right">
+                <button class="btn btn-outline-info" style="margin: 10px;margin-right: 100px" name="limits" id="limit_add">添加</button>
+            </div>
+            <table id="limit_table" class="display table">
+                <thead>
+                <tr>
+                    <th>title</th>
+                    <th>status</th>
+                    <th>introduction</th>
+                    <th>id</th>
+                    <th>Eid</th>
+                    <th>Time limit</th>
+                    <th>Memory limit</th>
+                    <th>Length limit</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tfoot>
+
+                </tfoot>
+                <tbody>
+                </tbody>
+                <!-- title ,id ,-->
+            </table>
+        </div>
+    </div>
+</nav>
+{%endblock%}
+{% block Modle%}
+<!--测试数据显示框-->
+<div class="modal fade" id="test_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">测试数据添加</h4>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <form class="form">
+                        <div class="form-group">
+                            <label class="form-control-label">请选择一个测试数据</label>
+                            <div>
+                                <select class="form-control" id="test_select">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="t_save" type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--编程限制的模态框-->
+<div class="modal fade" id="limit_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">限制条件</h4>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="l_title" class="form-control" required="required">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Introduction</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="l_introduction" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Status</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="l_status">
+                                <option value="1">available</option>
+                                <option value="0">unavailable</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Time limit </label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="time_limit"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Memory limit </label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="memory_limit"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">Length limit</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="length_limit"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 form-control-label">测试环境</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="environment_limit">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="l_sava" type="button" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src='{% static "js/problems-detail/detail.js" %}'></script>
+<script src='{% static "js/problems-detail/test-data.js" %}'></script>
+<script src='{% static "js/problems-detail/limit.js" %}'></script>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "html/meta/problem_page.html" %}
+
+{% load staticfiles %}
+
+{% block title %}题目管理{% endblock %}
+{%block css%}
+{%endblock%}
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div><h2>题目管理</h2></div>
+    </div>
+</div>
+{% endblock %}
+{%block left-two-nav%}
+<div id="collapseOne2" class="panel-collapse collapse in">
+    <div class="panel-body">
+        <li class="nav-link">
+            <a class="nav-link active">题目显示</a>
+        </li>
+    </div>
+</div>
+{% endblock %}
+
+    {% block body %}
+
+    <div class="container">
+        <table id="example" class="display table  table-bordered">
+            <thead class="thead-default">
+
+            <tr>
+                <th id="order1">Title</th>
+                <th id="order2">Id</th>
+                <th>Status</th>
+                <th>Introduction</th>
+                <th>test_type
+                    <br/>
+                    <div  >
+                        <select class="form-control form-control-sm" style="height:20px">
+                            <option selected>ALL</option>
+                            <option value="1">normal</option>
+                            <option value="2">ignBlank</option>
+                            <option value="3">ignPunct</option>
+                         </select>
+                    </div>
+                </th>
+                <th>meta_problem</th>
+                <th id="order7">create_time</th>
+                <th id="order8">update_time</th>
+            </tr>
+            </thead>
+            <tfoot>
+            </tfoot>
+
+            <tbody >
+            </tbody>
+        </table>
+    </div>
+
+    {% endblock %}
+
+{% block script%}
+   <script src='{% static "js/problems.js" %}'> </script>
+{% endblock %}
+

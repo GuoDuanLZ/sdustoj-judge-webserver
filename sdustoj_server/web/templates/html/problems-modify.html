@@ -1,0 +1,89 @@
+{% extends "html/meta/problem_page.html" %}
+
+{% load staticfiles %}
+
+{% block title %}题目信息修改{% endblock %}
+{%block css%}
+{%endblock%}
+{% block pageheader %}
+<div class="container">
+    <div class="row">
+        <div><h2>题目信息修改</h2></div>
+    </div>
+</div>
+{% endblock %}
+{%block left-two-nav%}
+<div id="collapseOne2" class="panel-collapse collapse in">
+    <div class="panel-body">
+        <li class="nav-link">
+            <a class="nav-link active">题目显示</a>
+        </li>
+        <li class="nav-link">
+            <a class="nav-link" href="{%url 'problem-add'%}">题目添加</a>
+        </li>
+        <li class="nav-link">
+            <!--<p class="nav-link" href="#collapseOne" style="margin-bottom: 0px;color: #55595c" >题元修改</p>-->
+            <a class="nav-link" readonly="true">题目修改</a>
+        </li>
+    </div>
+</div>
+{% endblock %}
+{% block form%}
+<form onsubmit="return false;">
+    <div class="form-group">
+        <label for="title">Title：</label>
+        <input type="text" class="form-control" id="title" value="">
+    </div>
+        <p id="meta_id_hidden" hidden>{{meta_id}}</p>
+        <p id="id_hidden" hidden>{{id}}</p>
+
+    <div class="form-group">
+        <label for="author">Author：</label>
+        <input type="text" class="form-control" id="author" value="">
+    </div>
+     <div class="form-group">
+        <label for="status">Source：</label>
+        <input type="text" class="form-control" id="source" value="">
+    </div>
+    <div class="form-group">
+        <label for="introduction">Introduction:</label>
+       <input type="text" class="form-control" id="introduction" value="">
+    </div>
+    <div class="form-group">
+        <label for="status">Status：</label>
+        <select class="form-control" id="status">
+            <option value="1">available</option>
+            <option value="0">unavailable</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="test_type">Test type：</label>
+        <select class="form-control" id="test_type">
+             <option value="normal">normal</option>
+             <option value="ignBlank">ignBlank</option>
+             <option value="ignPunct">ignPunct</option>
+        </select>
+    </div>
+     <div class="form-group">
+        <label for="description">Description：</label>
+        <select class="form-control" id="description">
+            <option value=" ">请选择..</option>
+        </select>
+    </div>
+     <div class="form-group">
+        <label for="test_type">Sample：</label>
+        <select class="form-control" id="sample">
+             <option value=" ">请选择</option>
+        </select>
+    </div>
+    <div class="form-group pull-xs-right">
+        <button class="btn btn-primary" id="maketrue">确定</button>
+        <button class="btn btn-primary" id="cancel">取消</button>
+    </div>
+</form>
+
+{% endblock %}
+{%block script%}
+<!--<script src='{% static "js/password.js" %}'></script>-->
+ <script src='{% static "js/problems-modify.js" %}'> </script>
+{%endblock%}

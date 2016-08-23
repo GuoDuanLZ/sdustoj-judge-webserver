@@ -11,8 +11,12 @@ urlpatterns = [
     url(r'^passwordSET/',ajax_password,name='ajax_password'),
     url(r'^userinfo/',ajax_user, name='ajax_user'),
     url(r'table_example/',tablerender,name='table'),
-    url(r'problem/', problemManager, name='problem'),
+    url(r'problem/', problemManage, name='problem'),
     url(r'problem-add/',problemAdd,name='problem-add'),
     url(r'problem-modify',problemModify,name='problem-modify'),
     url(r'problem-detail',problemDetail,name='problem-detail'),
+    url(r'problems',problemsManage,name='problems'),
+    url(r'pro-add',problemsAdd,name='problems-add'),
+    url(r'pro-detail',problemsDetail,name='problems-detail'),
+    url(r'pro-modify',problemsModify,name='problems-modify'),
 ]

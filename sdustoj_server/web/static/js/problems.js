@@ -1,33 +1,43 @@
-/**
- * Created by zzk on 16-8-9.
- */
- $(function () {
+$(function(){
+    $('#order1').click(function () {
+                if (tableorder == 'title')
+                    tableorder = '-title';
+                else
+                    tableorder = 'title';
+            });
             $('#order2').click(function () {
                 if (tableorder == 'id')
                     tableorder = '-id';
                 else
                     tableorder = 'id';
             });
+             $('#order7').click(function () {
+                if (tableorder == 'create_time')
+                    tableorder = '-create_time';
+                else
+                    tableorder = 'create_time';
+            });
+            $('#order8').click(function () {
+                if (tableorder == 'update_time')
+                    tableorder = '-update_time';
+                else
+                    tableorder = 'update_time';
+            });
+
             var table = $('#example').DataTable({
                 columnDefs: [
-                    {"orderable": false, "targets": 0},
                     {"orderable": false, "targets": 2},
                     {"orderable": false, "targets": 3},
                     {"orderable": false, "targets": 4},
                     {"orderable": false, "targets": 5},
-                    {"orderable": false, "targets": 6}
                 ],
                 ajax: {
-                    url: '/api-server/meta-problems/',
+                    url: '/api-server/problems/',
                     dataSrc: function (result) {
                         result.recordsFiltered = result.count;
                         return result.results;
                     },
                     data: function (d) {
-                        sessionStorage.search = tablesearch;
-                        sessionStorage.ordering = tableorder;
-                        sessionStorage.limit = tablelength;
-                        sessionStorage.start = tablestart;
                         d.offset = tablestart;
                         d.limit = tablelength;
                         d.search = tablesearch;
@@ -37,20 +47,25 @@
                 columns: [
                     {data: "title",
                     render:function (data, type, row, meta) {
-                        return "<a href='/problem-detail?id="+row.id+"'>"+data+"</a>"
+                        return "<a href='/pro-detail?id="+row.id+"'>"+data+"</a>"
                     }},
                     {data: "id"},
-                    {data: "source"},
-                    {data: "author"},
                     {data: "status"},
                     {data: "introduction"},
-                    {
-                        data: null,
-                        width: "50px",
-                        render: function (data, type, row, meta) {
-                            return '<button type="button" id="delete" class="btn btn-outline-danger btn-sm" >删除</button>';
-                        }
-                    }
+                    {data: "test_type"},
+                    {data: "meta_problem"},
+                    {data: "create_time",
+                    render:function(data,type,row,meta){
+                        var time=data.replace('T',' ');
+                        time=time.substring(0,19);
+                        return '<center>'+time+'</center>';
+                    }},
+                    {data: "update_time",
+                      render:function(data,type,row,meta){
+                        var time=data.replace('T',' ');
+                        time=time.substring(0,19);
+                        return '<center>'+time+'</center>';
+                    }},
                 ]
             });
 
@@ -63,25 +78,5 @@
             table.on('search.dt', function () {
                 tablesearch = table.search();
                 tablestart = 0;
-            });
-           table.on('click','tbody td #delete',function(){
-                var meta_id=$(this).parent().parent().children().eq(1).text();
-                 if(confirm('是否删除？'))
-           {
-                 $.ajax({
-              url:"/api-server/meta-problems/"+meta_id+"/",
-              type:"DELETE",
-              dataType:"json",
-              data:{
-              },
-              success:function (data) {
-                   table.ajax.reload(null, false);
-              },
-              error:function (data) {
-                   console.log(data);
-              }
-
-                 });
-           }
             });
            });
