@@ -1,0 +1,95 @@
+{% extends "api_meta.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load rest_framework %}
+
+{% block title %}测试数据 - SDUSTOJ API{% endblock %}
+
+{% block body %}
+<h1>测试数据 {{ results.id }} - {{ results.title }}</h1>
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+  <tbody>
+    <tr>
+      <th>简介</th>
+      <td><pre>{{ results.introduction }}</pre></td>
+    </tr>
+    <tr>
+      <th>测试输入</th>
+      <td><pre>{{ results.test_in }}</pre></td>
+    </tr>
+    <tr>
+      <th>测试输出</th>
+      <td><pre>{{ results.test_in }}</pre></td>
+    </tr>
+    <tr>
+      <th>创建者</th>
+      <td>{{ results.creator }}</td>
+    </tr>
+    <tr>
+      <th>创建时间</th>
+      <td>{{ results.create_time }}</td>
+    </tr>
+    <tr>
+      <th>最后更新</th>
+      <td>{{ results.updater }}</td>
+    </tr>
+    <tr>
+      <th>最后更新时间</th>
+      <td>{{ results.update_time }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Edit</h4>
+      </div>
+      <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {{ put_form }}
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block cur %}题元{% endblock %}
+
+{% block cur_nav %}
+<li><a href="/api-server/meta-problems/">浏览题元</a></li>
+<li><a href="/api-server/meta-problems//" id="mp">题元详情</a></li>
+<li><a href="/api-server/meta-problems//descriptions/" id="mp-d">描述集</a></li>
+<li><a href="/api-server/meta-problems//samples/" id="mp-s">样例集</a></li>
+<li><a href="/api-server/meta-problems//test-data/" id="mp-t">测试数据集</a></li>
+<li><a href="/api-server/meta-problems//test-data/" id="mp-tui">上传测试输入</a></li>
+<li><a href="/api-server/meta-problems//test-data/" id="mp-tuo">上传测试输出</a></li>
+<li><a href="/api-server/meta-problems//problems/" id="mp-p">引用题目</a></li>
+{% endblock %}
+
+{% block script %}
+<script>
+  var url = location.href
+  var urls = url.split('/')
+  var mid = urls[urls.length-4]
+
+  $('#mp').attr('href', '/api-server/meta-problems/'+mid+'/')
+  $('#mp-d').attr('href', '/api-server/meta-problems/'+mid+'/descriptions/')
+  $('#mp-s').attr('href', '/api-server/meta-problems/'+mid+'/samples/')
+  $('#mp-t').attr('href', '/api-server/meta-problems/'+mid+'/test-data/')
+  $('#mp-tui').attr('href', '/api-server/meta-problems/'+mid+'/test-data-in/{{results.id}}/')
+  $('#mp-tuo').attr('href', '/api-server/meta-problems/'+mid+'/test-data-out/{{results.id}}/')
+  $('#mp-p').attr('href', '/api-server/meta-problems/'+mid+'/problems/')
+</script>
+{% endblock %}

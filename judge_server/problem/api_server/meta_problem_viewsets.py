@@ -24,6 +24,9 @@ from ..documents import TestData as TestDataMongodb
 from .meta_problem_serializers import TestDataListSerializer, TestDataDetailSerializer
 from .meta_problem_serializers import TestFileSerializer, TestInFileSerializer, TestOutFileSerializer
 
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, AdminRenderer
+from .renderers import *
+
 
 class MetaProblemListViewSet(ResourceListViewSet):
     queryset = MetaProblem.objects.all()
@@ -33,11 +36,15 @@ class MetaProblemListViewSet(ResourceListViewSet):
     search_fields = ('title', 'introduction', 'id')
     ordering_fields = resource_ordering + ('id',)
 
+    renderer_classes = (JSONRenderer, MetaProblemListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class MetaProblemDetailViewSet(ResourceDetailViewSet):
     queryset = MetaProblem.objects.all()
     serializer_class = MetaProblemDetailSerializer
     permission_classes = (IsProblemAdmin,)
+
+    renderer_classes = (JSONRenderer, MetaProblemDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def perform_destroy(self, instance):
         test_data = instance.test_data.all()
@@ -61,11 +68,15 @@ class DescriptionListViewSet(NestedResourceListViewSet):
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
 
+    renderer_classes = (JSONRenderer, DescriptionListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class DescriptionDetailViewSet(NestedResourceDetailViewSet):
     queryset = Description.objects.all()
     serializer_class = DescriptionDetailSerializer
     permission_classes = (IsProblemAdmin,)
+
+    renderer_classes = (JSONRenderer, DescriptionDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class SampleListViewSet(NestedResourceListViewSet):
@@ -83,11 +94,15 @@ class SampleListViewSet(NestedResourceListViewSet):
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
 
+    renderer_classes = (JSONRenderer, SampleListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class SampleDetailViewSet(NestedResourceDetailViewSet):
     queryset = Sample.objects.all()
     serializer_class = SampleDetailSerializer
     permission_classes = (IsProblemAdmin,)
+
+    renderer_classes = (JSONRenderer, SampleDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class TestDataListViewSet(NestedResourceListViewSet):
@@ -101,11 +116,15 @@ class TestDataListViewSet(NestedResourceListViewSet):
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
 
+    renderer_classes = (JSONRenderer, TestDataListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class TestDataDetailViewSet(NestedResourceDetailViewSet):
     queryset = TestData.objects.all()
     serializer_class = TestDataDetailSerializer
     permission_classes = (IsProblemAdmin,)
+
+    renderer_classes = (JSONRenderer, TestDataDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def perform_destroy(self, instance):
         TestDataDetailSerializer.delete_mongodb(instance)
@@ -123,6 +142,8 @@ class TestFileUploadViewSet(NestedResourceListViewSet):
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
 
+    renderer_classes = (JSONRenderer, TestDataListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class TestInFileUploadViewSet(NestedResourceDetailViewSet):
     queryset = TestData.objects.all()
@@ -135,6 +156,8 @@ class TestInFileUploadViewSet(NestedResourceDetailViewSet):
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
 
+    renderer_classes = (JSONRenderer, TestDataDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class TestOutFileUploadViewSet(NestedResourceDetailViewSet):
     queryset = TestData.objects.all()
@@ -146,6 +169,8 @@ class TestOutFileUploadViewSet(NestedResourceDetailViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
+
+    renderer_classes = (JSONRenderer, TestDataDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 def file_iterator(file, chunk_size=512):

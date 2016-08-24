@@ -1,9 +1,10 @@
 result_map = {
     'PD': 'Pending',
     'RPD': 'Pending Rejudge',
+    'IQ': 'In Queue',
     'DC': 'Decorating',
-    'CP': 'Compiling',
-    'RN': 'Running',
+    'CP': 'Finished Compiling',
+    'RN': 'Finished Running',
     'JG': 'Judging',
     'RJ': 'Running & Judging',
     'AE': 'Analysing Errors',
@@ -21,6 +22,7 @@ result_map = {
     'OLE': 'Output Limit Exceeded',
     'WA': 'Wrong Answer',
     'PE': 'Presentation Error',
+    'PTE': 'Punctuation Error',
     'AC': 'Accepted'
 }
 

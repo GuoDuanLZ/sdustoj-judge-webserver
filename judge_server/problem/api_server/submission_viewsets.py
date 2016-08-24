@@ -19,6 +19,9 @@ from user.api_server.permission import IsCategoryAdmin
 
 from django.shortcuts import get_object_or_404
 
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, AdminRenderer
+from .renderers import *
+
 
 class SubmissionListViewSet(mixins.ListModelMixin, UserCreateModelMixin,
                             FilterViewSet):
@@ -30,12 +33,16 @@ class SubmissionListViewSet(mixins.ListModelMixin, UserCreateModelMixin,
 
     permission_classes = (IsCategoryAdmin,)
 
+    renderer_classes = (JSONRenderer, SubmissionListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class SubmissionDetailViewSet(mixins.RetrieveModelMixin, FilterViewSet):
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
 
     permission_classes = (IsCategoryAdmin,)
+
+    renderer_classes = (JSONRenderer, SubmissionListRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class SubmissionMessageViewSet(viewsets.ReadOnlyModelViewSet):

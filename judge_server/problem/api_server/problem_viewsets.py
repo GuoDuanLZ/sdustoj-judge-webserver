@@ -21,6 +21,9 @@ from .problem_serializers import TestDataSerializer, TestDataRelationSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 
+from rest_framework.renderers import AdminRenderer, JSONRenderer, BrowsableAPIRenderer
+from .renderers import *
+
 
 class ProblemListViewSet(NestedResourceListViewSet):
     queryset = Problem.objects.all()
@@ -36,6 +39,8 @@ class ProblemListViewSet(NestedResourceListViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'meta_problem'
 
+    renderer_classes = (JSONRenderer, ProblemInMetaListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class ProblemDetailViewSet(NestedResourceDetailViewSet):
     queryset = Problem.objects.all()
@@ -47,6 +52,8 @@ class ProblemDetailViewSet(NestedResourceDetailViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'meta_problem'
 
+    renderer_classes = (JSONRenderer, ProblemInMetaDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class ProblemReadOnlyViewSet(ReadOnlyModelViewSet):
     queryset = Problem.objects.all()
@@ -57,6 +64,8 @@ class ProblemReadOnlyViewSet(ReadOnlyModelViewSet):
     filter_class = ProblemFilter
     search_fields = ('title', 'introduction', 'id', 'content')
     ordering_fields = resource_ordering + ('id', 'title')
+
+    renderer_classes = (JSONRenderer, ProblemListRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class LimitListViewSet(NestedResourceListViewSet):
@@ -73,6 +82,8 @@ class LimitListViewSet(NestedResourceListViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'problem'
 
+    renderer_classes = (JSONRenderer, ProblemLimitRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class LimitDetailViewSet(NestedResourceDetailViewSet):
     queryset = Limit.objects.all()
@@ -84,6 +95,8 @@ class LimitDetailViewSet(NestedResourceDetailViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'problem'
 
+    renderer_classes = (JSONRenderer, ProblemLimitRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class TestDataReadOnlyViewSet(NestedResourceReadOnlyViewSet):
     queryset = TestData.objects.all()
@@ -94,6 +107,8 @@ class TestDataReadOnlyViewSet(NestedResourceReadOnlyViewSet):
     parent_lookup = 'problem_pk'
     parent_pk_field = 'id'
     parent_related_name = 'problem'
+
+    renderer_classes = (JSONRenderer, ProblemTestDataRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def list(self, request, *args, **kwargs):
         problem = Problem.objects.all().filter(id=kwargs['problem_pk'])
@@ -110,6 +125,8 @@ class TestDataRelationViewSet(RetrieveModelMixin, DestroyModelMixin, NestedResou
     parent_lookup = 'problem_pk'
     parent_pk_field = 'id'
     parent_related_name = 'problem'
+
+    renderer_classes = (JSONRenderer, ProblemTestDataRelRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class DescriptionInProblemViewSet(ListModelMixin, GenericViewSet):

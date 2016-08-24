@@ -1,0 +1,308 @@
+
+
+<!-- Create Modal -->
+          <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Create</h4>
+                </div>
+                <form action="/api-server/submissions/?ordering=-id" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
+                  <div class="modal-body">
+                    <fieldset>
+                      <input type='hidden' name='csrfmiddlewaretoken' value='E44ayzrZbujK1Buc7hiAehX9iYBsq4YrSjbWVBTv1tq6fT1wkkZEuWecBSOocDKf' />
+
+
+
+
+
+
+
+
+
+    <div class="form-group ">
+
+    <label class="col-sm-2 control-label ">
+      Code
+    </label>
+
+
+  <div class="col-sm-10">
+    <textarea name="code" class="form-control"  ></textarea>
+
+
+
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="form-group">
+
+    <label class="col-sm-2 control-label ">
+      Problem
+    </label>
+
+
+  <div class="col-sm-10">
+    <select class="form-control" name="problem">
+
+
+
+            <option value="1"  >Problem 1 - hello, world</option>
+
+
+
+            <option value="2"  >Problem 2 - a+b</option>
+
+
+
+            <option value="3"  >Problem 3 - sdfsdafsd</option>
+
+
+
+            <option value="4"  >Problem 4 - sdfsdafsd</option>
+
+
+    </select>
+
+
+
+
+  </div>
+</div>
+
+
+
+
+    <div class="form-group">
+
+    <label class="col-sm-2 control-label ">
+      Environment
+    </label>
+
+
+  <div class="col-sm-10">
+    <select class="form-control" name="environment">
+
+
+
+            <option value="0"  >GCC</option>
+
+
+    </select>
+
+
+
+
+  </div>
+</div>
+
+
+
+
+
+
+                    </fieldset>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+          <nav style="float: right">
+            <ul class="pagination" style="margin: 5px 0 10px 0">
+
+    <li class="disabled">
+      <a href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+
+
+
+
+
+        <li class="active">
+          <a href="http://0.0.0.0:8000/api-server/submissions/?ordering=-id">1</a>
+        </li>
+
+
+
+
+
+        <li>
+          <a href="http://0.0.0.0:8000/api-server/submissions/?offset=20&amp;ordering=-id">2</a>
+        </li>
+
+
+
+
+
+        <li>
+          <a href="http://0.0.0.0:8000/api-server/submissions/?offset=40&amp;ordering=-id">3</a>
+        </li>
+
+
+
+
+      <li class="disabled">
+        <a href="#"><span aria-hidden="true">&hellip;</span></a>
+      </li>
+
+
+
+
+        <li>
+          <a href="http://0.0.0.0:8000/api-server/submissions/?offset=7840&amp;ordering=-id">393</a>
+        </li>
+
+
+
+
+
+    <li>
+      <a href="http://0.0.0.0:8000/api-server/submissions/?limit=20&amp;offset=20&amp;ordering=-id" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+
+</ul>
+
+          </nav>
+
+
+
+        <form id="get-form" class="pull-left">
+          <fieldset>
+            <div class="btn-group format-selection">
+              <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                Format <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+
+                  <li>
+                    <a class="format-option"
+                        href='/api-server/submissions/?format=json&amp;ordering=-id'
+                         rel="nofollow">
+                        json
+                    </a>
+                  </li>
+
+                  <li>
+                    <a class="format-option"
+                        href='/api-server/submissions/?format=sdust&amp;ordering=-id'
+                         rel="nofollow">
+                        sdust
+                    </a>
+                  </li>
+
+                  <li>
+                    <a class="format-option"
+                        href='/api-server/submissions/?format=api&amp;ordering=-id'
+                         rel="nofollow">
+                        api
+                    </a>
+                  </li>
+
+                  <li>
+                    <a class="format-option"
+                        href='/api-server/submissions/?format=admin&amp;ordering=-id'
+                         rel="nofollow">
+                        admin
+                    </a>
+                  </li>
+
+              </ul>
+            </div>
+          </fieldset>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+  <div class="am-u-md-2 am-u-md-pull-10 my-sidebar">
+    <div class="am-offcanvas" id="sidebar">
+      <div class="am-offcanvas-bar">
+        <ul class="am-nav">
+          <li class="am-nav-header">题元集</li>
+
+<li><a href="/api-server/meta-problems/">浏览题元</a></li>
+
+          <li class="am-nav-header">导航</li>
+
+          <li><a href="/api-server/meta-problems/?ordering=id">题元</a></li>
+          <li><a href="/api-server/problems/?ordering=id">题目</a></li>
+          <li><a href="/api-server/submissions/?ordering=-id">提交记录</a></li>
+
+
+          <li class="am-nav-header">kwy</li>
+          <li><a href="/api-server/logout">注销</a></li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <a href="javascript:void(0)" data-target="#sidebar" class="am-btn am-btn-sm am-btn-success am-icon-bars am-show-sm-only my-button" data-am-offcanvas><span class="am-sr-only">侧栏导航</span></a>
+</div>
+
+<footer class="my-footer">
+  <p>Online Judge Syetem<br><small>Shandong University of Science and Technology</small></p>
+</footer>
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src='/static/assets/js/jquery.min.js'></script>
+<!--<![endif]-->
+<!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src='{% static "assets/js/amazeui.ie8polyfill.min.js"}'></script>
+<![endif]-->
+<script src='/static/assets/jquery.min.js'></script>
+<script src='/static/assets/js/amazeui.min.js'></script>
+<script>
+          window.drf = {
+            csrfCookieName: "csrftoken"
+          };
+</script>
+<script src="/static/rest_framework/js/jquery-1.12.4.min.js"></script>
+<script src="/static/rest_framework/js/ajax-form.js"></script>
+<script src="/static/rest_framework/js/csrf.js"></script>
+<script src="/static/rest_framework/js/bootstrap.min.js"></script>
+<script src="/static/rest_framework/js/prettify-min.js"></script>
+<script src="/static/rest_framework/js/default.js"></script>
+<script>
+  $(document).ready(function() {
+    $('form').ajaxForm();
+  });
+</script>
+
+
+</body>
+</html>
