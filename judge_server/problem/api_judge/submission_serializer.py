@@ -25,6 +25,7 @@ class StatusSerializer(serializers.Serializer):
 
         if tid == 'NULL' or tid is None:
             submission.status = result_map[status] if status in result_map else 'Unknown Status'
+            submission.machine = instance
             submission.save()
         else:
             detail = SubmissionDetail.objects.get(submission=submission)
@@ -64,6 +65,7 @@ class ResultSerializer(serializers.Serializer):
         if tid == 'NULL' or tid is None:
             submission.status = ret
             submission.finished = True
+            submission.machine = instance
             submission.save()
             submission.message.content = msg
             submission.message.save()

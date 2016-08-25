@@ -29,7 +29,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
         model = Submission
         fields = '__all__'
         read_only_fields = ('submit_time', 'judge_time', 'code_length',
-                            'client', 'user', 'contest', 'finished', 'status')
+                            'client', 'user', 'contest', 'finished', 'status', 'machine')
         extra_kwargs = {
             'environment': {'write_only': True}
         }

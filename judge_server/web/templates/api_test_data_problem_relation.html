@@ -50,7 +50,8 @@
         <h4 class="modal-title" id="myModalLabel">Create</h4>
       </div>
       <form action="/api-server/problems/1/test-data-rel/" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
-        <div class="modal-body">
+          {% csrf_token %}
+          <div class="modal-body">
           <fieldset>
             <input type='hidden' name='csrfmiddlewaretoken' value='N6ptJzwiKG3vTv1VSegNP8czXWy0o6tR1lwf6BYOAFaR7Nyf5hXR5NtCgQLWaFfF' />
 

@@ -28,6 +28,7 @@
             <th>语言</th>
             <th>用户&竞赛</th>
             <th>状态</th>
+            <th>评测机</th>
             <th>提交时间</th>
         </tr>
     </thead>
@@ -39,6 +40,7 @@
             <td><a href="/api-server/submission-code-info/{{ i.id }}/">{{ i.language }}</a></td>
             <td>{{ i.client }}::{{ i.user }}::{{ i.contest }}</td>
             <td><a href="/api-server/submission-details/{{ i.id }}/">{{ i.status }}</a></td>
+            <td>{{ i.machine }}</td>
             <td>{{ i.submit_time }}</td>
         </tr>
     {% endfor %}

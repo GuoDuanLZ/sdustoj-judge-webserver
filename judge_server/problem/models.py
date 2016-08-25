@@ -3,9 +3,8 @@ from django.db import models
 from django.contrib.postgres import fields as postgres_fields
 
 from .documents import TestData as TestDataMongodb
-from .documents import CodeInfo as CodeInfoMongodb
 
-from judge.models import Environment
+from judge.models import Environment, Machine
 from client.models import Client
 
 
@@ -186,6 +185,8 @@ class Submission(models.Model):
     # status information
     finished = models.BooleanField(default=False)
     status = models.CharField(max_length=32, default='PD')
+    # judge information
+    machine = models.ForeignKey(to=Machine, related_name='submission', to_field='name', null=True)
 
 
 class SubmissionMessage(models.Model):
