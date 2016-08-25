@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'problem',
 
     'web',
+    'api_web',
 ]
 
 MIDDLEWARE = [

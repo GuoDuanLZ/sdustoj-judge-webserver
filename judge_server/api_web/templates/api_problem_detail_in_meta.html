@@ -4,71 +4,86 @@
 {% load i18n %}
 {% load rest_framework %}
 
-{% block title %}引用题目集 - SDUSTOJ API{% endblock %}
+{% block title %}引用题目 - SDUSTOJ API{% endblock %}
 
 {% block body %}
-{% if style != 'list' %}
+<h1>题目 {{ results.id }} - {{ results.title }}</h1>
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
   <tbody>
-  {% for i, j in results.items %}
     <tr>
-      <td>{{ i }}</td>
-      <td>{{ j }}</td>
+      <th>简介</th>
+      <td><pre>{{ results.introduction }}</pre></td>
     </tr>
-  {% endfor %}
+    <tr>
+      <th>评测方式</th>
+      <td>
+      {% if results.test_type == 'normal' %}
+        标准评测
+      {% elif results.test_type == 'ignBlank' %}
+        非空白符评测
+      {% elif results.test_type == 'ignPunct' %}
+        非标点符评测
+      {% else %}
+        未知
+      {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>选用题意描述ID</th>
+      <td>
+        {% if results.description %}
+        <a href="/descriptions/{{ results.description }}/" id="p-d">{{ results.description }}</a>
+        {% else %}
+        --
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>选用题意描述ID</th>
+      <td>
+        {% if results.sample %}
+        <a href="/samples/{{ results.sample }}/" id="p-s">{{ results.sample }}</a>
+        {% else %}
+        --
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>创建者</th>
+      <td>{{ results.creator }}</td>
+    </tr>
+    <tr>
+      <th>创建时间</th>
+      <td>{{ results.create_time }}</td>
+    </tr>
+    <tr>
+      <th>最后更新</th>
+      <td>{{ results.updater }}</td>
+    </tr>
+    <tr>
+      <th>最后更新时间</th>
+      <td>{{ results.update_time }}</td>
+    </tr>
+    <tr>
+      <th>来源</th>
+      <td>{{ results.source }}</td>
+    </tr>
+    <tr>
+      <th>原作者</th>
+      <td>{{ results.author }}</td>
+    </tr>
   </tbody>
 </table>
-{% else %}
-<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>标题</th>
-            <th>简介</th>
-            <th>评测方式</th>
-            <th>来源/作者</th>
-            <th>创建/更新时间</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for i in results %}
-        <tr>
-            <td><a href="/api-server/meta-problems/{{ i.meta_problem }}/problems/{{ i.id }}/">{{ i.id }}</a></td>
-            <td><a href="/api-server/meta-problems/{{ i.meta_problem }}/problems/{{ i.id }}/">{{ i.title }}</a></td>
-            <td><pre>{{ i.introduction }}</pre></td>
-            <td>
-              {% if i.test_type == 'normal' %}
-                标准评测
-              {% elif i.test_type == 'ignBlank' %}
-                非空白符评测
-              {% elif i.test_type == 'ignPunct' %}
-                非标点符评测
-              {% else %}
-                未知
-              {% endif %}
-            </td>
-            <td>
-              <p>{{ i.source }}</p>
-              <p>{{ i.author }}</p>
-            </td>
-            <td>
-                <p>{{ i.create_time }}</p>
-                <p>{{ i.update_time }}</p>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
 
-<!-- Create Modal -->
-<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Edit</h4>
       </div>
-      <form action="/api-server/meta-problems/3/problems/4/" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
+      <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           {% csrf_token %}
           <fieldset>
@@ -141,14 +156,12 @@
     </div>
   </div>
 </div>
-
-{% endif %}
 {% endblock %}
 
 {% block cur %}题元{% endblock %}
 
 {% block cur_nav %}
-<li><a href="/api-server/meta-problems/">浏览题元</a></li>
+<li><a href="/api-server/meta-problems/?ordering=id">浏览题元</a></li>
 <li><a href="/api-server/meta-problems//" id="mp">题元详情</a></li>
 <li><a href="/api-server/meta-problems//descriptions/" id="mp-d">描述集</a></li>
 <li><a href="/api-server/meta-problems//samples/" id="mp-s">样例集</a></li>
@@ -160,7 +173,7 @@
 <script>
   var url = location.href
   var urls = url.split('/')
-  var mid = urls[urls.length-3]
+  var mid = urls[urls.length-4]
 
   $.ajax({
     type: 'GET',
@@ -185,6 +198,11 @@
       }
     }
   })
+
+  var url_d = $('#p-d').attr('href')
+  $('#p-d').attr('href', '/api-server/meta-problems/'+mid+url_d)
+  var url_s = $('#p-s').attr('href')
+  $('#p-s').attr('href', '/api-server/meta-problems/'+mid+url_d)
 
   $('#mp').attr('href', '/api-server/meta-problems/'+mid+'/')
   $('#mp-d').attr('href', '/api-server/meta-problems/'+mid+'/descriptions/')

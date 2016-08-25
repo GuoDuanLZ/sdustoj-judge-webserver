@@ -40,9 +40,19 @@ class TestDataDetailRenderer(APIRenderer):
 class ProblemInMetaListRenderer(APIRenderer):
     template = 'api_problems_in_meta.html'
 
+    def get_context(self, data, accepted_media_type, renderer_context):
+        ret = super().get_context(data, accepted_media_type, renderer_context)
+        print(renderer_context['view'])
+        return ret
+
 
 class ProblemInMetaDetailRenderer(APIRenderer):
     template = 'api_problem_detail_in_meta.html'
+
+    def get_context(self, data, accepted_media_type, renderer_context):
+        ret = super().get_context(data, accepted_media_type, renderer_context)
+        print(renderer_context['view'])
+        return ret
 
 
 class ProblemListRenderer(APIRenderer):
@@ -57,8 +67,12 @@ class ProblemTestDataRelRenderer(APIRenderer):
     template = 'api_test_data_problem_relation.html'
 
 
-class ProblemLimitRenderer(APIRenderer):
+class ProblemLimitListRenderer(APIRenderer):
     template = 'api_limits.html'
+
+
+class ProblemLimitDetailRenderer(APIRenderer):
+    template = 'api_limits_detail.html'
 
 
 class SubmissionListRenderer(APIRenderer):

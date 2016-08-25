@@ -13,7 +13,6 @@
 {% endblock %}
 
 {% block body %}
-{% if style != 'list' %}
 <h1>编程限制 {{ results.id }} - {{ results.title }}</h1>
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
   <tbody>
@@ -51,60 +50,6 @@
     </tr>
   </tbody>
 </table>
-{% else %}
-<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>标题</th>
-            <th>简介</th>
-            <th>限制</th>
-            <th>创建/更新时间</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for i in results %}
-        <tr>
-            <td><a href="/api-server/problems/{{i.problem}}/limits/{{i.id}}/">{{ i.id }}</a></td>
-            <td><a href="/api-server/problems/{{i.problem}}/limits/{{i.id}}/">{{ i.title }}</a></td>
-            <td><pre>{{ i.introduction }}</pre></td>
-            <td>
-                <p>时间：{{ i.time_limit }}ms</p>
-                <p>内存：{{ i.memory_limit }}kb</p>
-                <p>代码长度：{{ i.length_limit }}byte</p>
-            </td>
-            <td>
-                <p>{{ i.create_time }}</p>
-                <p>{{ i.update_time }}</p>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-<!-- Create Modal -->
-<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Create</h4>
-      </div>
-      <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
-        <div class="modal-body">
-          <fieldset>
-            {% csrf_token %}
-            {{ post_form }}
-          </fieldset>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -129,13 +74,12 @@
   </div>
 </div>
 
-{% endif %}
 {% endblock %}
 
 {% block cur %}题元{% endblock %}
 
 {% block cur_nav %}
-<li><a href="/api-server/problems/">浏览题目</a></li>
+<li><a href="/api-server/problems/?ordering=id">浏览题目</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/" id="pro">题目详情</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/limits/" id="pro-l">编程限制集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data/" id="pro-t">选用测试数据集</a></li>
@@ -146,7 +90,7 @@
 <script>
   var url = location.href
   var urls = url.split('/')
-  var pid = urls[urls.length-3]
+  var pid = urls[urls.length-4]
 
   $('#pro').attr('href', '/api-server/problems/'+pid+'/')
   $('#pro-l').attr('href', '/api-server/problems/'+pid+'/limits/')

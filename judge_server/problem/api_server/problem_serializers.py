@@ -21,8 +21,8 @@ class ProblemListSerializer(serializers.ModelSerializer):
                                                  'number_node')
 
     def create(self, validated_data):
-        description = validated_data['description']
-        sample = validated_data['sample']
+        description = validated_data.get('description')
+        sample = validated_data.get('sample')
         meta_problem = validated_data['meta_problem']
         if description is not None and description.meta_problem != meta_problem:
             raise serializers.ValidationError('Cannot choose description from other meta problem.')
@@ -43,8 +43,8 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
                                                  'number_node')
 
     def update(self, instance, validated_data):
-        description = validated_data['description']
-        sample = validated_data['sample']
+        description = validated_data.get('description')
+        sample = validated_data.get('sample')
         meta_problem = instance.meta_problem
         if description is not None and description.meta_problem != meta_problem:
             raise serializers.ValidationError('Cannot choose description from other meta problem.')

@@ -160,7 +160,7 @@
 {% endblock %}
 
 {% block cur_nav %}
-<li><a href="/api-server/problems/">浏览题目</a></li>
+<li><a href="/api-server/problems/?ordering=id">浏览题目</a></li>
 {% if style != 'list' %}
 <li><a href="/api-server/problems/{{ results.id }}/">题目详情</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/limits/">编程限制集</a></li>

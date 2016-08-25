@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load rest_framework %}
 
-{% block title %}选用测试数据集 - SDUSTOJ API{% endblock %}
+{% block title %}选用/删除测试数据 - SDUSTOJ API{% endblock %}
 
 {% block body %}
 {% if style != 'list' %}
@@ -22,22 +22,20 @@
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>标题</th>
-            <th>简介</th>
+            <th>测试数据ID</th>
             <th>创建/更新时间</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
     {% for i in results %}
         <tr>
             <td>{{ i.id }}</td>
-            <td>{{ i.title }}</td>
-            <td><pre>{{ i.introduction }}</pre></td>
             <td>
                 <p>{{ i.create_time }}</p>
                 <p>{{ i.update_time }}</p>
             </td>
+            <td><button class="btn btn-danger btn-delete-data" id="{{i.id}}">删除</button></td>
         </tr>
     {% endfor %}
     </tbody>
@@ -55,7 +53,12 @@
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            {{ post_form }}
+            <div class="form-group">
+                  <label class="col-sm-2 control-label ">Test data</label>
+                  <div class="col-sm-10">
+                    <select class="form-control" name="test_data" id="test-data-choices"></select>
+                  </div>
+                </div>
           </fieldset>
         </div>
         <div class="modal-footer">
@@ -65,7 +68,7 @@
       </form>
     </div>
   </div>
-</div>
+</div>z
 
 {% endif %}
 {% endblock %}
@@ -73,7 +76,7 @@
 {% block cur %}题元{% endblock %}
 
 {% block cur_nav %}
-<li><a href="/api-server/problems/">浏览题目</a></li>
+<li><a href="/api-server/problems/?ordering=id">浏览题目</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/" id="pro">题目详情</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/limits/" id="pro-l">编程限制集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data/" id="pro-t">选用测试数据集</a></li>
@@ -86,9 +89,40 @@
   var urls = url.split('/')
   var pid = urls[urls.length-3]
 
+  $.ajax({
+    type: 'GET',
+    url: '/api-server/problems/'+ pid +'/',
+    data: 'json',
+    success(response) {
+      mid = response.meta_problem
+      $.ajax({
+        type: 'GET',
+        url: '/api-server/meta-problems/'+mid+'/test-data/',
+        data: 'json',
+        success(response) {
+          for(var i = 0; i < response.results.length; ++i) {
+            $('#test-data-choices').append('<option value="'+response.results[i].id+'" selected>'+response.results[i].id+': '+response.results[i].title+'</option>')
+          }
+        }
+      })
+    }
+  })
+
   $('#pro').attr('href', '/api-server/problems/'+pid+'/')
   $('#pro-l').attr('href', '/api-server/problems/'+pid+'/limits/')
   $('#pro-t').attr('href', '/api-server/problems/'+pid+'/test-data/')
   $('#pro-tr').attr('href', '/api-server/problems/'+pid+'/test-data-rel/')
+
+  $('.btn-delete-data').click(function() {
+    id = $(this).attr('id')
+    $.ajax({
+      type: 'DELETE',
+      url: '/api-server/problems/'+pid+'/test-data-rel/'+id+'/',
+      dataType: 'json',
+      success: function(response) {
+        location.reload()
+      }
+    })
+  })
 </script>
 {% endblock %}

@@ -82,7 +82,7 @@ class LimitListViewSet(NestedResourceListViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'problem'
 
-    renderer_classes = (JSONRenderer, ProblemLimitRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, ProblemLimitListRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class LimitDetailViewSet(NestedResourceDetailViewSet):
@@ -95,7 +95,7 @@ class LimitDetailViewSet(NestedResourceDetailViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'problem'
 
-    renderer_classes = (JSONRenderer, ProblemLimitRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, ProblemLimitDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class TestDataReadOnlyViewSet(NestedResourceReadOnlyViewSet):

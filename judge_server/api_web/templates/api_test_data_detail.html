@@ -4,10 +4,10 @@
 {% load i18n %}
 {% load rest_framework %}
 
-{% block title %}描述 - SDUSTOJ API{% endblock %}
+{% block title %}测试数据 - SDUSTOJ API{% endblock %}
 
 {% block body %}
-<h1>描述 {{ results.id }} - {{ results.title }}</h1>
+<h1>测试数据 {{ results.id }} - {{ results.title }}</h1>
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
   <tbody>
     <tr>
@@ -15,25 +15,29 @@
       <td><pre>{{ results.introduction }}</pre></td>
     </tr>
     <tr>
-      <th>内容</th>
-      <td><pre>{{ results.content }}</pre></td>
+      <th>测试输入</th>
+      <td><pre>{{ results.test_in }}</pre></td>
     </tr>
-  <tr>
-    <th>创建者</th>
-    <td>{{ results.creator }}</td>
-  </tr>
-  <tr>
-    <th>创建时间</th>
-    <td>{{ results.create_time }}</td>
-  </tr>
-  <tr>
-    <th>最后更新</th>
-    <td>{{ results.updater }}</td>
-  </tr>
-  <tr>
-    <th>最后更新时间</th>
-    <td>{{ results.update_time }}</td>
-  </tr>
+    <tr>
+      <th>测试输出</th>
+      <td><pre>{{ results.test_out }}</pre></td>
+    </tr>
+    <tr>
+      <th>创建者</th>
+      <td>{{ results.creator }}</td>
+    </tr>
+    <tr>
+      <th>创建时间</th>
+      <td>{{ results.create_time }}</td>
+    </tr>
+    <tr>
+      <th>最后更新</th>
+      <td>{{ results.updater }}</td>
+    </tr>
+    <tr>
+      <th>最后更新时间</th>
+      <td>{{ results.update_time }}</td>
+    </tr>
   </tbody>
 </table>
 
@@ -64,11 +68,13 @@
 {% block cur %}题元{% endblock %}
 
 {% block cur_nav %}
-<li><a href="/api-server/meta-problems/">浏览题元</a></li>
+<li><a href="/api-server/meta-problems/?ordering=id">浏览题元</a></li>
 <li><a href="/api-server/meta-problems//" id="mp">题元详情</a></li>
 <li><a href="/api-server/meta-problems//descriptions/" id="mp-d">描述集</a></li>
 <li><a href="/api-server/meta-problems//samples/" id="mp-s">样例集</a></li>
 <li><a href="/api-server/meta-problems//test-data/" id="mp-t">测试数据集</a></li>
+<li><a href="/api-server/meta-problems//test-data/" id="mp-tui">上传测试输入</a></li>
+<li><a href="/api-server/meta-problems//test-data/" id="mp-tuo">上传测试输出</a></li>
 <li><a href="/api-server/meta-problems//problems/" id="mp-p">引用题目</a></li>
 {% endblock %}
 
@@ -82,6 +88,8 @@
   $('#mp-d').attr('href', '/api-server/meta-problems/'+mid+'/descriptions/')
   $('#mp-s').attr('href', '/api-server/meta-problems/'+mid+'/samples/')
   $('#mp-t').attr('href', '/api-server/meta-problems/'+mid+'/test-data/')
+  $('#mp-tui').attr('href', '/api-server/meta-problems/'+mid+'/test-data-in/{{results.id}}/')
+  $('#mp-tuo').attr('href', '/api-server/meta-problems/'+mid+'/test-data-out/{{results.id}}/')
   $('#mp-p').attr('href', '/api-server/meta-problems/'+mid+'/problems/')
 </script>
 {% endblock %}
