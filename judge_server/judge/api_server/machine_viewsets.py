@@ -9,12 +9,17 @@ from django.shortcuts import get_object_or_404
 
 from user.api_server.permission import IsJudgeAdmin
 
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, AdminRenderer
+from .renderers import *
+
 
 class MachineListViewSet(ResourceListViewSet):
     queryset = Machine.objects.all()
     serializer_class = MachineListSerializer
 
     permission_classes = (IsJudgeAdmin,)
+
+    renderer_classes = (JSONRenderer, MachineRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class MachineDetailViewSet(ResourceDetailViewSet):
@@ -24,6 +29,8 @@ class MachineDetailViewSet(ResourceDetailViewSet):
     permission_classes = (IsJudgeAdmin,)
 
     lookup_field = 'name'
+
+    renderer_classes = (JSONRenderer, MachineRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class MachineUpdateViewSet(viewsets.ViewSet):

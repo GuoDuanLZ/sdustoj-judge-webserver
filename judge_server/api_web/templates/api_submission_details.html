@@ -1,0 +1,98 @@
+{% extends "api_meta.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load rest_framework %}
+
+{% block title %}评测信息 - SDUSTOJ API{% endblock %}
+
+{% block body %}
+{% if True %}
+{% if style != 'list' %}
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+  <tbody>
+    <tr>
+      <th>提交ID</th>
+      <td><a href="/api-server/submissions/{{ results.submission }}/">{{ results.submission }}</a></td>
+    </tr>
+    <tr>
+      <th>信息</th>
+      <td>
+        <table class="am-table">
+          <thead>
+            <tr>
+              <th>测试数据ID</th>
+              <th>测试结果</th>
+            </tr>
+          </thead>
+          {% for i, j in results.info.items %}
+          <tr>
+            <td>{{ i }}</td>
+            <td>
+              {% if j == '--' %}
+                --
+              {% else %}
+                <table class="am-table">
+                  {% for k, v in j.items %}
+                  <tr>
+                    <th>{{ k }}</th>
+                    <td>{{ v }}</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% else %}
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+    <thead>
+        <tr>
+            <th>提交ID</th>
+            <th>详情</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i in results %}
+        <tr>
+            <td>{{ i }}</td>
+            <td><a href="/api-server/submissions/{{ i.id }}/">{{ i.submission }}</a></td>
+            <td>
+              {% if i.info == '--' %}
+                --
+              {% else %}
+                <table class="am-table">
+                  {% for k, v in i.info %}
+                  <tr>
+                    <th>k</th>
+                    <td>v</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block cur %}提交记录{% endblock %}
+
+{% block cur_nav %}
+<li><a href="/api-server/submissions/?ordering=-id">浏览提交记录</a></li>
+{% if style != 'list' %}
+<li><a href="/api-server/submissions/{{ results.submission }}/">提交记录详情</a></li>
+<li><a href="/api-server/submission-messages/{{ results.submission }}/">评测信息</a></li>
+<li><a class="btn btn-primary" href="/api-server/submission-details/{{ results.submission }}/">评测详情</a></li>
+<li><a href="/api-server/submission-code-info/{{ results.submission }}/">查看代码</a></li>
+{% endif %}
+{% endblock %}

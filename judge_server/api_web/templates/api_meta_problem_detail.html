@@ -71,7 +71,7 @@
 
 {% block cur_nav %}
 <li><a href="/api-server/meta-problems/?ordering=id">浏览题元</a></li>
-<li><a href="/api-server/meta-problems/{{ results.id }}/">题元详情</a></li>
+<li><a class="btn btn-primary" href="/api-server/meta-problems/{{ results.id }}/">题元详情</a></li>
 <li><a href="/api-server/meta-problems/{{ results.id }}/descriptions/">描述集</a></li>
 <li><a href="/api-server/meta-problems/{{ results.id }}/samples/">样例集</a></li>
 <li><a href="/api-server/meta-problems/{{ results.id }}/test-data/">测试数据集</a></li>

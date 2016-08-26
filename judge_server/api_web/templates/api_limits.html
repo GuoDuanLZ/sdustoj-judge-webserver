@@ -58,6 +58,7 @@
             <th>ID</th>
             <th>标题</th>
             <th>简介</th>
+            <th>语言</th>
             <th>限制</th>
             <th>创建/更新时间</th>
         </tr>
@@ -68,6 +69,7 @@
             <td><a href="/api-server/problems/{{i.problem}}/limits/{{i.id}}/">{{ i.id }}</a></td>
             <td><a href="/api-server/problems/{{i.problem}}/limits/{{i.id}}/">{{ i.title }}</a></td>
             <td><pre>{{ i.introduction }}</pre></td>
+            <td>{{ i.language }}</td>
             <td>
                 <p>时间：{{ i.time_limit }}ms</p>
                 <p>内存：{{ i.memory_limit }}kb</p>
@@ -114,7 +116,7 @@
 {% block cur_nav %}
 <li><a href="/api-server/problems/?ordering=id">浏览题目</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/" id="pro">题目详情</a></li>
-<li><a href="/api-server/problems/{{ results.id }}/limits/" id="pro-l">编程限制集</a></li>
+<li><a class="btn btn-primary" href="/api-server/problems/{{ results.id }}/limits/" id="pro-l">编程限制集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data/" id="pro-t">选用测试数据集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data-rel/" id="pro-tr">选用/删除测试数据</a></li>
 {% endblock %}

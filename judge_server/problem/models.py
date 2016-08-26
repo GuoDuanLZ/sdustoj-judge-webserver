@@ -116,6 +116,7 @@ class Limit(Resource, StatusMixin):
     id = models.BigAutoField(primary_key=True)
 
     environment = models.ForeignKey(to=Environment, related_name='limit', to_field='eid')
+    language = models.CharField(max_length=32, null=True)
 
     time_limit = models.IntegerField(default=-1)
     memory_limit = models.IntegerField(default=-1)
@@ -144,6 +145,9 @@ class Category(Resource, SourceMixin, StatusMixin):
     number_node = models.IntegerField(default=0)
     number_problem = models.IntegerField(default=0)
 
+    def __str__(self):
+        return 'Category ' + str(self.id) + ': ' + str(self.title)
+
 
 # ----- Components --------------------------------------------------------------------------------
 
@@ -158,6 +162,9 @@ class Node(Resource, StatusMixin):
 
     number_node = models.IntegerField(default=0)
     number_problem = models.IntegerField(default=0)
+
+    def __str__(self):
+        return 'Node ' + str(self.id) + ': ' + str(self.title)
 
 
 # ----- Relations ---------------------------------------------------------------------------------
@@ -184,7 +191,7 @@ class Submission(models.Model):
     contest = models.CharField(max_length=128, null=True)
     # status information
     finished = models.BooleanField(default=False)
-    status = models.CharField(max_length=32, default='PD')
+    status = models.CharField(max_length=32, default='Pending')
     # judge information
     machine = models.ForeignKey(to=Machine, related_name='submission', to_field='name', null=True)
 

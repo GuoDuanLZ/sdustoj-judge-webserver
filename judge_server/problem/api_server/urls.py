@@ -11,10 +11,15 @@ from .problem_viewsets import ProblemListViewSet, ProblemDetailViewSet, ProblemR
 from .problem_viewsets import LimitListViewSet, LimitDetailViewSet
 from .problem_viewsets import TestDataReadOnlyViewSet, TestDataRelationViewSet
 from .problem_viewsets import DescriptionInProblemViewSet, SampleInProblemViewSet
+from .problem_viewsets import NodeProblemListViewSet, NodeProblemDetailViewSet
 
 from .submission_viewsets import SubmissionListViewSet, SubmissionDetailViewSet
 from .submission_viewsets import SubmissionMessageViewSet, SubmissionMoreDetailViewSet, SubmissionCodeInfoViewSet
 from .submission_viewsets import SubmissionCodeViewSet
+
+from .category_viewsets import CategoryListViewSet, CategoryDetailViewSet
+from .category_viewsets import NodeListViewSet, NodeDetailViewSet
+from .category_viewsets import ProblemCategoryNodeViewSet, ProblemCategoryNodeDetailViewSet
 
 router = routers.SimpleRouter()
 
@@ -58,9 +63,26 @@ router.register(r'submission-code-info', SubmissionCodeInfoViewSet, base_name='s
 code_router = routers.NestedSimpleRouter(router, r'submission-code-info', lookup='info')
 code_router.register(r'codes', SubmissionCodeViewSet, base_name='submission-codes')
 
+# Category #############################################################################################################
+router.register('categories', CategoryListViewSet, base_name='categories')
+router.register('categories', CategoryDetailViewSet, base_name='categories')
+cat_router = routers.NestedSimpleRouter(router, r'categories', lookup='category')
+# ----- Component ---------------------------------------------------------------------------------
+cat_router.register('nodes', NodeListViewSet, base_name='nodes')
+cat_router.register('nodes', NodeDetailViewSet, base_name='nodes')
+# router.register(r'nodes', NodeListViewSet, base_name='nodes')
+router.register(r'nodes', NodeDetailViewSet, base_name='nodes')
+nod_router = routers.NestedSimpleRouter(router, r'nodes', lookup='node')
+nod_router.register(r'problems', NodeProblemListViewSet, base_name='problems')
+nod_router.register(r'problems', NodeProblemDetailViewSet, base_name='problems')
+nod_router.register('problem-rel', ProblemCategoryNodeViewSet, base_name='node-rel')
+nod_router.register('problem-rel', ProblemCategoryNodeDetailViewSet, base_name='node-rel')
+
 urlpatterns = []
 urlpatterns += router.urls
 urlpatterns += meta_router.urls
 urlpatterns += test_router.urls
 urlpatterns += problem_router.urls
 urlpatterns += code_router.urls
+urlpatterns += cat_router.urls
+urlpatterns += nod_router.urls

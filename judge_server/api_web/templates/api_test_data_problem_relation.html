@@ -30,7 +30,7 @@
     <tbody>
     {% for i in results %}
         <tr>
-            <td>{{ i.id }}</td>
+            <td>{{ i.test_data }}</td>
             <td>
                 <p>{{ i.create_time }}</p>
                 <p>{{ i.update_time }}</p>
@@ -68,7 +68,7 @@
       </form>
     </div>
   </div>
-</div>z
+</div>
 
 {% endif %}
 {% endblock %}
@@ -80,7 +80,7 @@
 <li><a href="/api-server/problems/{{ results.id }}/" id="pro">题目详情</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/limits/" id="pro-l">编程限制集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data/" id="pro-t">选用测试数据集</a></li>
-<li><a href="/api-server/problems/{{ results.id }}/test-data-rel/" id="pro-tr">选用/删除测试数据</a></li>
+<li><a class="btn btn-primary" href="/api-server/problems/{{ results.id }}/test-data-rel/" id="pro-tr">选用/删除测试数据</a></li>
 {% endblock %}
 
 {% block script %}

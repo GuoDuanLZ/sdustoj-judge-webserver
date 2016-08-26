@@ -63,10 +63,11 @@ class LimitListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Limit
         fields = '__all__'
-        read_only_fields = resource_read_only + ('problem',)
+        read_only_fields = resource_read_only + ('problem', 'language')
 
     def create(self, validated_data):
         ret = super().create(validated_data)
+        ret.language = ret.environment.language
         send_data_insert.delay(mid=ret.problem.meta_problem_id)
         return ret
 
@@ -75,10 +76,11 @@ class LimitDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Limit
         fields = '__all__'
-        read_only_fields = resource_read_only + ('problem',)
+        read_only_fields = resource_read_only + ('problem', 'language')
 
     def update(self, instance, validated_data):
         ret = super().update(instance, validated_data)
+        ret.language = ret.environment.language
         send_data_insert.delay(mid=ret.problem.meta_problem_id)
         return ret
 

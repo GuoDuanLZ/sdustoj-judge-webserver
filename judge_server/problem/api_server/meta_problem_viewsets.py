@@ -142,7 +142,7 @@ class TestFileUploadViewSet(NestedResourceListViewSet):
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
 
-    renderer_classes = (JSONRenderer, TestDataListRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, TestDataListUploadRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class TestInFileUploadViewSet(NestedResourceDetailViewSet):
@@ -156,7 +156,7 @@ class TestInFileUploadViewSet(NestedResourceDetailViewSet):
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
 
-    renderer_classes = (JSONRenderer, TestDataDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, TestDataDetailUploadInRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class TestOutFileUploadViewSet(NestedResourceDetailViewSet):
@@ -170,7 +170,7 @@ class TestOutFileUploadViewSet(NestedResourceDetailViewSet):
     parent_related_name = 'meta_problem'
     child_parent_field = 'meta_problem'
 
-    renderer_classes = (JSONRenderer, TestDataDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, TestDataDetailUploadOutRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 def file_iterator(file, chunk_size=512):

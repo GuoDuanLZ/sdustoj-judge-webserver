@@ -4,45 +4,35 @@
 {% load i18n %}
 {% load rest_framework %}
 
-{% block title %}选用测试数据集 - SDUSTOJ API{% endblock %}
+{% block title %}维护题目连接 - SDUSTOJ API{% endblock %}
 
 {% block body %}
 {% if style != 'list' %}
-<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
-  <tbody>
-  {% for i, j in results.items %}
-    <tr>
-      <td>{{ i }}</td>
-      <td>{{ j }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-{% else %}
+<script>
+  location.href = '{{ request.get_full_path }}'
+</script>
+{% endif %}
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>标题</th>
-            <th>简介</th>
+            <th>题目ID</th>
             <th>创建/更新时间</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
     {% for i in results %}
         <tr>
-            <td>{{ i.id }}</td>
-            <td>{{ i.title }}</td>
-            <td><pre>{{ i.introduction }}</pre></td>
+            <td><a href="/api-server/problems/{{ i.problem }}/">{{ i.problem }}</a></td>
             <td>
                 <p>{{ i.create_time }}</p>
                 <p>{{ i.update_time }}</p>
             </td>
+            <td><a class="btn btn-danger btn-oj-delete" href="javascript:void(0)" id="{{i.id}}">删除</a></td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
-
 <!-- Create Modal -->
 <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -66,29 +56,49 @@
     </div>
   </div>
 </div>
-
-{% endif %}
 {% endblock %}
 
-{% block cur %}题元{% endblock %}
+{% block cur %}题库{% endblock %}
 
 {% block cur_nav %}
-<li><a href="/api-server/problems/?ordering=id">浏览题目</a></li>
-<li><a href="/api-server/problems/{{ results.id }}/" id="pro">题目详情</a></li>
-<li><a href="/api-server/problems/{{ results.id }}/limits/" id="pro-l">编程限制集</a></li>
-<li><a class="btn btn-primary" href="/api-server/problems/{{ results.id }}/test-data/" id="pro-t">选用测试数据集</a></li>
-<li><a href="/api-server/problems/{{ results.id }}/test-data-rel/" id="pro-tr">选用/删除测试数据</a></li>
+<li><a href="/api-server/categories/?ordering=id">浏览题库</a></li>
+<li><a id="c-d">题库详情</a></li>
+<li><a id="c-n">浏览题库结点</a></li>
+<li><a id="n-d">结点详情</a></li>
+<li><a id="n-p">查看结点下题目</a></li>
+<li><a href="{{ request.get_full_path }}" class="btn btn-primary">维护题目连接</a></li>
 {% endblock %}
 
 {% block script %}
 <script>
-  var url = location.href
-  var urls = url.split('/')
-  var pid = urls[urls.length-3]
+var url = location.href
+var urls = url.split('/')
+var nid = urls[urls.length-3]
 
-  $('#pro').attr('href', '/api-server/problems/'+pid+'/')
-  $('#pro-l').attr('href', '/api-server/problems/'+pid+'/limits/')
-  $('#pro-t').attr('href', '/api-server/problems/'+pid+'/test-data/')
-  $('#pro-tr').attr('href', '/api-server/problems/'+pid+'/test-data-rel/')
+$.ajax({
+  type: 'GET',
+  url: '/api-server/nodes/'+nid+'/',
+  dataType: 'json',
+  success: function(response) {
+    var cid = response.category
+    $('#c-d').attr('href', '/api-server/categories/'+cid+'/')
+    $('#c-n').attr('href', '/api-server/categories/'+cid+'/nodes/')
+    $('#n-d').attr('href', '/api-server/categories/'+cid+'/nodes/'+nid+'')
+    $('#n-p').attr('href', '/api-server/nodes/'+nid+'/problems/')
+  }
+})
+
+$('.btn-oj-delete').click(function() {
+  npid = $(this).attr('id')
+  $.ajax({
+    type: 'DELETE',
+    url: '/api-server/nodes/'+nid+'/problem-rel/'+npid+'/',
+    dataType: 'json',
+    success: function(response) {
+      location.href = '{{ request.get_full_path }}'
+    }
+  })
+})
+
 </script>
 {% endblock %}

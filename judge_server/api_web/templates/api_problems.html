@@ -37,20 +37,20 @@
       </td>
     </tr>
     <tr>
-      <th>选用题意描述ID</th>
+      <th>题意描述</th>
       <td>
         {% if results.description %}
-        <a href="/descriptions/{{ results.description }}/" id="p-d">{{ results.description }}</a>
+        <pre id="p-d">加载中...</pre>
         {% else %}
         --
         {% endif %}
       </td>
     </tr>
     <tr>
-      <th>选用题意描述ID</th>
+      <th>样例描述</th>
       <td>
         {% if results.sample %}
-        <a href="/samples/{{ results.sample }}/" id="p-s">{{ results.sample }}</a>
+        <pre id="p-s">加载中...</pre>
         {% else %}
         --
         {% endif %}
@@ -82,6 +82,47 @@
     </tr>
   </tbody>
 </table>
+<!-- Submission Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="submitModalLabel">Submit</h4>
+      </div>
+      <form action="/api-server/submissions/" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {% csrf_token %}
+            <div class="form-group ">
+              <label class="col-sm-2 control-label">代码</label>
+              <div class="col-sm-10">
+                <textarea name="code" class="form-control"  ></textarea>
+              </div>
+            </div>
+            <div class="form-group" hidden>
+              <label class="col-sm-2 control-label ">Problem</label>
+              <div class="col-sm-10">
+                <input value="{{ results.id }}" name="problem">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label ">语言</label>
+              <div class="col-sm-10">
+                <select class="form-control" name="environment" id="language-choices">
+                </select>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% else %}
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
     <thead>
@@ -124,29 +165,28 @@
     </tbody>
 </table>
 <!-- Create Modal -->
-          <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Create</h4>
-                </div>
-                <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
-                  <div class="modal-body">
-                    <fieldset>
-                      {% csrf_token %}
-                      {{ post_form }}
-                    </fieldset>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create</h4>
+      </div>
+      <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {% csrf_token %}
+            {{ post_form }}
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endif %}
 {% endif %}
 {% endblock %}
@@ -160,10 +200,54 @@
 {% endblock %}
 
 {% block cur_nav %}
-<li><a href="/api-server/problems/?ordering=id">浏览题目</a></li>
+<li><a {% if style == 'list' %}class="btn btn-primary"{% endif %} href="/api-server/problems/?ordering=id">浏览题目</a></li>
 {% if style != 'list' %}
-<li><a href="/api-server/problems/{{ results.id }}/">题目详情</a></li>
+<li><a {% if style != 'list' %}class="btn btn-primary"{% endif %} href="/api-server/problems/{{ results.id }}/">题目详情</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/limits/">编程限制集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data/">选用测试数据集</a></li>
+<li><a type="button" data-toggle="modal" data-target="#submitModal">提交程序</a></li>
+{% endif %}
+{% endblock %}
+
+
+{% block script %}
+{% if style != 'list' %}
+<script>
+  $.ajax({
+    type: 'GET',
+    url: '/api-server/problems/{{ results.id }}/limits/',
+    dataType: 'json',
+    success: function(response) {
+      for(var i = 0; i < response.results.length; ++i) {
+        limit = response.results[i]
+        value = limit.environment
+        language = limit.language
+        $('#language-choices').append('<option value='+value+'>'+language+'</option>')
+      }
+    }
+  })
+
+  {% if results.description %}
+  $.ajax({
+    type: 'GET',
+    url: '/api-server/problems/{{ results.id }}/description/',
+    dataType: 'json',
+    success: function(response) {
+      $('#p-d').text(response.content)
+    }
+  })
+  {% endif %}
+
+  {% if results.sample %}
+  $.ajax({
+    type: 'GET',
+    url: '/api-server/problems/{{ results.id }}/samples/',
+    dataType: 'json',
+    success: function(response) {
+      $('#p-s').text(response.content)
+    }
+  })
+  {% endif %}
+</script>
 {% endif %}
 {% endblock %}

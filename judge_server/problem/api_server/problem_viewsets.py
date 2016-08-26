@@ -1,7 +1,7 @@
 from rest_framework import filters
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin, DestroyModelMixin, ListModelMixin
-from utils.viewsets import NestedResourceListViewSet, NestedResourceDetailViewSet
+from utils.viewsets import NestedResourceListViewSet, NestedResourceDetailViewSet, NestedResourceListOnlyViewSet
 from utils.viewsets import NestedResourceReadOnlyViewSet
 from utils.filters import resource_ordering
 
@@ -21,8 +21,10 @@ from .problem_serializers import TestDataSerializer, TestDataRelationSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 
-from rest_framework.renderers import AdminRenderer, JSONRenderer, BrowsableAPIRenderer
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from .renderers import *
+
+from ..models import Node
 
 
 class ProblemListViewSet(NestedResourceListViewSet):
@@ -31,7 +33,7 @@ class ProblemListViewSet(NestedResourceListViewSet):
     permission_classes = (IsProblemAdmin,)
 
     filter_class = ProblemFilter
-    search_fields = ('title', 'introduction', 'id', 'content')
+    search_fields = ('title', 'introduction', 'id',)
     ordering_fields = resource_ordering + ('id', 'title')
 
     parent_queryset = MetaProblem.objects.all()
@@ -46,6 +48,8 @@ class ProblemDetailViewSet(NestedResourceDetailViewSet):
     queryset = Problem.objects.all()
     serializer_class = ProblemDetailSerializer
     permission_classes = (IsProblemAdmin,)
+
+    search_fields = ('title', 'introduction', 'id',)
 
     parent_queryset = MetaProblem.objects.all()
     parent_lookup = 'meta_problem_pk'
@@ -62,7 +66,7 @@ class ProblemReadOnlyViewSet(ReadOnlyModelViewSet):
 
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     filter_class = ProblemFilter
-    search_fields = ('title', 'introduction', 'id', 'content')
+    search_fields = ('title', 'introduction', 'id',)
     ordering_fields = resource_ordering + ('id', 'title')
 
     renderer_classes = (JSONRenderer, ProblemListRenderer, BrowsableAPIRenderer, AdminRenderer)
@@ -151,3 +155,31 @@ class SampleInProblemViewSet(ListModelMixin, GenericViewSet):
             'id': sample.id if sample is not None else None,
             'content': sample.content if sample is not None else None
         })
+
+
+class NodeProblemListViewSet(NestedResourceListOnlyViewSet):
+    queryset = Problem.objects.all()
+    serializer_class = ProblemListSerializer
+    permission_classes = (IsProblemAdmin,)
+
+    filter_class = ProblemFilter
+    search_fields = ('title', 'introduction', 'id', 'content')
+    ordering_fields = resource_ordering + ('id', 'title')
+
+    parent_queryset = Node.objects.all()
+    parent_lookup = 'node_pk'
+    parent_pk_field = 'id'
+    parent_related_name = 'node'
+
+    renderer_classes = (JSONRenderer, CategoryNodeProblemRenderer, BrowsableAPIRenderer, AdminRenderer)
+
+
+class NodeProblemDetailViewSet(NestedResourceDetailViewSet):
+    queryset = Problem.objects.all()
+    serializer_class = ProblemDetailSerializer
+    permission_classes = (IsProblemAdmin,)
+
+    parent_queryset = Node.objects.all()
+    parent_lookup = 'node_pk'
+    parent_pk_field = 'id'
+    parent_related_name = 'node'

@@ -1,0 +1,185 @@
+{% extends "api_meta.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load rest_framework %}
+
+{% block title %}题库结点 - SDUSTOJ API{% endblock %}
+
+{% block body %}
+{% if True %}
+{% if style != 'list' %}
+{% if results.parent %}
+<a href="/api-server/categories/{{ results.category }}/nodes/{{ results.parent }}/">返回上一级结点</a>
+{% endif %}
+<h1>结点 {{ results.id }} -- {{ results.title }}</h1>
+<h2><br>子结点</h2>
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>标题</th>
+      <th>简介</th>
+      <th>来源</th>
+      <th>创建/更新时间</th>
+    </tr>
+  </thead>
+  <tbody id="children">
+  </tbody>
+</table>
+<h2><br>结点信息</h2>
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+  <tr>
+    <th>题库</th>
+    <td><a href="/api-server/categories/{{ results.category }}/">{{ results.category }}</a></td>
+  </tr>
+  <tr>
+    <th>简介</th>
+    <td><pre>{{ results.introduction }}</pre></td>
+  </tr>
+  <tr>
+    <th>状态</th>
+    <td>{% if results.status == 1 %}可用{% else %}不可用{% endif %}</td>
+  </tr>
+  <tr>
+    <th>创建者</th>
+    <td>{{ results.creator }}</td>
+  </tr>
+  <tr>
+    <th>创建时间</th>
+    <td>{{ results.create_time }}</td>
+  </tr>
+  <tr>
+    <th>最后更新</th>
+    <td>{{ results.updater }}</td>
+  </tr>
+  <tr>
+    <th>最后更新时间</th>
+    <td>{{ results.update_time }}</td>
+  </tr>
+  <tr>
+    <th>来源</th>
+    <td>{{ results.source }}</td>
+  </tr>
+  <tr>
+    <th>原作者</th>
+    <td>{{ results.author }}</td>
+  </tr>
+</table>
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Edit</h4>
+      </div>
+      <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {{ put_form }}
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% else %}
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>标题</th>
+            <th>简介</th>
+            <th>来源</th>
+            <th>创建/更新时间</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i in results %}{% if not i.parent %}
+        <tr>
+            <td><a href="/api-server/categories/{{ i.category }}/nodes/{{ i.id }}/">{{ i.id }}</a></td>
+            <td><a href="/api-server/categories/{{ i.category }}/nodes/{{ i.id }}/">{{ i.title }}</a></td>
+            <td><pre>{{ i.introduction }}</pre></td>
+            <td>
+                <p>来源：{{ i.source }}</p>
+                <p>作者：{{ i.author }}</p>
+            </td>
+            <td>
+                <p>{{ i.create_time }}</p>
+                <p>{{ i.update_time }}</p>
+            </td>
+        </tr>
+    {% endif %}{% endfor %}
+    </tbody>
+</table>
+{% endif %}
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create</h4>
+      </div>
+      <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {% csrf_token %}
+            {{ post_form }}
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block cur %}题库{% endblock %}
+
+{% block cur_nav %}
+<li><a href="/api-server/categories/?ordering=id">浏览题库</a></li>
+<li><a href="/api-server/categories/{{ results.category }}/" id="cat-d">题库详情</a></li>
+<li><a {% if style == 'list' %}class="btn btn-primary"{% endif %} href="/api-server/categories/{{ results.category }}/nodes/?ordering=id" id="n-d">浏览题库结点</a></li>
+{% if style != 'list' %}
+<li><a class="btn btn-primary" href="/api-server/categories/{{ results.category }}/nodes/{{ results.id }}/">结点详情</a></li>
+<li><a href="/api-server/nodes/{{ results.id }}/problems/">查看结点下题目</a></li>
+<li><a href="/api-server/nodes/{{ results.id }}/problem-rel/">维护题目连接</a></li>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+<script>
+{% if style == 'list' %}
+  var url = location.href
+  var urls = url.split('/')
+  var cid = urls[urls.length-3]
+  $('#cat-d').attr('href', '/api-server/categories/'+cid+'/')
+  $('#n-d').attr('href', '/api-server/categories/'+cid+'/nodes/?ordering=id')
+{% else %}
+$.ajax({
+    type: 'GET',
+    url: '/api-server/categories/{{ results.category }}/nodes/?parent={{ results.id }}&limit=9999',
+    dataType: 'json',
+    success: function(response) {
+      ret = response.results
+      for(var i = 0; i < ret.length; ++i) {
+        var node = ret[i]
+        $('#children').append('<tr><td><a href="/api-server/categories/{{ results.category }}/nodes/'+node.id+'/">'+node.id+'</a></td><td><a href="/api-server/categories/{{ results.category }}/nodes/'+node.id+'/">'+node.title+'</a></td><td>'+node.introduction+'</td><td><p>来源：'+node.source+'</p><p>作者：'+node.author+'</p></td><td><p>'+node.create_time+'</p><p>'+node.update_time+'</p></td></tr>')
+      }
+    }
+
+
+  })
+{% endif %}
+</script>
+{% endblock %}

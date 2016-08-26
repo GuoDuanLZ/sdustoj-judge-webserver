@@ -102,6 +102,8 @@ class ResultSerializer(serializers.Serializer):
                 finished = False
 
         if (not finished) and cur_status != 'Accepted':
-            return 'Analysing Errors', False
+            return 'Running & Judging', False
+        elif not finished:
+            return 'Running & Judging', False
         else:
             return cur_status, True

@@ -7,6 +7,9 @@ from ..models import Environment
 from .global_serializers import EnvironmentListSerializer, EnvironmentDetailSerializer
 from .global_filters import EnvironmentFilter
 
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, AdminRenderer
+from .renderers import *
+
 
 class EnvironmentViewSet(ResourceListViewSet):
     queryset = Environment.objects.all()
@@ -17,9 +20,13 @@ class EnvironmentViewSet(ResourceListViewSet):
     ordering_fields = resource_ordering + ('eid', 'language')
     permission_classes = (IsJudgeAdmin,)
 
+    renderer_classes = (JSONRenderer, EnvironmentRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class EnvironmentDetailViewSet(ResourceDetailViewSet):
     queryset = Environment.objects.all()
     serializer_class = EnvironmentDetailSerializer
     lookup_field = 'eid'
     permission_classes = (IsJudgeAdmin,)
+
+    renderer_classes = (JSONRenderer, EnvironmentRenderer, BrowsableAPIRenderer, AdminRenderer)

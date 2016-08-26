@@ -32,7 +32,7 @@ $(document).ready(function() {
       success: function(response) {
         $("#btn-sign-in").removeClass("btn-info").addClass("btn-success").text("登录成功")
         //  alert(document.referrer)
-         location.reload();
+         location.href = document.referrer
 
       },
       error: function(response, info, error) {

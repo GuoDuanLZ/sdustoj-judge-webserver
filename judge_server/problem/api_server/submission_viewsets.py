@@ -22,6 +22,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, AdminRenderer
 from .renderers import *
 
+from .submission_filters import SubmissionFilter
+
 
 class SubmissionListViewSet(mixins.ListModelMixin, UserCreateModelMixin,
                             FilterViewSet):
@@ -29,6 +31,8 @@ class SubmissionListViewSet(mixins.ListModelMixin, UserCreateModelMixin,
 
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
+
+    filter_class = SubmissionFilter
     search_fields = ('user', 'client')
 
     permission_classes = (IsCategoryAdmin,)
@@ -42,7 +46,7 @@ class SubmissionDetailViewSet(mixins.RetrieveModelMixin, FilterViewSet):
 
     permission_classes = (IsCategoryAdmin,)
 
-    renderer_classes = (JSONRenderer, SubmissionListRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, SubmissionDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class SubmissionMessageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -52,6 +56,8 @@ class SubmissionMessageViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = (IsCategoryAdmin,)
 
+    renderer_classes = (JSONRenderer, SubmissionMessageRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class SubmissionMoreDetailViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SubmissionDetail.objects.all()
@@ -59,6 +65,8 @@ class SubmissionMoreDetailViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'submission_id'
 
     permission_classes = (IsCategoryAdmin,)
+
+    renderer_classes = (JSONRenderer, SubmissionJudgeRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class SubmissionCodeInfoViewSet(viewsets.ReadOnlyModelViewSet):
@@ -68,11 +76,15 @@ class SubmissionCodeInfoViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = (IsCategoryAdmin,)
 
+    renderer_classes = (JSONRenderer, SubmissionCodeInfoRenderer, BrowsableAPIRenderer, AdminRenderer)
+
 
 class SubmissionCodeViewSet(viewsets.GenericViewSet):
     lookup_field = 'name'
 
     permission_classes = (IsCategoryAdmin,)
+
+    renderer_classes = (JSONRenderer, SubmissionCodeRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def retrieve(self, request, *args, **kwargs):
         code_info = get_object_or_404(SubmissionCode.objects.all(), submission_id=kwargs['info_submission_id'])

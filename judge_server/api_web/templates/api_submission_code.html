@@ -1,0 +1,42 @@
+{% extends "api_meta.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load rest_framework %}
+
+{% block title %}查看代码文件 - SDUSTOJ API{% endblock %}
+
+{% block body %}
+{% if style != 'list' %}
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+  <tbody>
+    <tr>
+      <th>提交记录</th>
+      <td><a href="/api-server/submissions/{{ results.submission }}/">{{ results.submission }}</a></td>
+    </tr>
+    <tr>
+      <th>文件名称</th>
+      <td>{{ results.name }}</td>
+    </tr>
+    <tr>
+      <th>代码</th>
+      <td><pre>{{ results.code }}</pre></td>
+    </tr>
+  </tbody>
+</table>
+{% else %}
+<script>
+    location.href = '/api-server/submissions/'
+</script>
+{% endif %}
+{% endblock %}
+
+{% block cur %}提交记录{% endblock %}
+
+{% block cur_nav %}
+<li><a href="/api-server/submissions/?ordering=-id">浏览提交记录</a></li>
+<li><a href="/api-server/submission-messages/{{ results.submission }}/">评测信息</a></li>
+<li><a href="/api-server/submissions/{{ results.id }}/">提交记录详情</a></li>
+<li><a href="/api-server/submission-details/{{ results.id }}/">评测详情</a></li>
+<li><a class="btn btn-primary" href="/api-server/submission-code-info/{{ results.submission }}/">查看代码</a></li>
+{% endblock %}
