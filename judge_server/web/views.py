@@ -5,6 +5,7 @@ from django.shortcuts import render
 from rest_framework import status
 from user.user_views import render_with_user_info
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 
@@ -100,6 +101,7 @@ def problemsAdd(request):
         return render_with_user_info(request, 'html/problems-add.html',{'meta_id':meta_id})
     else:
         return render_with_user_info(request, 'html/sign_in.html')
+
 def problemsDetail(request):
     problem_id = request.GET['id']
     if request.user.is_authenticated():

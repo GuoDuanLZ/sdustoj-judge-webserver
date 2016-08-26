@@ -158,8 +158,18 @@
             </table>
         </div>
         <div class="tab-pane" id="test_data" role="tabpanel">
+            <div class="pull-xs-left">
+                <input id="ID_test" type="text" class="form-control" placeholder="输入ID点击右侧按钮可以更新下载" style="margin-top: 10px">
+            </div>
             <div class="row pull-xs-right">
-                <button id="t_add" data-toggle="modal" data-target="#test_Modal" class="btn btn-outline-info" style="margin: 10px;margin-right: 100px">添加</button>
+
+
+                <button id="t_file_in_download"  class="btn btn-outline-success btn-sm" style="margin: 10px;">输入文件下载</button>
+                 <button id="t_file_out_download" class="btn btn-outline-success btn-sm" style="margin: 10px;">输出文件下载</button>
+                <button id="t_file_add" data-toggle="modal" data-target="#test_file_Modal" class="btn btn-outline-info btn-sm" style="margin: 10px;">文件添加</button>
+                 <button id="t_file_in" data-toggle="modal" data-target="#test_file_in_Modal" class="btn btn-outline-info btn-sm" style="margin: 10px;">输入文件更新</button>
+                 <button id="t_file_out" data-toggle="modal" data-target="#test_file_out_Modal" class="btn btn-outline-info btn-sm" style="margin: 10px;">输出文件更新</button>
+                <button id="t_add" data-toggle="modal" data-target="#test_Modal" class="btn btn-outline-info btn-sm" style="margin: 10px;margin-right: 100px">添加</button>
             </div>
             <table id="test_data_table" class="data_table display table table-bordered">
                 <thead>
@@ -351,6 +361,130 @@
       </div>
       <div class="modal-footer">
         <button id="t_save" type="button" class="btn btn-primary">保存</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--文件上传模态框-->
+<div class="modal fade" id="test_file_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Test</h4>
+      </div>
+
+      <form class="form-horizontal" enctype="multipart/form-data" id="test-file-from">
+      <div class="modal-body">
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Title</label>
+        <div class="col-sm-10">
+          <input type="text" id="t_file_title" class="form-control" required="required" name="title">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Introduction</label>
+        <div class="col-sm-10">
+          <input type="text" id="t_file_introduction" class="form-control" name="introduction">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Status</label>
+        <div class="col-sm-10">
+          <select class="form-control" id="t_file_status" name="status">
+            <option value="1">available</option>
+            <option value="0">unavailable</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Test in</label>
+        <div class="col-sm-10">
+          <input type="file" name="test_in" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Test out</label>
+        <div class="col-sm-10">
+          <input type="file" name="test_out" class="form-control">
+        </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button id="t_file_save" type="button" class="btn btn-primary">保存</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--输入更新模态框-->
+<div class="modal fade" id="test_file_in_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">输入文件更新</h4>
+      </div>
+
+      <form class="form-horizontal" enctype="multipart/form-data" id="test_in_form">
+            <!--{% csrf_token %}-->
+      <div class="modal-body">
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">测试数据ID</label>
+        <div class="col-sm-10">
+          <input type="text" id="t_in_ID" class="form-control" required="required">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Test in</label>
+        <div class="col-sm-10">
+          <input type="file" name="test_in" class="form-control">
+        </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button id="t_in_submit" type="button" class="btn btn-primary">保存</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--输出更新模态框-->
+<div class="modal fade" id="test_file_out_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">输出文件更新</h4>
+      </div>
+
+      <form class="form-horizontal" enctype="multipart/form-data" id="test_out_form">
+      <div class="modal-body">
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">测试数据ID</label>
+        <div class="col-sm-10">
+          <input type="text" id="t_out_ID" class="form-control" required="required" name="title">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Test OUT</label>
+        <div class="col-sm-10">
+          <input type="file" name="test_out" class="form-control">
+        </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button id="t_out_submit" type="button" class="btn btn-primary">保存</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
       </div>
       </form>
