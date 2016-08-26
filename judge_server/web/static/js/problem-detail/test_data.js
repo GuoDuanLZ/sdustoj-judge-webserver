@@ -161,4 +161,65 @@ $(function () {
             });
         }
     });
+     // 测试数据输入更新文件上传
+     $('#t_in_submit').click(function() {
+          var in_id=$('#t_in_ID').val();
+         $.ajax({
+                url: '/api-server/meta-problems/'+Id+'/test-data-in/'+in_id+'/',
+                type: 'PATCH',
+                cache: false,
+                data: new FormData($('#test_in_form')[0]),
+                processData: false,
+                contentType: false,
+                success:function(){
+                     alert('修改成功');
+                     $('#test_file_in_Modal').modal('hide');
+                        test_table.ajax.reload(null, false);
+                }
+                })
+     });
+      // 测试数据输出更新文件上传
+    $('#t_out_submit').click(function(){
+        var out_id= $('#t_out_ID').val()
+         $.ajax({
+                url: '/api-server/meta-problems/'+Id+'/test-data-out/'+out_id+'/',
+                type: 'PATCH',
+                cache: false,
+                data: new FormData($('#test_out_form')[0]),
+                processData: false,
+                contentType: false,
+                success:function(){
+                     alert('修改成功');
+                     $('#test_file_out_Modal').modal('hide');
+                        test_table.ajax.reload(null, false);
+                }
+         })
+    });
+     $('#t_file_in_download').click(function(){
+        var in_id= $('#ID_test').val()
+         window.open('/api-server/meta-problems/'+Id+'/test-data-files/'+in_id+'/in/');
+    });
+     $('#t_file_out_download').click(function(){
+        var out_id= $('#ID_test').val()
+          window.open('/api-server/meta-problems/'+Id+'/test-data-files/'+out_id+'/out/');
+    });
+
+    $('#t_file_save').click(function(){
+         $.ajax({
+                url: '/api-server/meta-problems/'+Id+'/test-data-files/',
+                type: 'POST',
+                cache: false,
+                data: new FormData($('#test-file-from')[0]),
+                processData: false,
+                contentType: false,
+                success:function(){
+                     alert('添加成功');
+                       // location.reload(true);
+
+                        $('#test_file_Modal').modal('hide');
+                        test_table.ajax.reload(null, false);
+                }})
+    });
+
+
 });
