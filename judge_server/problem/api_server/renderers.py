@@ -71,6 +71,10 @@ class ProblemListRenderer(APIRenderer):
     template = 'api_problems.html'
 
 
+class NewProblemRenderer(APIRenderer):
+    template = 'api_new_problem.html'
+
+
 class ProblemTestDataRenderer(APIRenderer):
     template = 'api_test_data_problem.html'
 
@@ -81,6 +85,10 @@ class ProblemTestDataRelRenderer(APIRenderer):
 
 class ProblemLimitListRenderer(APIRenderer):
     template = 'api_limits.html'
+
+
+class ProblemInvalidWordRenderer(APIRenderer):
+    template = 'api_invalid_words.html'
 
 
 class ProblemLimitDetailRenderer(APIRenderer):

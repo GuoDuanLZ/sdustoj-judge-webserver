@@ -4,38 +4,38 @@
 {% load i18n %}
 {% load rest_framework %}
 
-{% block title %}选用/删除测试数据 - SDUSTOJ API{% endblock %}
+{% block title %}
+{% if style != 'list' %}
+非法单词 - SDUSTOJ API
+{% else %}
+非法单词集 - SDUSTOJ API
+{% endif %}
+{% endblock %}
 
 {% block body %}
 {% if style != 'list' %}
+<h1>非法单词 <small>编号：{{ results.id }}</small></h1>
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
   <tbody>
-  {% for i, j in results.items %}
     <tr>
-      <td>{{ i }}</td>
-      <td>{{ j }}</td>
+      <th>单词</th>
+      <td><pre>{{ results.word }}</pre></td>
     </tr>
-  {% endfor %}
   </tbody>
 </table>
 {% else %}
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
     <thead>
         <tr>
-            <th>测试数据ID</th>
-            <th>创建/更新时间</th>
-            <th></th>
+            <th>ID</th>
+            <th>单词</th>
         </tr>
     </thead>
     <tbody>
     {% for i in results %}
         <tr>
-            <td>{{ i.test_data }}</td>
-            <td>
-                <p>{{ i.create_time }}</p>
-                <p>{{ i.update_time }}</p>
-            </td>
-            <td><button class="btn btn-danger btn-delete-data" id="{{i.id}}">删除</button></td>
+            <td><a>{{ i.id }}</a></td>
+            <td>{{ i.word }}</td>
         </tr>
     {% endfor %}
     </tbody>
@@ -53,12 +53,7 @@
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            <div class="form-group">
-                  <label class="col-sm-2 control-label ">Test data</label>
-                  <div class="col-sm-10">
-                    <select class="form-control" name="test_data" id="test-data-choices"></select>
-                  </div>
-                </div>
+            {{ post_form }}
           </fieldset>
         </div>
         <div class="modal-footer">
@@ -79,9 +74,9 @@
 <li><a href="/api-server/problems/?ordering=id">浏览题目</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/" id="pro">题目详情</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/limits/" id="pro-l">编程限制集</a></li>
-<li><a href="/api-server/problems/{{ results.id }}/invalid-words/" id="pro-i">非法单词集</a></li>
+<li><a class="btn btn-primary" href="/api-server/problems/{{ results.id }}/invalid-words/" id="pro-i">非法单词集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data/" id="pro-t">选用测试数据集</a></li>
-<li><a class="btn btn-primary" href="/api-server/problems/{{ results.id }}/test-data-rel/" id="pro-tr">选用/删除测试数据</a></li>
+<li><a href="/api-server/problems/{{ results.id }}/test-data-rel/" id="pro-tr">选用/删除测试数据</a></li>
 {% endblock %}
 
 {% block script %}
@@ -90,41 +85,10 @@
   var urls = url.split('/')
   var pid = urls[urls.length-3]
 
-  $.ajax({
-    type: 'GET',
-    url: '/api-server/problems/'+ pid +'/',
-    data: 'json',
-    success(response) {
-      mid = response.meta_problem
-      $.ajax({
-        type: 'GET',
-        url: '/api-server/meta-problems/'+mid+'/test-data/',
-        data: 'json',
-        success(response) {
-          for(var i = 0; i < response.results.length; ++i) {
-            $('#test-data-choices').append('<option value="'+response.results[i].id+'" selected>'+response.results[i].id+': '+response.results[i].title+'</option>')
-          }
-        }
-      })
-    }
-  })
-
   $('#pro').attr('href', '/api-server/problems/'+pid+'/')
   $('#pro-l').attr('href', '/api-server/problems/'+pid+'/limits/')
   $('#pro-i').attr('href', '/api-server/problems/'+pid+'/invalid-words/')
   $('#pro-t').attr('href', '/api-server/problems/'+pid+'/test-data/')
   $('#pro-tr').attr('href', '/api-server/problems/'+pid+'/test-data-rel/')
-
-  $('.btn-delete-data').click(function() {
-    id = $(this).attr('id')
-    $.ajax({
-      type: 'DELETE',
-      url: '/api-server/problems/'+pid+'/test-data-rel/'+id+'/',
-      dataType: 'json',
-      success: function(response) {
-        location.reload()
-      }
-    })
-  })
 </script>
 {% endblock %}

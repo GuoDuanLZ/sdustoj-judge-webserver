@@ -117,6 +117,7 @@
 <li><a href="/api-server/problems/?ordering=id">浏览题目</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/" id="pro">题目详情</a></li>
 <li><a class="btn btn-primary" href="/api-server/problems/{{ results.id }}/limits/" id="pro-l">编程限制集</a></li>
+<li><a href="/api-server/problems/{{ results.id }}/invalid-words/" id="pro-i">非法单词集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data/" id="pro-t">选用测试数据集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data-rel/" id="pro-tr">选用/删除测试数据</a></li>
 {% endblock %}
@@ -129,6 +130,7 @@
 
   $('#pro').attr('href', '/api-server/problems/'+pid+'/')
   $('#pro-l').attr('href', '/api-server/problems/'+pid+'/limits/')
+  $('#pro-i').attr('href', '/api-server/problems/'+pid+'/invalid-words/')
   $('#pro-t').attr('href', '/api-server/problems/'+pid+'/test-data/')
   $('#pro-tr').attr('href', '/api-server/problems/'+pid+'/test-data-rel/')
 </script>

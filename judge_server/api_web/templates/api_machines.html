@@ -47,6 +47,10 @@
     <th>最后更新时间</th>
     <td>{{ results.update_time }}</td>
   </tr>
+  <tr>
+    <th></th>
+    <td><a class="btn btn-primary" id="update-data">更新评测机数据</a></td>
+  </tr>
 </table>
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -124,4 +128,20 @@
 {% block cur_nav %}
 <li><a href="/api-server/environments/">编程环境</a></li>
 <li><a class="btn btn-primary" href="/api-server/machines/">评测机配置</a></li>
+{% endblock %}
+
+{% block script %}
+{% if style != 'list' %}
+<script>
+  $('#update-data').click(function() {
+    $.ajax({
+      type: 'POST',
+      url: '/api-server/machines/{{ results.name }}/update/',
+      success: function(response) {
+        alert('数据更新消息已发送')
+      }
+    })
+  })
+</script>
+{% endif %}
 {% endblock %}

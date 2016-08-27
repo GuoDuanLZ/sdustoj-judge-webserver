@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Submission, SubmissionCode, SubmissionDetail, SubmissionMessage
+from ..models import Submission, SubmissionCode, SubmissionDetail, SubmissionMessage, InvalidWord
 from ..documents import CodeInfo
 
 from judge_server.redis_connections import pool
@@ -63,7 +63,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
         CodeInfo.set_code(str(instance.id), 'code', code.encode('utf-8'))
 
         r = Redis(connection_pool=pool)
-        info = dumps({
+        info = {
             'isFiles': 'false',
             'sid': str(instance.id),
             'mid': str(instance.problem.meta_problem_id),
@@ -75,9 +75,19 @@ class SubmissionSerializer(serializers.ModelSerializer):
             'cl': str(limit.length_limit),
             'ol': str(MAX_OLEN),
             'ttype': problem.test_type,
-            'code': code
-        })
-        print(info)
+            'code': code,
+        }
+
+        invalid_words = ''
+        for iw in problem.invalid_word.all():
+            invalid_words += (' ' + iw.word)
+
+        if invalid_words:
+            invalid_words = invalid_words[1:]
+            info['InvalidWord'] = invalid_words
+
+        info = dumps(info)
+
         r.rpush(self._get_queue_name(instance), info)
 
         return instance

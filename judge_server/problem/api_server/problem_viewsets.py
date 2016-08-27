@@ -2,6 +2,7 @@ from rest_framework import filters
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin, DestroyModelMixin, ListModelMixin
 from utils.viewsets import NestedResourceListViewSet, NestedResourceDetailViewSet, NestedResourceListOnlyViewSet
+from utils.viewsets import ResourceListViewSet
 from utils.viewsets import NestedResourceReadOnlyViewSet
 from utils.filters import resource_ordering
 
@@ -9,11 +10,15 @@ from user.api_server.permission import IsProblemAdmin, IsCategoryAdmin, ProblemA
 
 from ..models import MetaProblem, Problem
 from .problem_serializers import ProblemListSerializer, ProblemDetailSerializer, ProblemReadOnlySerializer
+from .problem_serializers import NewProblemSerializer
 from .problem_filters import ProblemFilter
 
 from ..models import Limit
 from .problem_serializers import LimitListSerializer, LimitDetailSerializer
 from .problem_filters import LimitFilter
+
+from ..models import InvalidWord
+from .problem_serializers import InvalidWordSerializer
 
 from ..models import TestData, ProblemTestData
 from .problem_serializers import TestDataSerializer, TestDataRelationSerializer
@@ -72,6 +77,12 @@ class ProblemReadOnlyViewSet(ReadOnlyModelViewSet):
     renderer_classes = (JSONRenderer, ProblemListRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
+class NewProblemViewSet(ResourceListViewSet):
+    queryset = Problem.objects.all()
+    serializer_class = NewProblemSerializer
+    permission_classes = (IsProblemAdmin,)
+
+
 class LimitListViewSet(NestedResourceListViewSet):
     queryset = Limit.objects.all()
     serializer_class = LimitListSerializer
@@ -87,6 +98,19 @@ class LimitListViewSet(NestedResourceListViewSet):
     parent_related_name = 'problem'
 
     renderer_classes = (JSONRenderer, ProblemLimitListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
+
+class InvalidWordListViewSet(NestedResourceListViewSet):
+    queryset = InvalidWord.objects.all()
+    serializer_class = InvalidWordSerializer
+    permission_classes = (ProblemAdminEditable,)
+
+    parent_queryset = Problem.objects.all()
+    parent_lookup = 'problem_pk'
+    parent_pk_field = 'id'
+    parent_related_name = 'problem'
+
+    renderer_classes = (JSONRenderer, ProblemInvalidWordRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
 class LimitDetailViewSet(NestedResourceDetailViewSet):

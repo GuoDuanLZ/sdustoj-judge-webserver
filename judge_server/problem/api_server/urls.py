@@ -7,8 +7,9 @@ from .meta_problem_viewsets import TestDataListViewSet, TestDataDetailViewSet
 from .meta_problem_viewsets import TestInFileViewSet, TestOutFileViewSet
 from .meta_problem_viewsets import TestFileUploadViewSet, TestInFileUploadViewSet, TestOutFileUploadViewSet
 
-from .problem_viewsets import ProblemListViewSet, ProblemDetailViewSet, ProblemReadOnlyViewSet
+from .problem_viewsets import ProblemListViewSet, ProblemDetailViewSet, ProblemReadOnlyViewSet, NewProblemViewSet
 from .problem_viewsets import LimitListViewSet, LimitDetailViewSet
+from .problem_viewsets import InvalidWordListViewSet
 from .problem_viewsets import TestDataReadOnlyViewSet, TestDataRelationViewSet
 from .problem_viewsets import DescriptionInProblemViewSet, SampleInProblemViewSet
 from .problem_viewsets import NodeProblemListViewSet, NodeProblemDetailViewSet
@@ -45,10 +46,12 @@ test_router.register(r'out', TestOutFileViewSet, base_name='in_file')
 meta_router.register(r'problems', ProblemListViewSet, base_name='problems')
 meta_router.register(r'problems', ProblemDetailViewSet, base_name='problems')
 router.register(r'problems', ProblemReadOnlyViewSet, base_name='problems')
+router.register(r'new-problems', NewProblemViewSet, base_name='new_problems')
 problem_router = routers.NestedSimpleRouter(router, r'problems', lookup='problem')
 # ----- Component ---------------------------------------------------------------------------------
 problem_router.register(r'limits', LimitListViewSet, base_name='limits')
 problem_router.register(r'limits', LimitDetailViewSet, base_name='limits')
+problem_router.register(r'invalid-words', InvalidWordListViewSet, base_name='invalid-words')
 problem_router.register(r'test-data', TestDataReadOnlyViewSet, base_name='test-data')
 problem_router.register(r'test-data-rel', TestDataRelationViewSet, base_name='test-data-rel')
 problem_router.register(r'description', DescriptionInProblemViewSet, base_name='description')
