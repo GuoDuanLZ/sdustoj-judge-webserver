@@ -90,33 +90,33 @@
             <div class="form-group ">
               <label class="col-sm-2 control-label ">标题</label>
               <div class="col-sm-10">
-                <input name="title" class="form-control" type="text"  value="sdfsdafsd">
+                <input name="title" class="form-control" type="text"  value="{{ results.title }}">
               </div>
             </div>
             <div class="form-group ">
               <label class="col-sm-2 control-label ">简介</label>
               <div class="col-sm-10">
-                <input name="introduction" class="form-control" type="text"  value="sad">
+                <input name="introduction" class="form-control" type="text"  value="{% if results.introduction %}{{ results.introduction }}{% endif %}">
               </div>
             </div>
             <div class="form-group ">
               <label class="col-sm-2 control-label ">来源</label>
               <div class="col-sm-10">
-                <input name="source" class="form-control" type="text"  value="fsadf">
+                <input name="source" class="form-control" type="text"  value="{% if results.source %}{{ results.source }}{% endif %}">
               </div>
             </div>
             <div class="form-group ">
               <label class="col-sm-2 control-label ">作者</label>
               <div class="col-sm-10">
-                <input name="author" class="form-control" type="text"  value="sdafsd">
+                <input name="author" class="form-control" type="text"  value="{% if results.author %}{{ results.author }}{% endif %}">
               </div>
             </div>
             <div class="form-group">
               <label class="col-sm-2 control-label ">状态</label>
                 <div class="col-sm-10">
                   <select class="form-control" name="status">
-                    <option value="1"  >available</option>
-                    <option value="0"  >unavailable</option>
+                    <option value="1"  {% if results.status %}selected{% endif %}>available</option>
+                    <option value="0"  {% if not results.status %}selected{% endif %}>unavailable</option>
                   </select>
                 </div>
             </div>
@@ -124,9 +124,9 @@
               <label class="col-sm-2 control-label ">评测类型</label>
               <div class="col-sm-10">
                 <select class="form-control" name="test_type">
-                  <option value="normal"  >normal</option>
-                  <option value="ignBlank"  >ignore blank</option>
-                  <option value="ignPunct" selected >ignore punctuation</option>
+                  <option value="normal"  {% if results.test_type == "normal" %}selected{% endif %}>normal</option>
+                  <option value="ignBlank"  {% if results.test_type == "ignBlank" %}selected{% endif %}>ignore blank</option>
+                  <option value="ignPunct" {% if results.test_type == "ignPunct" %}selected{% endif %}>ignore punctuation</option>
                 </select>
               </div>
             </div>
@@ -182,7 +182,11 @@
     dataType: 'json',
     success(response) {
       for(var i = 0; i < response.results.length; ++i) {
-        $('#description-choices').append('<option value="'+response.results[i].id+'" selected>'+response.results[i].title+'</option>')
+        if(response.results[i].id == {{ results.description }}) {
+          $('#description-choices').append('<option value="'+response.results[i].id+'" selected>'+response.results[i].title+'</option>')
+        } else {
+          $('#description-choices').append('<option value="'+response.results[i].id+'">'+response.results[i].title+'</option>')
+        }
       }
     }
   })
@@ -194,7 +198,11 @@
     dataType: 'json',
     success(response) {
       for(var i = 0; i < response.results.length; ++i) {
-        $('#sample-choices').append('<option value="'+response.results[i].id+'" selected>'+response.results[i].title+'</option>')
+        if(response.results[i].id == {{ results.sample }}) {
+          $('#sample-choices').append('<option value="'+response.results[i].id+'" selected>'+response.results[i].title+'</option>')
+        } else {
+          $('#sample-choices').append('<option value="'+response.results[i].id+'">'+response.results[i].title+'</option>')
+        }
       }
     }
   })

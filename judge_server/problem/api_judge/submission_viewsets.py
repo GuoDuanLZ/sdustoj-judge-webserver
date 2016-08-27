@@ -17,3 +17,11 @@ class ResultViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     queryset = Machine.objects.all()
     serializer_class = ResultSerializer
     lookup_field = 'name'
+
+    def update(self, request, *args, **kwargs):
+        if request.data.get('msg') == '':
+            request.data['msg'] = None
+        if request.data.get('tid') == '':
+            request.data['tid'] = None
+
+        return super().update(request, *args, **kwargs)

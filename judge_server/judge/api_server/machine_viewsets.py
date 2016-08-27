@@ -9,8 +9,10 @@ from django.shortcuts import get_object_or_404
 
 from user.api_server.permission import IsJudgeAdmin
 
-from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer, AdminRenderer
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from .renderers import *
+
+from ..tasks import update_machine_data
 
 
 class MachineListViewSet(ResourceListViewSet):
@@ -37,4 +39,7 @@ class MachineUpdateViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
         name = kwargs['machine_pk']
         machine = get_object_or_404(Machine.objects.all(), name=name)
+
+        update_machine_data.delay(machine.name)
+
         return Response(status=status.HTTP_202_ACCEPTED)

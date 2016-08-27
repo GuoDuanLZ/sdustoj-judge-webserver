@@ -7,6 +7,8 @@ from .documents import TestData as TestDataMongodb
 from judge.models import Environment, Machine
 from client.models import Client
 
+from django.db import transaction
+
 
 # Meta Problem #########################################################################################################
 
@@ -108,6 +110,69 @@ class Problem(Resource, SourceMixin, StatusMixin):
     def __str__(self):
         return 'Problem ' + str(self.id) + ' - ' + str(self.title)
 
+    @staticmethod
+    @transaction.atomic
+    def create_new_problem(description, sample, limits, tests, test_type,
+                           title, introduction, source, author, status):
+        meta_problem = MetaProblem(title=title, introduction=introduction, source=source, author=author, status=status)
+        meta_problem.save()
+        description = Description(meta_problem=meta_problem, content=description)
+        description.save()
+        sample = Sample(meta_problem=meta_problem, content=sample)
+        sample.save()
+
+        count = 1
+        test_mongo = []
+        test_relation = []
+        for test in tests:
+            title = test.get('title', str(count))
+            introduction = test.get('introduction')
+            status = 1
+            test_in = test.get('test_in')
+            if test_in is not None:
+                test_in = test_in.read()
+            else:
+                test_in = ''
+            test_out = test.get('test_out')
+            if test_out is not None:
+                test_out = test_out.read()
+            else:
+                test_out = ''
+            test_data = TestData(title=title, introduction=introduction, status=status,
+                                 in_size=len(test_in), out_size=len(test_out))
+            test_data.save()
+            test_relation.append(test_data)
+            test_mongo.append((meta_problem.id, test_data.id, test_in.encode('utf-8'), test_out.encode('utf-8')))
+
+        problem = Problem(title=title, introduction=introduction, source=source, author=author, status=status,
+                          meta_problem=meta_problem, test_type=test_type, description=description, sample=sample)
+        problem.save()
+
+        for limit in limits:
+            title = limit.get('title', str(count))
+            introduction = limit.get('introduction')
+            status = 1
+            environment = Environment.objects.filter(eid=limit.get('environment')).first()
+            language = environment.language
+            time_limit = limit.get('time_limit', 1)
+            memory_limit = limit.get('memory_limit', 1)
+            length_limit = limit.get('length_limit', 1)
+
+            limit = Limit(title=title, introduction=introduction, status=status,
+                          environment=environment, language=language,
+                          time_limit=time_limit, memory_limit=memory_limit, length_limit=length_limit)
+
+            limit.save()
+
+        for test in test_relation:
+            relation = ProblemTestData(problem=problem, test_data=test)
+            relation.save()
+
+        for (mid, tid, test_in, test_out) in test_mongo:
+            TestDataMongodb.set_data(mid, tid, test_in, test_out)
+
+        return problem
+
 
 # ----- Components --------------------------------------------------------------------------------
 
@@ -121,6 +186,12 @@ class Limit(Resource, StatusMixin):
     time_limit = models.IntegerField(default=-1)
     memory_limit = models.IntegerField(default=-1)
     length_limit = models.IntegerField(default=-1)
+
+
+class InvalidWord(ModifyInfo):
+    problem = models.ForeignKey(to=Problem, related_name='invalid_word', to_field='id')
+    id = models.BigAutoField(primary_key=True)
+    word = models.CharField(max_length=64)
 
 
 # ----- Relations ---------------------------------------------------------------------------------
@@ -198,7 +269,7 @@ class Submission(models.Model):
 
 class SubmissionMessage(models.Model):
     submission = models.OneToOneField(to=Submission, related_name='message', to_field='id', primary_key=True)
-    content = models.TextField()
+    content = models.TextField(null=True)
 
 
 class SubmissionDetail(models.Model):
