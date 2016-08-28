@@ -134,3 +134,11 @@ class CategoryNodeProblemRenderer(APIRenderer):
 
 class CategoryNodeProblemRelationRenderer(APIRenderer):
     template = 'api_categorie_node_problem_relation.html'
+
+
+class SpecialJudgeListRenderer(APIRenderer):
+    template = 'api_categorie_node_problem_relation.html'
+
+
+class SpecialJudgeDetailRenderer(APIRenderer):
+    template = 'api_categorie_node_problem_relation.html'

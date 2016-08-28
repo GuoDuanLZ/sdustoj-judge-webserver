@@ -1,14 +1,18 @@
+from redis import Redis
 from rest_framework import serializers
+
+from judge_server.redis_connections import pool
+from problem import documents
 from utils.serializers import resource_read_only
 
-from ..models import Problem
+from ..models import Problem, SpecialJudge
 
 from ..models import Limit
 from ..models import TestData, ProblemTestData
 
 from ..models import InvalidWord
 
-from ..tasks import send_data_insert
+from ..tasks import send_data_insert, send_data_delete, send_code_insert, send_code_delete
 
 
 class ProblemListSerializer(serializers.ModelSerializer):
@@ -83,7 +87,7 @@ class LimitDetailSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ret = super().update(instance, validated_data)
         ret.language = ret.environment.language
-        send_data_insert.delay(mid=ret.problem.meta_problem_id)
+        send_data_insert.delay(mid=ret.problem.id)
         return ret
 
 
@@ -165,3 +169,74 @@ class NewProblemSerializer(serializers.ModelSerializer):
 
         return Problem.create_new_problem(description, sample, limits, tests, test_type,
                                           title, introduction, source, author, status)
+
+
+class SpecialJudgeListSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(write_only=True, style={'base_template': 'textarea.html'})
+
+    class Meta:
+        model = SpecialJudge
+        exclude = ('problem',)
+        read_only_fields = resource_read_only
+
+    def create(self, validated_data):
+        code = validated_data.pop('code')
+
+        instance = super().create(validated_data)
+        documents.SpecialJudge.set_code(str(instance.problem.meta_problem_id),
+                                        str(instance.problem_id),
+
+                                        code.encode('utf-8'))
+
+        info = {
+            'isFiles': 'false',
+            'sid': 'SPJ',
+            'mid': str(instance.problem.meta_problem_id),
+            'pid': str(instance.problem_id),
+            'eid': str(instance.environment_id),
+            'code': code,
+        }
+        send_code_insert.delay(instance.problem.meta_problem_id, instance.problem_id, info=info)
+        return instance
+
+
+class SpecialJudgeDetailSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(write_only=True, style={'base_template': 'textarea.html'})
+
+    class Meta:
+        model = SpecialJudge
+        exclude = ('problem',)
+        read_only_fields = resource_read_only
+
+    def update(self, instance, validated_data):
+        code = validated_data.pop('code')
+        instance = super().update(instance, validated_data)
+        documents.SpecialJudge.set_code(str(instance.problem.meta_problem_id),
+                                        str(instance.problem_id),
+
+                                        code.encode('utf-8'))
+        info = {
+            'isFiles': 'false',
+            'sid': 'SPJ',
+            'mid': str(instance.problem.meta_problem_id),
+            'pid': str(instance.problem_id),
+            'eid': str(instance.environment_id),
+            'code': code,
+        }
+
+        send_code_insert.delay(instance.problem.meta_problem_id, instance.problem_id, info=info)
+        return instance
+
+    @staticmethod
+    def delete_mongodb(instance):
+        info = {
+            'isFiles': 'false',
+            'sid': 'SPJ',
+            'mid': str(instance.problem.meta_problem_id),
+            'pid': str(instance.problem_id),
+            'eid': str(instance.environment_id),
+            'code': '',
+        }
+        documents.SpecialJudge.remove_code(str(instance.problem_id))
+
+        send_code_delete.delay(instance.problem.meta_problem_id, instance.problem_id, info=info)

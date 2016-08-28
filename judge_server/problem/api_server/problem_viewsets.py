@@ -8,8 +8,9 @@ from utils.filters import resource_ordering
 
 from user.api_server.permission import IsProblemAdmin, IsCategoryAdmin, ProblemAdminEditable
 
-from ..models import MetaProblem, Problem
-from .problem_serializers import ProblemListSerializer, ProblemDetailSerializer, ProblemReadOnlySerializer
+from ..models import MetaProblem, Problem, SpecialJudge
+from .problem_serializers import ProblemListSerializer, ProblemDetailSerializer, ProblemReadOnlySerializer, \
+    SpecialJudgeListSerializer, SpecialJudgeDetailSerializer
 from .problem_serializers import NewProblemSerializer
 from .problem_filters import ProblemFilter
 
@@ -207,3 +208,37 @@ class NodeProblemDetailViewSet(NestedResourceDetailViewSet):
     parent_lookup = 'node_pk'
     parent_pk_field = 'id'
     parent_related_name = 'node'
+
+
+class SpecialJudgeListViewSet(NestedResourceListViewSet):
+    queryset = SpecialJudge.objects.all()
+    serializer_class = SpecialJudgeListSerializer
+    permission_classes = (IsProblemAdmin,)
+
+    parent_queryset = Problem.objects.all()
+    parent_lookup = 'problem_pk'
+    parent_pk_field = 'id'
+    parent_related_name = 'problem'
+
+    #renderer_classes = (JSONRenderer, SpecialJudgeListRenderer, BrowsableAPIRenderer, AdminRenderer)
+    def list(self, request, *args, **kwargs):
+        special_judge = SpecialJudge.objects.filter(problem_id=kwargs['problem_pk']).first()
+        if special_judge is not None:
+            serializer = SpecialJudgeDetailSerializer(instance=special_judge)
+            return Response(serializer.data)
+        return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+
+class SpecialJudgeDetailViewSet(NestedResourceDetailViewSet):
+    queryset = SpecialJudge.objects.all()
+    serializer_class = SpecialJudgeDetailSerializer
+    permission_classes = (IsProblemAdmin,)
+
+    #renderer_classes = (JSONRenderer, SpecialJudgeDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
+
+    def perform_destroy(self, instance):
+        SpecialJudgeDetailSerializer.delete_mongodb(instance)
+        super().perform_destroy(instance)

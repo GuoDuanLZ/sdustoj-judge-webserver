@@ -280,3 +280,10 @@ class SubmissionDetail(models.Model):
 class SubmissionCode(models.Model):
     submission = models.OneToOneField(to=Submission, related_name='code', to_field='id', primary_key=True)
     info = postgres_fields.JSONField()
+
+
+# SpecialJudge##########################################################################################################
+
+class SpecialJudge(Resource):
+    problem = models.OneToOneField(to=Problem, related_name='special_judge', to_field='id', primary_key=True)
+    environment = models.ForeignKey(to=Environment, related_name='special_judge', to_field='eid')

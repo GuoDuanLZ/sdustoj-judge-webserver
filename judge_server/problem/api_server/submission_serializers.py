@@ -64,18 +64,18 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
         r = Redis(connection_pool=pool)
         info = {
-            'isFiles': 'false',
-            'sid': str(instance.id),
-            'mid': str(instance.problem.meta_problem_id),
-            'pid': str(instance.problem_id),
-            'eid': str(instance.environment_id),
+            'isFiles': 'false',#
+            'sid': str(instance.id),#SPJ
+            'mid': str(instance.problem.meta_problem_id),#
+            'pid': str(instance.problem_id),#
+            'eid': str(instance.environment_id),#
             'tid': [str(i['id']) for i in test_data],
             'tl': str(limit.time_limit),
             'ml': str(limit.memory_limit),
             'cl': str(limit.length_limit),
             'ol': str(MAX_OLEN),
             'ttype': problem.test_type,
-            'code': code,
+            'code': code,#
         }
 
         invalid_words = ''
