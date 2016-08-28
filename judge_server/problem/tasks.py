@@ -4,6 +4,8 @@ from celery import shared_task
 
 from json import dumps
 
+# data##################################################################################################################
+
 
 def _get_data_machines_to_inform(mid=None, tid=None, machine_name=None):
     from judge.models import Machine
@@ -62,10 +64,9 @@ def _send_message(machines, info):
 
 
 @shared_task
-def send_data_insert(mid=None, tid=None, machine_name=None):
+def send_data_insert(mid=None, tid=None, machine_name=None, info=None):
     machines = _get_data_machines_to_inform(mid, tid, machine_name)
-    info = _get_data_insert_info(mid, tid)
-    print(info)
+
     _send_message(machines, info)
     return machines
 
@@ -76,4 +77,52 @@ def send_data_delete(mid=None, tid=None, machine_name=None):
     info = _get_data_delete_info(mid, tid)
     print(info)
     _send_message(machines, info)
+    return machines
+
+# code##################################################################################################################
+
+
+def _get_code_machines_to_inform(mid=None, tid=None, machine_name=None):
+    from judge.models import Machine
+    from .models import Environment, SpecialJudge
+    if mid is None:
+        if machine_name is None:
+            machines = {machine.data_queue for machine in Machine.objects.all()}
+        else:
+            machine = Machine.objects.get(name=machine_name)
+            machines = {machine.data_queue}
+    else:
+        envs = Environment.objects.filter(limit__problem__meta_problem_id=mid).distinct()
+        machines = set()
+        for env in envs:
+            env_machines = env.machine.all()
+            for machine in env_machines:
+                machines.add(machine.data_queue)
+    return machines
+
+
+def _send_code_message(machines, info):
+    import redis
+    from judge_server.redis_connections import pool
+
+    r = redis.Redis(connection_pool=pool)
+    for name in machines:
+        r.rpush(name, dumps(info))
+
+    return len(machines)
+
+
+@shared_task
+def send_code_insert(mid=None, tid=None, machine_name=None, info=None):
+    machines = _get_data_machines_to_inform(mid, tid, machine_name)
+    print(info)
+    _send_code_message(machines, info)
+    return machines
+
+
+@shared_task
+def send_code_delete(mid=None, tid=None, machine_name=None, info=None):
+    machines = _get_data_machines_to_inform(mid, tid, machine_name)
+    print(info)
+    _send_code_message(machines, info)
     return machines

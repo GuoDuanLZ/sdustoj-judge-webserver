@@ -118,3 +118,33 @@ class CodeInfo(mongoengine.Document):
             return False
         code_info.delete()
         return True
+
+
+class SpecialJudge(mongoengine.Document):
+    pid = mongoengine.StringField(max_length=32)
+    mid = mongoengine.StringField(max_length=32)
+    code = mongoengine.FileField()
+
+    @staticmethod
+    def get_code(pid):
+        special_judge = get_mongodb_data(SpecialJudge, pid=pid)
+        if special_judge is None:
+            return None
+        code = special_judge.code.read()
+        return code
+
+    @staticmethod
+    def set_code(mid,pid,code):
+        special_judge= get_mongodb_data(SpecialJudge, mid=mid, pid=pid)
+        if special_judge is None:
+            special_judge = SpecialJudge(mid=mid, pid=pid)
+        special_judge.code = code
+        special_judge.save()
+
+    @staticmethod
+    def remove_code(pid):
+        special_judge = get_mongodb_data(SpecialJudge, pid=pid)
+        if special_judge is None:
+            return False
+        special_judge.delete()
+        return True

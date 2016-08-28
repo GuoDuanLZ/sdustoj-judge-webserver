@@ -7,7 +7,9 @@ from .meta_problem_viewsets import TestDataListViewSet, TestDataDetailViewSet
 from .meta_problem_viewsets import TestInFileViewSet, TestOutFileViewSet
 from .meta_problem_viewsets import TestFileUploadViewSet, TestInFileUploadViewSet, TestOutFileUploadViewSet
 
-from .problem_viewsets import ProblemListViewSet, ProblemDetailViewSet, ProblemReadOnlyViewSet, NewProblemViewSet
+
+from .problem_viewsets import ProblemListViewSet, ProblemDetailViewSet, ProblemReadOnlyViewSet, NewProblemViewSet, \
+    SpecialJudgeListViewSet, SpecialJudgeDetailViewSet
 from .problem_viewsets import LimitListViewSet, LimitDetailViewSet
 from .problem_viewsets import InvalidWordListViewSet
 from .problem_viewsets import TestDataReadOnlyViewSet, TestDataRelationViewSet
@@ -80,6 +82,10 @@ nod_router.register(r'problems', NodeProblemListViewSet, base_name='problems')
 nod_router.register(r'problems', NodeProblemDetailViewSet, base_name='problems')
 nod_router.register('problem-rel', ProblemCategoryNodeViewSet, base_name='node-rel')
 nod_router.register('problem-rel', ProblemCategoryNodeDetailViewSet, base_name='node-rel')
+# SpecialJudge #########################################################################################################
+problem_router.register(r'special-judge', SpecialJudgeListViewSet, base_name='special-juddge')
+problem_router.register(r'special-judge', SpecialJudgeDetailViewSet, base_name='special-juddge')
+
 
 urlpatterns = []
 urlpatterns += router.urls
