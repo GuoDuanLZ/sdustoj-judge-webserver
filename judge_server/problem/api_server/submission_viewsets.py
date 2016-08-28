@@ -39,6 +39,13 @@ class SubmissionListViewSet(mixins.ListModelMixin, UserCreateModelMixin,
 
     renderer_classes = (JSONRenderer, SubmissionListRenderer, BrowsableAPIRenderer, AdminRenderer)
 
+    def create(self, request, *args, **kwargs):
+        print(request.data)
+        s = SubmissionSerializer(data=request.data)
+        s.is_valid()
+        print(s.errors)
+        return super().create(request, *args, **kwargs)
+
 
 class SubmissionDetailViewSet(mixins.RetrieveModelMixin, FilterViewSet):
     queryset = Submission.objects.all()

@@ -82,6 +82,17 @@ class NewProblemViewSet(ResourceListViewSet):
     serializer_class = NewProblemSerializer
     permission_classes = (IsProblemAdmin,)
 
+    renderer_classes = (JSONRenderer, NewProblemRenderer, BrowsableAPIRenderer, AdminRenderer)
+
+    def create(self, request, *args, **kwargs):
+        limits = request.data.get('limits')
+        test_in = request.data.get('test_in')
+        test_out = request.data.get('test_out')
+        request.data['limits'] = limits if limits else None
+        request.data['test_in'] = test_in if test_in else None
+        request.data['test_out'] = test_out if test_out else None
+        return super().create(request, *args, **kwargs)
+
 
 class LimitListViewSet(NestedResourceListViewSet):
     queryset = Limit.objects.all()
