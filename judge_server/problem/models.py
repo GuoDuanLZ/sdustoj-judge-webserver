@@ -66,8 +66,14 @@ class TestData(Resource, StatusMixin):
         if self._test_data_mongodb is None:
             data = TestDataMongodb.get_data(str(self.meta_problem_id),
                                             str(self.id))
-            test_in = data[0].decode('utf-8', 'ignore') if data[0] is not None else None
-            test_out = data[1].decode('utf-8', 'ignore') if data[1] is not None else None
+            if data[0] is not None and isinstance(data[0], bytes):
+                test_in = data[0].decode('utf-8', 'ignore')
+            else:
+                test_in = data[0]
+            if data[1] is not None and isinstance(data[1], bytes):
+                test_out = data[1].decode('utf-8', 'ignore')
+            else:
+                test_out = data[1]
             self._test_data_mongodb = (test_in, test_out)
         return self._test_data_mongodb
 

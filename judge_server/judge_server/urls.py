@@ -23,5 +23,5 @@ from web import urls as web_urls
 urlpatterns = [
     url(r'^api-judge/', include(api_judge_urls)),
     url(r'^api-server/', include(api_server_urls)),
-    #url(r'^', include(web_urls)),
+    url(r'^$    ', include(web_urls)),
 ]

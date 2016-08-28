@@ -79,8 +79,6 @@ def send_data_delete(mid=None, tid=None, machine_name=None):
     _send_message(machines, info)
     return machines
 
-# code##################################################################################################################
-
 
 def _get_code_machines_to_inform(mid=None, tid=None, machine_name=None):
     from judge.models import Machine
@@ -90,39 +88,65 @@ def _get_code_machines_to_inform(mid=None, tid=None, machine_name=None):
             machines = {machine.data_queue for machine in Machine.objects.all()}
         else:
             machine = Machine.objects.get(name=machine_name)
-            machines = {machine.data_queue}
+            machines = {machine.name}
     else:
         envs = Environment.objects.filter(limit__problem__meta_problem_id=mid).distinct()
         machines = set()
         for env in envs:
             env_machines = env.machine.all()
             for machine in env_machines:
-                machines.add(machine.data_queue)
+                machines.add(machine.name)
     return machines
+
+
+def _get_unique_sub_queue_name(number, index):
+    ret = ''
+    for i in range(1, number+1):
+        if i == index:
+            ret += '1'
+        else:
+            ret += '0'
+    return ret
 
 
 def _send_code_message(machines, info):
     import redis
     from judge_server.redis_connections import pool
+    from judge.models import Machine
 
     r = redis.Redis(connection_pool=pool)
-    for name in machines:
-        r.rpush(name, dumps(info))
 
-    return len(machines)
+    m_ok = machines
+    print('m_ok', m_ok)
+    q_send = []
+
+    ms = Machine.objects.all()
+    print('ms', ms)
+    length = ms.count()
+    i = 1
+    i_send = dumps(info)
+    for m in ms:
+        print(m.name, m_ok, m.name in m_ok)
+        if m.name in m_ok:
+            name = _get_unique_sub_queue_name(length, i)
+            q_send.append(name)
+            r.rpush(name, i_send)
+        i += 1
+
+    return q_send
 
 
 @shared_task
 def send_code_insert(mid=None, tid=None, machine_name=None, info=None):
-    machines = _get_data_machines_to_inform(mid, tid, machine_name)
-    print(info)
-    _send_code_message(machines, info)
-    return machines
+    machines = _get_code_machines_to_inform(mid, tid, machine_name)
+    print(machines)
+    q_send = _send_code_message(machines, info)
+    return q_send
 
 
 @shared_task
 def send_code_delete(mid=None, tid=None, machine_name=None, info=None):
-    machines = _get_data_machines_to_inform(mid, tid, machine_name)
+    machines = _get_code_machines_to_inform(mid, tid, machine_name)
     print(info)
     _send_code_message(machines, info)
     return machines
