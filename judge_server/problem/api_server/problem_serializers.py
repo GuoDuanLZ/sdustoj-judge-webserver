@@ -12,7 +12,9 @@ from ..models import TestData, ProblemTestData
 
 from ..models import InvalidWord
 
+
 from ..tasks import send_data_insert, send_data_delete, send_code_insert, send_code_delete
+
 
 
 class ProblemListSerializer(serializers.ModelSerializer):
@@ -240,3 +242,4 @@ class SpecialJudgeDetailSerializer(serializers.ModelSerializer):
         documents.SpecialJudge.remove_code(str(instance.problem_id))
 
         send_code_delete.delay(instance.problem.meta_problem_id, instance.problem_id, info=info)
+

@@ -71,6 +71,10 @@ class ProblemListRenderer(APIRenderer):
     template = 'api_problems.html'
 
 
+class NewProblemRenderer(APIRenderer):
+    template = 'api_new_problem.html'
+
+
 class ProblemTestDataRenderer(APIRenderer):
     template = 'api_test_data_problem.html'
 
