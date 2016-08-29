@@ -190,12 +190,12 @@
                 success: function (data) {
                             $('#title').val(data.title);
                             $('#introduction').val(data.introduction);
-                            $('#status').each(function(i,item){
+                            $('#status option').each(function(i,item){
                                 var op=$(this).val();
                                 if(op==item.status)
                                     $(this).prop('selected','selected');
                             });
-                            $('#environment').each(function(i,item){
+                            $('#environment option').each(function(i,item){
                                 var op=$(this).val();
                                 if(op==item.environment)
                                     $(this).prop('selected','selected');

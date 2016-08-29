@@ -97,20 +97,20 @@
           <fieldset>
             {% csrf_token %}
             <div class="form-group ">
-              <label class="col-sm-2 control-label">代码</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label">代码</label>
+              <div class="col-sm-9">
                 <textarea name="code" class="form-control"  ></textarea>
               </div>
             </div>
             <div class="form-group" hidden>
-              <label class="col-sm-2 control-label ">Problem</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">Problem</label>
+              <div class="col-sm-9">
                 <input value="{{ results.id }}" name="problem">
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-2 control-label ">语言</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">语言</label>
+              <div class="col-sm-9">
                 <select class="form-control" name="environment" id="language-choices">
                 </select>
               </div>
@@ -277,44 +277,52 @@
           <fieldset>
             {% csrf_token %}
             <div class="form-group ">
-              <label class="col-sm-2 control-label ">Description</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">描述：</div>
+              </label>
+              <div class="col-sm-9">
                 <textarea name="description" class="form-control"  ></textarea>
               </div>
             </div>
             <div class="form-group ">
-              <label class="col-sm-2 control-label ">Sample</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">样例：</div></label>
+              <div class="col-sm-9">
                 <textarea name="sample" class="form-control"  ></textarea>
               </div>
             </div>
             <div class="form-group ">
-              <label class="col-sm-2 control-label ">Title</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">标题：</div></label>
+              <div class="col-sm-9">
                 <input name="title" class="form-control" type="text"  >
               </div>
             </div>
             <div class="form-group ">
-              <label class="col-sm-2 control-label ">Introduction</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">简介：</div></label>
+              <div class="col-sm-9">
                 <input name="introduction" class="form-control" type="text"  >
               </div>
             </div>
             <div class="form-group ">
-              <label class="col-sm-2 control-label ">Source</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">来源：</div></label>
+              <div class="col-sm-9">
                 <input name="source" class="form-control" type="text"  >
               </div>
             </div>
             <div class="form-group ">
-              <label class="col-sm-2 control-label ">Author</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">作者：</div></label>
+              <div class="col-sm-9">
                 <input name="author" class="form-control" type="text"  >
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-2 control-label ">Status</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">状态：</div></label>
+              <div class="col-sm-9">
                 <select class="form-control" name="status">
                   <option value="1"  >available</option>
                   <option value="0"  >unavailable</option>
@@ -322,8 +330,9 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-2 control-label ">Test type</label>
-              <div class="col-sm-10">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">评测类型：</div></label>
+              <div class="col-sm-9">
                 <select class="form-control" name="test_type">
                   <option value="normal"  >normal</option>
                   <option value="ignBlank"  >ignore blank</option>

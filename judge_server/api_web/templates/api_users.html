@@ -38,17 +38,79 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">编辑</h4>
+        <h4 class="modal-title" id="ModalLabel">编辑</h4>
       </div>
-      <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
+      <form enctype="multipart/form-data" class="form-horizontal" novalidate id="edit_form">
         <div class="modal-body">
           <fieldset>
-            {{ put_form }}
+             {% csrf_token %}
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                         <div class="text-left">用户名：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="username" class="form-control" type="text" id="username">
+                          <span class="help-block">长度3-30.只能包含字母,数字,和@/./+/-/_</span>
+                      </div>
+                  </div>
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                         <div class="text-left">名字：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="first_name" class="form-control" type="text" id="first_name">
+                      </div>
+                  </div>
+
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                         <div class="text-left">姓氏：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="last_name" class="form-control" type="text" id="last_name">
+                      </div>
+                  </div>
+
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                        <div class="text-left">邮箱地址：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="email" class="form-control" type="email" id="email">
+                      </div>
+                  </div>
+
+                  <div class="form-group horizontal-checkbox ">
+                      <label class="col-sm-3 control-label ">
+                        <div class="text-left">允许登陆：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input type="checkbox" name="is_active" value="true" id="is_active">
+                          <span class="help-block">指定是否为活跃用户，取消选择只限制登陆</span>
+                      </div>
+                  </div>
+
+
+                  <div class="form-group">
+                      <label class="col-sm-3 control-label ">
+                        <div class="text-left">用户组：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <select multiple class="form-control" name="groups" id="groups">
+                              <option value="1">SiteAdmin</option>
+                              <option value="3">ProblemAdmin</option>
+                              <option value="3">CategoryAdmin</option>
+                              <option value="4">JudgeAdmin</option>
+                              <option value="5">ClientAdmin</option>
+                          </select>
+                          <span class="help-block">如果全选则拥有本系统所有权限</span>
+                      </div>
+                  </div>
           </fieldset>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="submit" class="btn btn-primary">确定</button>
+          <button type="button" class="btn btn-primary" id="edit_true">确定</button>
         </div>
       </form>
     </div>
@@ -85,10 +147,81 @@
         <h4 class="modal-title" id="myModalLabel">创建</h4>
       </div>
       <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
-        <div class="modal-body">
-          <fieldset>
-            {% csrf_token %}
-            {{ post_form }}
+          <div class="modal-body">
+              <fieldset>
+                  {% csrf_token %}
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                         <div class="text-left">用户名：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="username" class="form-control" type="text">
+                          <span class="help-block">长度3-30.只能包含字母,数字,和@/./+/-/_</span>
+                      </div>
+                  </div>
+
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                         <div class="text-left">密码：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="password" class="form-control" type="password">
+                      </div>
+                  </div>
+
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                         <div class="text-left">名字：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="first_name" class="form-control" type="text">
+                      </div>
+                  </div>
+
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                         <div class="text-left">姓氏：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="last_name" class="form-control" type="text">
+                      </div>
+                  </div>
+
+                  <div class="form-group ">
+                      <label class="col-sm-3 control-label ">
+                        <div class="text-left">邮箱地址：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input name="email" class="form-control" type="email">
+                      </div>
+                  </div>
+
+                  <div class="form-group horizontal-checkbox ">
+                      <label class="col-sm-3 control-label ">
+                        <div class="text-left">允许登陆：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <input type="checkbox" name="is_active" value="true">
+                          <span class="help-block">指定是否为活跃用户，取消选择只限制登陆</span>
+                      </div>
+                  </div>
+
+
+                  <div class="form-group">
+                      <label class="col-sm-3 control-label ">
+                        <div class="text-left">用户组：</div>
+                      </label>
+                      <div class="col-sm-9">
+                          <select multiple class="form-control" name="groups">
+                              <option value="1">SiteAdmin</option>
+                              <option value="3">ProblemAdmin</option>
+                              <option value="3">CategoryAdmin</option>
+                              <option value="4">JudgeAdmin</option>
+                              <option value="5">ClientAdmin</option>
+                          </select>
+                          <span class="help-block">如果全选则拥有本系统所有权限(按住ctrl可以多选)</span>
+                      </div>
+                  </div>
           </fieldset>
         </div>
         <div class="modal-footer">
@@ -107,3 +240,61 @@
 {% block cur_nav %}
 <li><a class="btn btn-primary" href="/api-server/users/">用户管理</a></li>
 {% endblock %}
+{%block script%}
+<script>
+     var url = location.href
+     var urls = url.split('/')
+    var id= urls[urls.length-2]
+    $(function(){
+        $('#edit_button').click(function(){
+             $.ajax({
+             url:"/api-server/users/"+id+"/",
+                data: {},
+                type: "GET",
+                dataType: "json",
+                success:function(data){
+                    $('#username').val(data.username);
+                    $('#first_name').val(data.first_name);
+                    $('#last_name').val(data.last_name);
+                    $('#email').val(data.email);
+                    $('#is_active').prop('checked','checked');
+                    var col=data.groups;
+                    for(var i=0;i<col.length;i++)
+                    {
+                         var t=col[i];
+                        $('#groups option').each(function (i,item) {
+                            var op=$(this).val();
+                            if(op==t)
+                            $(this).prop('selected','selected');
+                        })
+                    }
+                }
+        });
+        });
+        $('#edit_true').click(function(){
+            $.ajax({
+                url:"/api-server/users/"+id+"/",
+                data:{
+                    "username": $('#username').val(),
+                    "first_name": $('#first_name').val(),
+                    "last_name":  $('#last_name').val(),
+                    "email":$('#email').val(),
+                    "is_active":$('#is_active').val(),
+                    "groups": $('#groups').val(),
+                },
+                type: "PATCH",
+                dataType: "json",
+                success:function (data) {
+                    location.reload();
+                },
+                error:function(data){
+                    if(data.status==500){
+                      alert("服务器拥挤");
+                    }
+                }
+            })
+        })
+
+    })
+</script>
+{%endblock%}

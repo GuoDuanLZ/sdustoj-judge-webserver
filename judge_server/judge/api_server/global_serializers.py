@@ -22,3 +22,4 @@ class EnvironmentDetailSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ret = super().update(instance, validated_data)
         Limit.objects.filter(environment=instance).update(language=instance.language)
+        return ret

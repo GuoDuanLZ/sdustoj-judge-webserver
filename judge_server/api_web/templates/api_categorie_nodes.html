@@ -301,12 +301,12 @@ $('#edit_button').one('click',function () {
             success:function(data){
                     $('#e_title').val(data.title);
                     $('#e_introduction').val(data.introduction);
-                    $('#e_status').each(function(i,item){
+                    $('#e_status option').each(function(i,item){
                         var op=$(this).val();
                         if(op==item.status)
                             $(this).prop('selected','selected');
                     });
-                    $('#e_parent').each(function(i,item){
+                    $('#e_parent option').each(function(i,item){
                         var op=$(this).val();
                         if(op==item.status)
                             $(this).prop('selected','selected');
