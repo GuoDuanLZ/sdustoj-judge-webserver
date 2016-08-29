@@ -1,0 +1,158 @@
+1.安装PostgreSQL及相关包:
+    (1) 安装PostgreSQL及相关包
+        sudo apt-get install postgresql postgresql-contrib libpq-dev
+
+    (2) 首次配置
+        切换到postgres用户:
+            sudo su postgres
+        进入PostgreSQL:
+            psql
+        设置密码:
+            \password
+        退出:
+            \q
+
+        之后需要以posgres用户进入数据库时，可以重复上面步骤切换到postgres用户进入，或执行：
+            psql -U postgres -h localhost
+
+    (3) 配置Web Server所需的数据库
+        以postgres用户登录数据库
+        创建用户（以默认用户judge_server为例）:
+            create user judge_server with password 'sdust';
+        创建数据库（以默认数据库judge_server为例）:
+            create database judge_server owner judge_server;
+        分配权限:
+            grant all privileges on database judge_server to judge_server;
+
+
+        之后需要以该用户登入数据库时，有两种方法：
+            1) 创建与数据库同名的系统用户，切换到该系统用户下执行psql即可，要求数据库需与用户同名
+            2) 指名用户、数据库、host、端口：
+                psql -U judge_server -d judge_server -h localhost -p 5432
+        
+    (4) *配置远程访问
+        !!!注意：只有Web Server才需要读取PostgreSQL，如果两者部署于同一台服务器则无须配置远程访问。
+        需要修改的文件：
+            1) /etc/postgresql/9.5/main/postgresql.conf
+                修改listen_addresses为'*'，表示允许监听来自任何主机的请求
+            2) /etc/postgresql/9.5/main/pg_hba.conf
+                按需加入配置
+                例如：
+                    host  all    all    192.168.1.0/24    md5
+                表示允许网段192.168.1.0上的所有主机使用所有合法的数据库用户名访问数据库，并提供加密的密码验证。
+                其中，数字24是子网掩码，表示允许192.168.1.0--192.168.1.255的计算机访问
+        重启PostgreSQL服务:
+            sudo service postgresql restart
+
+2.安装Mongodb及相关包:
+    (1) 添加密钥
+        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+
+    (2) 添加源
+        echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.2 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+
+    (3) 更新源
+        sudo apt-get update
+
+    (4) 安装mongoDB
+        sudo apt-get install mongodb-org
+
+    (5) 安全性配置（用户名密码）
+        1) 创建用户
+            与一般数据库不同，MongoDB的用户数据可存于不同的数据库中。
+            切换到希望存储用户数据的数据库:
+                use judgeDB
+            创建用户:
+                db.createUser({
+                    user: "sdustoj",
+                    pwd: "sdust",
+                    roles: [
+                        {role: "dbOwner", db:"judgeDB"}
+                    ]
+                })
+            其中，roles中为用户权限，dbOwner表示拥有对db中所指的数据库拥有全部的权限
+        2) 设置需要用户名密码才可登录
+            配置/etc/mongod.conf
+            找到#security处，去掉前面的注释，在下面加入：
+                authorization: enabled
+            重启MongoDB服务：
+                sudo service mongod restart
+
+            登录MongoDB后需要验证用户
+                1) 切换到存储用户数据的数据库
+                    use judgeDB
+                2) 登录
+                    db.auth('sdustoj', 'sdust')
+                    返回1时表示登录成功，拥有对该数据库相应操作权限
+
+    (6) 配置远程访问
+        编辑/etc/mongod.conf
+            修改bindIp为0.0.0.0
+        重启MongoDB服务：
+            sudo service mongod restart
+
+3. 安装Redis
+    (1) 安装Redis
+        sudo apt-get install redis-server
+    
+    (2) 配置远程访问
+        编辑/etc/redis/redis.conf
+            将诸如bind 127.0.0.1注释掉
+        重启Redis服务
+            sudo service redis-server restart
+
+    (3) 配置安全性访问
+        编辑/etc/redis/redis.conf
+            添加requirepass hello,sdust_oj
+        重启Redis服务
+            sudo service redis-server restart
+        
+4. 安装Web Server相关的Python包
+    (1) 安装Python3-pip
+        sudo apt-get install python3-pip
+
+    (2) 安装virtualenv
+        sudo -H pip3 install virtualenv
+
+    (3) 下载评测端Web Server源码
+        git clone git@github.com:GuoDuanLZ/sdustoj-judge-webserver.git
+        如果需要使用dev版本，切换到dev分支：
+            git checkout dev
+    
+    (4) 配置虚拟环境
+        1) 进入项目文件夹
+            cd sdustoj-judge-webserver
+        2) 安装虚拟环境
+            virtualenv --no-site-packages venv
+        3) 切换到虚拟环境
+            source venv/bin/activate
+        4) 安装django
+            pip install django==1.10
+        5) 安装数据库相关包
+            pip install psycopg2==2.6.2 mongoengine==0.10.6 redis=2.10.5
+        6) 安装celery相关包
+            pip install celery==3.1.23
+        7) 安装rest frameworks相关包
+            pip install djangorestframework==3.4.3 django-filter==0.13.0 django-crispy-forms==1.6.0 drf-nested-routers==0.11.1
+        8) 安装configparser用于解析基本配置
+            pip install configparser==3.5.0
+
+5. 运行评测端Web Server
+    !!! 以下为测试环境如何运行，实际部署请使用Apache、Nginx或Gunicorn运行Django的Server
+    (1) 同步数据库
+        切换到虚拟环境后，在manage.py所在目录终端执行:
+            python manage.py migrate
+
+    (2) 运行Django的Web Server
+        切换到虚拟环境后，在manage.py所在目录终端执行:
+            python manage.py runserver 0.0.0.0:8000
+        则访问相应ip的8000端口可打开网站
+        如需后台运行，则执行：
+            nohup python manage.py runserver 0.0.0.0:8000 &
+
+    (3) 运行celery
+        celery用于异步执行更新评测机数据等可能比较耗时的操作
+        切换到虚拟环境后，在manage.py所在目录终端执行:
+            celery -A judge_server worker -l info
+        如需后台运行，则执行：
+            nohup celery -A judge_server worker -l info &
