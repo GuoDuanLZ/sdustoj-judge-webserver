@@ -1,7 +1,7 @@
 from utils.viewsets import ResourceListViewSet, ResourceDetailViewSet
 from utils.filters import resource_ordering
 
-from user.api_server.permission import IsJudgeAdmin
+from user.api_server.permission import IsJudgeAdmin, JudgeAdminEditable
 
 from ..models import Environment
 from .global_serializers import EnvironmentListSerializer, EnvironmentDetailSerializer
@@ -18,7 +18,7 @@ class EnvironmentViewSet(ResourceListViewSet):
     filter_class = EnvironmentFilter
     search_fields = ('eid', 'language')
     ordering_fields = resource_ordering + ('eid', 'language')
-    permission_classes = (IsJudgeAdmin,)
+    permission_classes = (JudgeAdminEditable,)
 
     renderer_classes = (JSONRenderer, EnvironmentRenderer, BrowsableAPIRenderer, AdminRenderer)
 

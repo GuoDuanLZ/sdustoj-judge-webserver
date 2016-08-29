@@ -127,6 +127,7 @@ class TestDataRelationSerializer(serializers.ModelSerializer):
 class NewProblemSerializer(serializers.ModelSerializer):
     description = serializers.CharField(write_only=True, style={'base_template': 'textarea.html'})
     sample = serializers.CharField(write_only=True, style={'base_template': 'textarea.html'})
+    limits = serializers.JSONField(write_only=True)
 
     class Meta:
         model = Problem
@@ -147,12 +148,13 @@ class NewProblemSerializer(serializers.ModelSerializer):
         source = validated_data.pop('source')
         author = validated_data.pop('author')
         status = validated_data.pop('status')
+        limits = validated_data.pop('limits')
 
-        return Problem.create_new_problem(description, sample, [], [], test_type,
+        return Problem.create_new_problem(description, sample, limits, [], test_type,
                                           title, introduction, source, author, status)
 
 
-class SpecialJudgeListSerializer(serializers.ModelSerializer):
+class SpecialJudgeSerializer(serializers.ModelSerializer):
     code = serializers.CharField(write_only=True, style={'base_template': 'textarea.html'})
 
     class Meta:
@@ -166,59 +168,48 @@ class SpecialJudgeListSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
         documents.SpecialJudge.set_code(str(instance.problem.meta_problem_id),
                                         str(instance.problem_id),
-
                                         code.encode('utf-8'))
 
-        info = {
-            'isFiles': 'false',
-            'sid': 'SPJ',
-            'mid': str(instance.problem.meta_problem_id),
-            'pid': str(instance.problem_id),
-            'eid': str(instance.environment_id),
-            'code': code,
-        }
-        send_code_insert.delay(instance.problem.meta_problem_id, instance.problem_id, info=info)
+        send_code_insert.delay(str(instance.problem.meta_problem_id),
+                               str(instance.problem_id),
+                               str(instance.environment_id),
+                               code)
+
+        problem = instance.problem
+        problem.test_type = 'SPJ'
+        problem.save()
+
         return instance
-
-
-class SpecialJudgeDetailSerializer(serializers.ModelSerializer):
-    code = serializers.CharField(write_only=True, style={'base_template': 'textarea.html'})
-
-    class Meta:
-        model = SpecialJudge
-        exclude = ('problem',)
-        read_only_fields = resource_read_only
 
     def update(self, instance, validated_data):
         code = validated_data.pop('code')
+
         instance = super().update(instance, validated_data)
         documents.SpecialJudge.set_code(str(instance.problem.meta_problem_id),
                                         str(instance.problem_id),
-
                                         code.encode('utf-8'))
-        info = {
-            'isFiles': 'false',
-            'sid': 'SPJ',
-            'mid': str(instance.problem.meta_problem_id),
-            'pid': str(instance.problem_id),
-            'eid': str(instance.environment_id),
-            'code': code,
-        }
 
-        send_code_insert.delay(instance.problem.meta_problem_id, instance.problem_id, info=info)
+        send_code_insert.delay(str(instance.problem.meta_problem_id),
+                               str(instance.problem_id),
+                               str(instance.environment_id),
+                               code)
         return instance
 
     @staticmethod
     def delete_mongodb(instance):
-        info = {
-            'isFiles': 'false',
-            'sid': 'SPJ',
-            'mid': str(instance.problem.meta_problem_id),
-            'pid': str(instance.problem_id),
-            'eid': str(instance.environment_id),
-            'code': '',
-        }
-        documents.SpecialJudge.remove_code(str(instance.problem_id))
+        problem = instance.problem
+        problem.test_type = 'normal'
+        problem.save()
 
-        send_code_delete.delay(instance.problem.meta_problem_id, instance.problem_id, info=info)
-
+        # info = {
+        #     'isFiles': 'false',
+        #     'sid': 'SPJ',
+        #     'mid': str(instance.problem.meta_problem_id),
+        #     'pid': str(instance.problem_id),
+        #     'eid': str(instance.environment_id),
+        #     'code': '',
+        # }
+        # documents.SpecialJudge.remove_code(str(instance.problem_id))
+        #
+        # send_code_delete.delay(instance.problem.meta_problem_id, instance.problem_id, info=info)
+        pass

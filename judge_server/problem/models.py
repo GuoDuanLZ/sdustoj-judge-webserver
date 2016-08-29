@@ -9,6 +9,8 @@ from client.models import Client
 
 from django.db import transaction
 
+from json import loads
+
 
 # Meta Problem #########################################################################################################
 
@@ -94,6 +96,7 @@ class Problem(Resource, SourceMixin, StatusMixin):
         ('normal', 'normal'),
         ('ignBlank', 'ignore blank'),
         ('ignPunct', 'ignore punctuation'),
+        ('SPJ', 'special judge'),
     )
 
     meta_problem = models.ForeignKey(to=MetaProblem, related_name='problem', to_field='id')
@@ -154,6 +157,7 @@ class Problem(Resource, SourceMixin, StatusMixin):
                           meta_problem=meta_problem, test_type=test_type, description=description, sample=sample)
         problem.save()
 
+        limits = loads(limits) if isinstance(limits, str) else limits
         for limit in limits:
             title = limit.get('title', str(count))
             introduction = limit.get('introduction')
@@ -166,7 +170,8 @@ class Problem(Resource, SourceMixin, StatusMixin):
 
             limit = Limit(title=title, introduction=introduction, status=status,
                           environment=environment, language=language,
-                          time_limit=time_limit, memory_limit=memory_limit, length_limit=length_limit)
+                          time_limit=time_limit, memory_limit=memory_limit, length_limit=length_limit,
+                          problem=problem)
 
             limit.save()
 
@@ -198,6 +203,11 @@ class InvalidWord(ModifyInfo):
     problem = models.ForeignKey(to=Problem, related_name='invalid_word', to_field='id')
     id = models.BigAutoField(primary_key=True)
     word = models.CharField(max_length=64)
+
+
+class SpecialJudge(Resource):
+    problem = models.OneToOneField(to=Problem, related_name='special_judge', to_field='id', primary_key=True)
+    environment = models.ForeignKey(to=Environment, related_name='special_judge', to_field='eid')
 
 
 # ----- Relations ---------------------------------------------------------------------------------
@@ -286,10 +296,3 @@ class SubmissionDetail(models.Model):
 class SubmissionCode(models.Model):
     submission = models.OneToOneField(to=Submission, related_name='code', to_field='id', primary_key=True)
     info = postgres_fields.JSONField()
-
-
-# SpecialJudge##########################################################################################################
-
-class SpecialJudge(Resource):
-    problem = models.OneToOneField(to=Problem, related_name='special_judge', to_field='id', primary_key=True)
-    environment = models.ForeignKey(to=Environment, related_name='special_judge', to_field='eid')

@@ -1,16 +1,20 @@
 from rest_framework import filters
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin, DestroyModelMixin, ListModelMixin
+from rest_framework.decorators import detail_route
+from rest_framework.exceptions import ValidationError
 from utils.viewsets import NestedResourceListViewSet, NestedResourceDetailViewSet, NestedResourceListOnlyViewSet
 from utils.viewsets import ResourceListViewSet
 from utils.viewsets import NestedResourceReadOnlyViewSet
 from utils.filters import resource_ordering
 
+from django.http import HttpResponseRedirect
+
 from user.api_server.permission import IsProblemAdmin, IsCategoryAdmin, ProblemAdminEditable
 
 from ..models import MetaProblem, Problem, SpecialJudge
 from .problem_serializers import ProblemListSerializer, ProblemDetailSerializer, ProblemReadOnlySerializer, \
-    SpecialJudgeListSerializer, SpecialJudgeDetailSerializer
+    SpecialJudgeSerializer
 from .problem_serializers import NewProblemSerializer
 from .problem_filters import ProblemFilter
 
@@ -77,6 +81,38 @@ class ProblemReadOnlyViewSet(ReadOnlyModelViewSet):
 
     renderer_classes = (JSONRenderer, ProblemListRenderer, BrowsableAPIRenderer, AdminRenderer)
 
+    @detail_route(methods=['get', 'post', 'update', 'patch', 'delete'])
+    def special_judge(self, request, *args, **kwargs):
+        print(request, args, kwargs)
+        if request.method == 'GET':
+            special_judge = SpecialJudge.objects.filter(problem_id=kwargs['pk']).first()
+            if special_judge is None:
+                return Response()
+            serializer = SpecialJudgeSerializer(instance=special_judge)
+            return Response(dict(serializer.data))
+        if request.method == 'POST':
+            problem = get_object_or_404(Problem.objects.all(), id=kwargs['problem_pk'])
+            serializer = SpecialJudgeSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(problem=problem)
+            return Response(dict(serializer.data))
+        if request.method == 'UPDATE':
+            instance = get_object_or_404(SpecialJudge.objects.all(), problem_id=kwargs['pk'])
+            serializer = SpecialJudgeSerializer(instance=instance, data=request.data, many=False)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(dict(serializer.data))
+        if request.method == 'PATCH':
+            instance = get_object_or_404(SpecialJudge.objects.all(), problem_id=kwargs['pk'])
+            serializer = SpecialJudgeSerializer(instance=instance, data=request.data, many=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(dict(serializer.data))
+        if request.method == 'DELETE':
+            instance = get_object_or_404(SpecialJudge.objects.all(), problem_id=kwargs['pk'])
+            SpecialJudgeSerializer.delete_mongodb(instance)
+            instance.delete()
+
 
 class NewProblemViewSet(ResourceListViewSet):
     queryset = Problem.objects.all()
@@ -86,12 +122,10 @@ class NewProblemViewSet(ResourceListViewSet):
     renderer_classes = (JSONRenderer, NewProblemRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def create(self, request, *args, **kwargs):
+        print(request.data)
         limits = request.data.get('limits')
-        test_in = request.data.get('test_in')
-        test_out = request.data.get('test_out')
-        request.data['limits'] = limits if limits else None
-        request.data['test_in'] = test_in if test_in else None
-        request.data['test_out'] = test_out if test_out else None
+        # test_in = request.data.get('test_in')
+        # test_out = request.data.get('test_out')
         return super().create(request, *args, **kwargs)
 
 
@@ -223,7 +257,7 @@ class NodeProblemDetailViewSet(NestedResourceDetailViewSet):
 
 class SpecialJudgeListViewSet(NestedResourceListViewSet):
     queryset = SpecialJudge.objects.all()
-    serializer_class = SpecialJudgeListSerializer
+    serializer_class = SpecialJudgeSerializer
     permission_classes = (IsProblemAdmin,)
 
     parent_queryset = Problem.objects.all()
@@ -231,25 +265,28 @@ class SpecialJudgeListViewSet(NestedResourceListViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'problem'
 
-    #renderer_classes = (JSONRenderer, SpecialJudgeListRenderer, BrowsableAPIRenderer, AdminRenderer)
+    # renderer_classes = (JSONRenderer, SpecialJudgeListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
     def list(self, request, *args, **kwargs):
-        special_judge = SpecialJudge.objects.filter(problem_id=kwargs['problem_pk']).first()
-        if special_judge is not None:
-            serializer = SpecialJudgeDetailSerializer(instance=special_judge)
-            return Response(serializer.data)
-        return super().list(request, *args, **kwargs)
+        kwargs['pk'] = kwargs['problem_pk']
+        return ProblemReadOnlyViewSet.special_judge(ProblemReadOnlyViewSet(), request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        kwargs['pk'] = kwargs['problem_pk']
+        return ProblemReadOnlyViewSet.special_judge(ProblemReadOnlyViewSet(), request, *args, **kwargs)
 
 
 class SpecialJudgeDetailViewSet(NestedResourceDetailViewSet):
     queryset = SpecialJudge.objects.all()
-    serializer_class = SpecialJudgeDetailSerializer
+    serializer_class = SpecialJudgeSerializer
     permission_classes = (IsProblemAdmin,)
 
-    #renderer_classes = (JSONRenderer, SpecialJudgeDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
+    # renderer_classes = (JSONRenderer, SpecialJudgeDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
-    def perform_destroy(self, instance):
-        SpecialJudgeDetailSerializer.delete_mongodb(instance)
-        super().perform_destroy(instance)
+    def update(self, request, *args, **kwargs):
+        kwargs['pk'] = kwargs['problem_pk']
+        return ProblemReadOnlyViewSet.special_judge(ProblemReadOnlyViewSet(), request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        kwargs['pk'] = kwargs['problem_pk']
+        return ProblemReadOnlyViewSet.special_judge(ProblemReadOnlyViewSet(), request, *args, **kwargs)

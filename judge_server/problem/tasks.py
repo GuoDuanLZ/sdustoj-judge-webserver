@@ -117,14 +117,16 @@ def _send_code_message(machines, info):
     r = redis.Redis(connection_pool=pool)
 
     m_ok = machines
-    print('m_ok', m_ok)
     q_send = []
 
     ms = Machine.objects.all()
-    print('ms', ms)
     length = ms.count()
     i = 1
+
+    print(info)
+    print(type(info))
     i_send = dumps(info)
+
     for m in ms:
         print(m.name, m_ok, m.name in m_ok)
         if m.name in m_ok:
@@ -136,17 +138,27 @@ def _send_code_message(machines, info):
     return q_send
 
 
+def _get_spj_code(mid, pid, eid, code):
+    info = {
+        'isFiles': 'false',
+        'sid': 'SPJ',
+        'mid': mid,
+        'pid': pid,
+        'eid': eid,
+        'code': code,
+    }
+    return info
+
+
 @shared_task
-def send_code_insert(mid=None, tid=None, machine_name=None, info=None):
-    machines = _get_code_machines_to_inform(mid, tid, machine_name)
-    print(machines)
-    q_send = _send_code_message(machines, info)
+def send_code_insert(mid, pid, eid, code):
+    machines = _get_code_machines_to_inform(mid, pid)
+    q_send = _send_code_message(machines, _get_spj_code(mid, pid, eid, code))
     return q_send
 
 
 @shared_task
-def send_code_delete(mid=None, tid=None, machine_name=None, info=None):
-    machines = _get_code_machines_to_inform(mid, tid, machine_name)
-    print(info)
-    _send_code_message(machines, info)
-    return machines
+def send_code_delete(mid=None, pid=None, eid=None, code=None):
+    machines = _get_code_machines_to_inform(mid, pid)
+    q_send = _send_code_message(machines, dumps(_get_spj_code(mid, pid, eid, code)))
+    return q_send

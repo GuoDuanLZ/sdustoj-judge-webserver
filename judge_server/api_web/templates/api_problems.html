@@ -210,10 +210,131 @@
 {% endif %}
 {% endblock %}
 
+{% block buttons %}
+<button type="button" class="button-form btn btn-primary" data-toggle="modal" data-target="#createNewModal">
+  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 创建题目
+</button>
+
+<div class="modal fade" id="createNewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myNewModalLabel">创建题目</h4>
+      </div>
+      <form id="new-problem-form" action="/api-server/new-problems/" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {% csrf_token %}
+            <div class="form-group ">
+              <label class="col-sm-2 control-label ">描述</label>
+              <div class="col-sm-10">
+                <textarea name="description" class="form-control"  ></textarea>
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-2 control-label ">样例</label>
+              <div class="col-sm-10">
+                <textarea name="sample" class="form-control"  ></textarea>
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-2 control-label ">标题</label>
+              <div class="col-sm-10">
+                <input name="title" class="form-control" type="text"  >
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-2 control-label ">简介</label>
+              <div class="col-sm-10">
+                <input name="introduction" class="form-control" type="text"  >
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-2 control-label ">来源</label>
+              <div class="col-sm-10">
+                <input name="source" class="form-control" type="text"  >
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-2 control-label ">作者</label>
+              <div class="col-sm-10">
+                <input name="author" class="form-control" type="text"  >
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label ">状态</label>
+              <div class="col-sm-10">
+                <select class="form-control" name="status">
+                  <option value="1"  >可用</option>
+                  <option value="0"  >不可用</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label ">评测类型</label>
+              <div class="col-sm-10">
+                <select class="form-control" name="test_type">
+                  <option value="normal"  >标准评测</option>
+                  <option value="ignBlank"  >非空白符比对</option>
+                  <option value="ignPunct"  >非标点比对</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">编程限制</label>
+              <div class="col-sm-10">
+                <div id="limits">
+                  <div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label">环境</label>
+                      <div class="col-sm-10">
+                        <select class="form-control limits-env" name="environment" id="s-env">
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label ">时间</label>
+                      <div class="col-sm-10">
+                        <input name="time_limit" class="form-control" type="number"  >
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label ">内存</label>
+                      <div class="col-sm-10">
+                        <input name="memory_limit" class="form-control" type="number"  >
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label ">长度</label>
+                      <div class="col-sm-10">
+                        <input name="length_limit" class="form-control" type="number"  >
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <a class="btn btn-danger pull-right delete-limit">删除此限制↑</a>
+                    </div>
+                    <br>
+                  </div>
+                </div>
+                <a class="btn btn-primary" id="new-limit">添加编程限制</a>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="new-problem-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
 {% block script %}
-{% if style != 'list' %}
 <script>
+  {% if style != 'list' %}
   $.ajax({
     type: 'GET',
     url: '/api-server/problems/{{ results.id }}/limits/',
@@ -253,89 +374,74 @@
   {% else %}
   $('#p-s').text('--')
   {% endif %}
+  {% endif %}
+
+  var selection = ""
+  $.ajax({
+    type: 'GET',
+    url: '/api-server/environments/',
+    dataType: 'json',
+    success: function(response) {
+      results = response.results
+      for(var i = 0; i != results.length; ++i) {
+        env = results[i]
+        selection += '<option value="'+env.eid+'">'+env.language+'</option>'
+      }
+      $('#s-env').append(selection)
+      var append = '<div><div class="form-group"><label class="col-sm-2 control-label">环境</label><div class="col-sm-10"><select class="form-control limits-env" name="environment" id="s-env">'+selection+'</select></div></div><div class="form-group"><label class="col-sm-2 control-label ">时间</label><div class="col-sm-10"><input name="time_limit" class="form-control" type="number"  ></div></div><div class="form-group"><label class="col-sm-2 control-label ">内存</label><div class="col-sm-10"><input name="memory_limit" class="form-control" type="number"  ></div></div><div class="form-group"><label class="col-sm-2 control-label ">长度</label><div class="col-sm-10"><input name="length_limit" class="form-control" type="number"  ></div></div><div class="form-group"><a class="btn btn-danger pull-right delete-limit">删除此限制↑</a></div><br></div>'
+
+      $('.delete-limit').click(function() {
+        $(this).parent().parent().remove()
+      })
+
+      $('#new-limit').click(function() {
+        $('#limits').append(append)
+        $('.delete-limit').click(function() {
+          $(this).parent().parent().remove()
+        })
+      })
+
+      $('#new-problem-btn').click(function() {
+        var env = []
+        $('#limits').children('div').each(function(i, n) {
+          var obj = $(n)
+          var env_data = {
+            'environment': obj.find('select[name="environment"] option:selected').val(),
+            'title': obj.find('select[name="environment"] option:selected').text(),
+            'time_limit': obj.find('input[name="time_limit"]').val(),
+            'memory_limit': obj.find('input[name="memory_limit"]').val(),
+            'length_limit': obj.find('input[name="length_limit"]').val()
+          }
+          env.push(env_data)
+        })
+
+        var data = {
+          'description': $('textarea[name="description"]').val(),
+          'sample': $('textarea[name="sample"]').val(),
+          'title': $('input[name="title"]').val(),
+          'introduction': $('input[name="introduction"]').val(),
+          'source': $('input[name="source"]').val(),
+          'author': $('input[name="author"]').val(),
+          'status': $('select[name="status"] option:selected').val(),
+          'test_type': $('select[name="test_type"] option:selected').val(),
+          'limits': JSON.stringify(env)
+        }
+
+        $.ajax({
+          type: 'post',
+          url: '/api-server/new-problems/',
+          data: data,
+          dataType: 'json',
+          success: function(response) {
+            location.reload()
+          },
+          error: function(response, info, error) {
+            alert(JSON.stringify(response.responseJSON))
+          }
+        })
+      })
+    }
+  })
+
 </script>
-{% endif %}
-{% endblock %}
-
-{% block buttons %}
-<button type="button" class="button-form btn btn-primary" data-toggle="modal" data-target="#createNewModal">
-  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 创建全新题目
-</button>
-
-<div class="modal fade" id="createNewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myNewModalLabel">创建全新题目</h4>
-      </div>
-      <form action="/api-server/new-problems/" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
-        <div class="modal-body">
-          <fieldset>
-            {% csrf_token %}
-            <div class="form-group ">
-              <label class="col-sm-2 control-label ">Description</label>
-              <div class="col-sm-10">
-                <textarea name="description" class="form-control"  ></textarea>
-              </div>
-            </div>
-            <div class="form-group ">
-              <label class="col-sm-2 control-label ">Sample</label>
-              <div class="col-sm-10">
-                <textarea name="sample" class="form-control"  ></textarea>
-              </div>
-            </div>
-            <div class="form-group ">
-              <label class="col-sm-2 control-label ">Title</label>
-              <div class="col-sm-10">
-                <input name="title" class="form-control" type="text"  >
-              </div>
-            </div>
-            <div class="form-group ">
-              <label class="col-sm-2 control-label ">Introduction</label>
-              <div class="col-sm-10">
-                <input name="introduction" class="form-control" type="text"  >
-              </div>
-            </div>
-            <div class="form-group ">
-              <label class="col-sm-2 control-label ">Source</label>
-              <div class="col-sm-10">
-                <input name="source" class="form-control" type="text"  >
-              </div>
-            </div>
-            <div class="form-group ">
-              <label class="col-sm-2 control-label ">Author</label>
-              <div class="col-sm-10">
-                <input name="author" class="form-control" type="text"  >
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label ">Status</label>
-              <div class="col-sm-10">
-                <select class="form-control" name="status">
-                  <option value="1"  >available</option>
-                  <option value="0"  >unavailable</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label ">Test type</label>
-              <div class="col-sm-10">
-                <select class="form-control" name="test_type">
-                  <option value="normal"  >normal</option>
-                  <option value="ignBlank"  >ignore blank</option>
-                  <option value="ignPunct"  >ignore punctuation</option>
-                </select>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 {% endblock %}

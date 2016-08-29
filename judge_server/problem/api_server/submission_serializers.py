@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Submission, SubmissionCode, SubmissionDetail, SubmissionMessage, InvalidWord
+from ..models import Submission, SubmissionCode, SubmissionDetail, SubmissionMessage
 from ..documents import CodeInfo
 
 from judge_server.redis_connections import pool
@@ -13,6 +13,8 @@ from judge.models import Machine
 
 from rest_framework import filters
 from .submission_filters import SubmissionFilter
+
+from ..models import SpecialJudge
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
@@ -78,6 +80,10 @@ class SubmissionSerializer(serializers.ModelSerializer):
             'code': code,
         }
 
+        special_judge = SpecialJudge.objects.filter(problem_id=instance.problem_id).first()
+        if special_judge is not None:
+            info['ttype'] = special_judge.environment_id
+
         invalid_words = ''
         for iw in problem.invalid_word.all():
             invalid_words += (' ' + iw.word)
@@ -86,8 +92,11 @@ class SubmissionSerializer(serializers.ModelSerializer):
             invalid_words = invalid_words[1:]
             info['InvalidWord'] = invalid_words
 
+        queue_name = self._get_queue_name(instance)
+        info = dumps(info)
+        print('sub to redis:', queue_name, info)
 
-        r.rpush(self._get_queue_name(instance), info)
+        r.rpush(queue_name, info)
 
         return instance
 
