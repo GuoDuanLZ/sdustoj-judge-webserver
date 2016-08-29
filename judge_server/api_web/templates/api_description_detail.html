@@ -124,7 +124,7 @@
   $('#mp-t').attr('href', '/api-server/meta-problems/'+mid+'/test-data/')
   $('#mp-p').attr('href', '/api-server/meta-problems/'+mid+'/problems/')
   $(function () {
-    $('#edit-button').click(function(){
+    $('#edit_button').click(function(){
        $.ajax({
             url: "/api-server/meta-problems/" + mid + "/descriptions/"+ id +"/",
             type: "GET",

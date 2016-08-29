@@ -63,7 +63,58 @@
       <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
-            {{ put_form }}
+             <div class="form-group">
+              <label class="col-sm-3 control-label ">
+               <div class="text-left">编程环境：</div>
+              </label>
+              <div class="col-sm-9">
+                <select multiple class="form-control" name="environment" id="e_environment">
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label ">
+                 <div class="text-left">状态：</div>
+              </label>
+              <div class="col-sm-9">
+                <select class="form-control" name="status" id="status">
+                  <option value="1">available</option>
+                  <option value="0">unavailable</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">详细信息：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="detail" class="form-control" type="text" id="detail">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">配置：</div>
+              </label>
+              <div class="col-sm-9">
+                <textarea name="settings" class="form-control" id="settings"></textarea>
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">命令队列：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="cmd_queue" class="form-control" type="text" id="cmd_queue">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">数据队列：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="data_queue" class="form-control" type="text" id="data_queue">
+              </div>
+            </div>
           </fieldset>
         </div>
         <div class="modal-footer">
@@ -103,13 +154,72 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">创建</h4>
+        <h4 class="modal-title" id="mModalLabel">创建</h4>
       </div>
       <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            {{ post_form }}
+            <div class="form-group">
+              <label class="col-sm-3 control-label ">
+               <div class="text-left">编程环境：</div>
+              </label>
+              <div class="col-sm-9">
+                <select multiple class="form-control" name="environment" id="environment">
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label ">
+                 <div class="text-left">状态：</div>
+              </label>
+              <div class="col-sm-9">
+                <select class="form-control" name="status">
+                  <option value="1">available</option>
+                  <option value="0">unavailable</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                 <div class="text-left">评测机账号：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="name" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">详细信息：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="detail" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">配置：</div>
+              </label>
+              <div class="col-sm-9">
+                <textarea name="settings" class="form-control"></textarea>
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">命令队列：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="cmd_queue" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">数据队列：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="data_queue" class="form-control" type="text">
+              </div>
+            </div>
           </fieldset>
         </div>
         <div class="modal-footer">
@@ -133,6 +243,9 @@
 {% block script %}
 {% if style != 'list' %}
 <script>
+   var url = location.href
+  var urls = url.split('/')
+   var id= urls[urls.length-3]
   $('#update-data').click(function() {
     $.ajax({
       type: 'POST',
@@ -142,6 +255,67 @@
       }
     })
   })
+  $('#edit_button').click(function(){
+      $.ajax({
+                url: "/api-server/environments/",
+                data: {},
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data.results, function (i, item) {
+                        $('#e_environment').append(function () {
+                            var op = '<option value="' + item.eid + '">' + item.language + '</option>'
+                            return op;
+                        });
+                    });
+                }
+     });
+    $.ajax({
+        url: "/api-server/machines/"+id+"/",
+        data: {},
+        type: "GET",
+        dataType: "json",
+        success:function(data){
+          var col=data.environment;
+          for(var i=0;i<col.length;i++)
+          {
+            var t=col[i];
+            $('#e_environment option').each(function (i,item) {
+              var op=$(this).val();
+              if(op==t)
+                $(this).prop('selected','selected');
+            })
+          }
+          $('#status option').each(function(i,item){
+             var op=$(this).val();
+            if(op==data.status)
+              $(this).prop('selected','selected');
+          });
+          $('#detail').val(data.detail);
+          $('#settings').val(data.settings);
+          $('#cmd_queue').val(data.cmd_queue);
+          $('#data_queue').val(data.data_queue);
+        }
+    })
+  })
 </script>
 {% endif %}
+<script>
+   $('#creat-button').on('click',function () {
+     $.ajax({
+                url: "/api-server/environments/",
+                data: {},
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data.results, function (i, item) {
+                        $('#environment').append(function () {
+                            var op = '<option value="' + item.eid + '">' + item.language + '</option>'
+                            return op;
+                        });
+                    });
+                }
+     })
+  });
+</script>
 {% endblock %}

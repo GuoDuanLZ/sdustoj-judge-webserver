@@ -181,7 +181,7 @@
               data:{},
               success:function(data){
                   $('#eid').val(data.eid);
-                  $('#status').each(function (i,item) {
+                  $('#status option').each(function (i,item) {
                         var op=$(this).val();
                         if(op==data.status)
                             $(this).prop('selected','selected');

@@ -138,6 +138,7 @@
   $('#mp-tui').attr('href', '/api-server/meta-problems/'+mid+'/test-data-in/{{results.id}}/')
   $('#mp-tuo').attr('href', '/api-server/meta-problems/'+mid+'/test-data-out/{{results.id}}/')
   $('#mp-p').attr('href', '/api-server/meta-problems/'+mid+'/problems/')
+  $(function(){
     $('#edit_button').click(function(){
          $.ajax({
             url: "/api-server/meta-problems/" + mid + "/test-data/"+ id +"/",

@@ -53,7 +53,14 @@
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            {{ post_form }}
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                      <div class="text-left">禁用单词：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="word" class="form-control" type="text">
+                  </div>
+              </div>
           </fieldset>
         </div>
         <div class="modal-footer">
