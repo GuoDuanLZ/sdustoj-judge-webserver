@@ -27,6 +27,8 @@
       <td>
       {% if results.test_type == 'normal' %}
         标准评测
+      {% elif results.test_type == 'specoalJudge' %}
+        特殊评测
       {% elif results.test_type == 'ignBlank' %}
         非空白符评测
       {% elif results.test_type == 'ignPunct' %}
@@ -206,6 +208,7 @@
 <li><a href="/api-server/problems/{{ results.id }}/limits/">编程限制集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/invalid-words/" id="pro-i">非法单词集</a></li>
 <li><a href="/api-server/problems/{{ results.id }}/test-data/">选用测试数据集</a></li>
+<li><a href="/api-server/problems/{{ results.id }}/special-judge/">添加特殊评测</a></li>
 <li><a type="button" data-toggle="modal" data-target="#submitModal">提交程序</a></li>
 {% endif %}
 {% endblock %}

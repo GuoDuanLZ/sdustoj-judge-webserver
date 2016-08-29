@@ -2,13 +2,10 @@ from rest_framework import filters
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin, DestroyModelMixin, ListModelMixin
 from rest_framework.decorators import detail_route
-from rest_framework.exceptions import ValidationError
 from utils.viewsets import NestedResourceListViewSet, NestedResourceDetailViewSet, NestedResourceListOnlyViewSet
 from utils.viewsets import ResourceListViewSet
 from utils.viewsets import NestedResourceReadOnlyViewSet
 from utils.filters import resource_ordering
-
-from django.http import HttpResponseRedirect
 
 from user.api_server.permission import IsProblemAdmin, IsCategoryAdmin, ProblemAdminEditable
 
@@ -122,10 +119,6 @@ class NewProblemViewSet(ResourceListViewSet):
     renderer_classes = (JSONRenderer, NewProblemRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
-        limits = request.data.get('limits')
-        # test_in = request.data.get('test_in')
-        # test_out = request.data.get('test_out')
         return super().create(request, *args, **kwargs)
 
 
@@ -265,7 +258,7 @@ class SpecialJudgeListViewSet(NestedResourceListViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'problem'
 
-    # renderer_classes = (JSONRenderer, SpecialJudgeListRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, SpecialJudgeListRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def list(self, request, *args, **kwargs):
         kwargs['pk'] = kwargs['problem_pk']
@@ -281,7 +274,7 @@ class SpecialJudgeDetailViewSet(NestedResourceDetailViewSet):
     serializer_class = SpecialJudgeSerializer
     permission_classes = (IsProblemAdmin,)
 
-    # renderer_classes = (JSONRenderer, SpecialJudgeDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, SpecialJudgeDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def update(self, request, *args, **kwargs):
         kwargs['pk'] = kwargs['problem_pk']

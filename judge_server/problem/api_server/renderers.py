@@ -141,8 +141,8 @@ class CategoryNodeProblemRelationRenderer(APIRenderer):
 
 
 class SpecialJudgeListRenderer(APIRenderer):
-    template = 'api_categorie_node_problem_relation.html'
+    template = 'api_special_judge_list.html'
 
 
 class SpecialJudgeDetailRenderer(APIRenderer):
-    template = 'api_categorie_node_problem_relation.html'
+    template = 'api_special_judge_detail.html'

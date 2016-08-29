@@ -1,7 +1,5 @@
-from redis import Redis
 from rest_framework import serializers
 
-from judge_server.redis_connections import pool
 from problem import documents
 from utils.serializers import resource_read_only
 
@@ -13,8 +11,7 @@ from ..models import TestData, ProblemTestData
 from ..models import InvalidWord
 
 
-from ..tasks import send_data_insert, send_data_delete, send_code_insert, send_code_delete
-
+from ..tasks import send_data_insert, send_code_insert
 
 
 class ProblemListSerializer(serializers.ModelSerializer):
@@ -159,8 +156,8 @@ class SpecialJudgeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SpecialJudge
-        exclude = ('problem',)
-        read_only_fields = resource_read_only
+        fields = '__all__'
+        read_only_fields = resource_read_only + ('problem',)
 
     def create(self, validated_data):
         code = validated_data.pop('code')

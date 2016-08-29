@@ -19,6 +19,7 @@ class ResultViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     lookup_field = 'name'
 
     def update(self, request, *args, **kwargs):
+
         if request.data.get('msg') == '':
             request.data['msg'] = None
         if request.data.get('tid') == '':
