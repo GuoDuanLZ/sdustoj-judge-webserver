@@ -127,11 +127,6 @@ class NewProblemSerializer(serializers.ModelSerializer):
     description = serializers.CharField(write_only=True, style={'base_template': 'textarea.html'})
     sample = serializers.CharField(write_only=True, style={'base_template': 'textarea.html'})
 
-    limits = serializers.JSONField(write_only=True)
-
-    test_in = serializers.ListField(write_only=True, child=serializers.FileField())
-    test_out = serializers.ListField(write_only=True, child=serializers.FileField())
-
     class Meta:
         model = Problem
         exclude = ('test_data',)
@@ -145,30 +140,14 @@ class NewProblemSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         description = validated_data.pop('description')
         sample = validated_data.pop('sample')
-        limits = validated_data.pop('limits')
-        test_in = validated_data.pop('test_in')
-        test_out = validated_data.pop('test_out')
         test_type = validated_data.pop('test_type')
         title = validated_data.pop('title')
-        introduction = validated_data.pop('introductizon')
+        introduction = validated_data.pop('introduction')
         source = validated_data.pop('source')
         author = validated_data.pop('author')
         status = validated_data.pop('status')
 
-        if len(test_in) != len(test_out):
-            raise serializers.ValidationError('Invalid Test Data format.')
-        for limit in limits:
-            if 'environment' not in limit:
-                raise serializers.ValidationError('Invalid Limit format.')
-
-        tests = []
-        for i in range(0, len(test_in)):
-            tests.append({
-                'test_in': test_in[i],
-                'test_out': test_out[i],
-            })
-
-        return Problem.create_new_problem(description, sample, limits, tests, test_type,
+        return Problem.create_new_problem(description, sample, [], [], test_type,
                                           title, introduction, source, author, status)
 
 

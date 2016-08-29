@@ -86,7 +86,6 @@ class SubmissionSerializer(serializers.ModelSerializer):
             invalid_words = invalid_words[1:]
             info['InvalidWord'] = invalid_words
 
-        info = dumps(info)
 
         r.rpush(self._get_queue_name(instance), info)
 
