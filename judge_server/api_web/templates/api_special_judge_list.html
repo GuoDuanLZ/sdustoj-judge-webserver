@@ -1,0 +1,109 @@
+{% extends "api_meta.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load rest_framework %}
+
+{% block title %}
+{% if style != 'list' %}
+题目详情 - SDUSTOJ API
+{% else %}
+题目列表 - SDUSTOJ API
+{% endif %}
+{% endblock %}
+
+{% block body %}
+{% if True %}
+{% if style != 'list' %}
+<h1>特殊评测 Problem - {{ results.problem}}</h1>
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+  <tr>
+    <th>所属问题</th>
+    <td><pre>{{ results.introduction }}</pre></td>
+  </tr>
+  <tr>
+    <th>简介</th>
+    <td><pre>{{ results.introduction }}</pre></td>
+  </tr>
+  <tr>
+    <th>状态</th>
+    <td>{% if results.status == 1 %}可用{% else %}不可用{% endif %}</td>
+  </tr>
+  <tr>
+    <th>创建者</th>
+    <td>{{ results.creator }}</td>
+  </tr>
+  <tr>
+    <th>创建时间</th>
+    <td>{{ results.create_time }}</td>
+  </tr>
+  <tr>
+    <th>最后更新</th>
+    <td>{{ results.updater }}</td>
+  </tr>
+  <tr>
+    <th>最后更新时间</th>
+    <td>{{ results.update_time }}</td>
+  </tr>
+  <tr>
+    <th>来源</th>
+    <td>{{ results.source }}</td>
+  </tr>
+  <tr>
+    <th>原作者</th>
+    <td>{{ results.author }}</td>
+  </tr>
+  <tr>
+      <th><button onclick="location='/api-server/problems/{{ results.problem }}/special-judge/{{ results.problem }}'" class="btn btn-primary">详细</button></th>
+  </tr>
+</table>
+{% else %}
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+    <h1>无特殊评测</h1>
+</table>
+{% endif %}
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create</h4>
+      </div>
+      <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {% csrf_token %}
+            {{ post_form }}
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block cur %}
+{% if style != 'list' %}
+题目
+{% else %}
+题目集
+{% endif %}
+{% endblock %}
+
+{% block cur_nav %}
+<li><a {% if style == 'list' %}class="btn btn-primary"{% endif %} href="/api-server/problems/?ordering=id">浏览题目</a></li>
+{% if style != 'list' %}
+<li><a {% if style != 'list' %}class="btn btn-primary"{% endif %} href="/api-server/problems/{{ results.problem }}/special-judge/">特殊评测</a></li>
+<li><a href="/api-server/problems/{{ results.problem }}/limits/">编程限制集</a></li>
+<li><a href="/api-server/problems/{{ results.problem }}/invalid-words/" id="pro-i">非法单词集</a></li>
+<li><a href="/api-server/problems/{{ results.problem }}/test-data/">选用测试数据集</a></li>
+<li><a href="/api-server/problems/{{ results.problem }}/special-judge/">添加特殊评测</a></li>
+<li><a type="button" data-toggle="modal" data-target="#submitModal">提交程序</a></li>
+{% endif %}
+{% endblock %}

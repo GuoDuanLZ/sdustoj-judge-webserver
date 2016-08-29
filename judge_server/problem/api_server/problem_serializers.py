@@ -16,7 +16,6 @@ from ..models import InvalidWord
 from ..tasks import send_data_insert, send_data_delete, send_code_insert, send_code_delete
 
 
-
 class ProblemListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
@@ -178,8 +177,8 @@ class SpecialJudgeListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SpecialJudge
-        exclude = ('problem',)
-        read_only_fields = resource_read_only
+        fields = '__all__'
+        read_only_fields = resource_read_only + ('problem',)
 
     def create(self, validated_data):
         code = validated_data.pop('code')
@@ -207,8 +206,8 @@ class SpecialJudgeDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SpecialJudge
-        exclude = ('problem',)
-        read_only_fields = resource_read_only
+        fields = '__all__'
+        read_only_fields = resource_read_only + ('problem',)
 
     def update(self, instance, validated_data):
         code = validated_data.pop('code')

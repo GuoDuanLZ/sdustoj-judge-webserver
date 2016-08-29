@@ -220,7 +220,8 @@ class SpecialJudgeListViewSet(NestedResourceListViewSet):
     parent_pk_field = 'id'
     parent_related_name = 'problem'
 
-    #renderer_classes = (JSONRenderer, SpecialJudgeListRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, SpecialJudgeListRenderer, BrowsableAPIRenderer, AdminRenderer)
+
     def list(self, request, *args, **kwargs):
         special_judge = SpecialJudge.objects.filter(problem_id=kwargs['problem_pk']).first()
         if special_judge is not None:
@@ -237,7 +238,7 @@ class SpecialJudgeDetailViewSet(NestedResourceDetailViewSet):
     serializer_class = SpecialJudgeDetailSerializer
     permission_classes = (IsProblemAdmin,)
 
-    #renderer_classes = (JSONRenderer, SpecialJudgeDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
+    renderer_classes = (JSONRenderer, SpecialJudgeDetailRenderer, BrowsableAPIRenderer, AdminRenderer)
 
     def perform_destroy(self, instance):
         SpecialJudgeDetailSerializer.delete_mongodb(instance)
