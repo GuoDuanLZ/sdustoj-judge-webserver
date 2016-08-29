@@ -90,18 +90,77 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Create</h4>
+        <h4 class="modal-title" id="myModalLabel">创建</h4>
       </div>
       <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            {{ post_form }}
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                     <div class="text-left">标题：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="title" class="form-control" type="text">
+                  </div>
+              </div>
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                     <div class="text-left">简介：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="introduction" class="form-control" type="text">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-3 control-label ">
+                      <div class="text-left">状态：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <select class="form-control" name="status">
+                          <option value="1">available</option>
+                          <option value="0">unavailable</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                     <div class="text-left">时间限制：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="time_limit" class="form-control" type="number">
+                  </div>
+              </div>
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                      <div class="text-left">内存限制：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="memory_limit" class="form-control" type="number">
+                  </div>
+              </div>
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                     <div class="text-left">长度限制：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="length_limit" class="form-control" type="number">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-3 control-label ">
+                      <div class="text-left">编程环境</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <select class="form-control" name="environment" id="environment">
+                      </select>
+                  </div>
+              </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -127,7 +186,33 @@
   var url = location.href
   var urls = url.split('/')
   var pid = urls[urls.length-3]
-
+    $(function(){
+        $('#creat-button').click(function(){
+             $.ajax({
+                url: "/api-server/environments/",
+                data: {},
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $('#environment').html('');
+                    $.each(data.results, function (i, item) {
+                        $('#environment').append(function () {
+                            var op = '<option value="' + item.eid + '">' + item.language + '</option>'
+                            return op;
+                        });
+                    });
+                },
+                error: function (data) {
+                    if (response.status == 404) {
+                        alert("没有请求到数据");
+                    }
+                    else if (response.status == 500) {
+                        alert("服务器拥挤");
+                    }
+                }
+            });
+        });
+    })
   $('#pro').attr('href', '/api-server/problems/'+pid+'/')
   $('#pro-l').attr('href', '/api-server/problems/'+pid+'/limits/')
   $('#pro-i').attr('href', '/api-server/problems/'+pid+'/invalid-words/')

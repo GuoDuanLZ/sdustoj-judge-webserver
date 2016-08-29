@@ -50,17 +50,60 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Edit</h4>
+        <h4 class="modal-title" id="ModalLabel">编辑</h4>
       </div>
       <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
-            {{ put_form }}
+               {% csrf_token %}
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">标题：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="title" class="form-control" type="text" id="e_title">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">简介：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="introduction" class="form-control" type="text" id="e_introduction">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">来源：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="source" class="form-control" type="text" id="e_source">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">作者：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="author" class="form-control" type="text" id="e_author">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">状态：</div>
+              </label>
+              <div class="col-sm-9">
+                <select class="form-control" name="status" id="e_status">
+                  <option value="1">available</option>
+                  <option value="0">unavailable</option>
+                </select>
+              </div>
+            </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -102,18 +145,60 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Create</h4>
+        <h4 class="modal-title" id="myModalLabel">创建</h4>
       </div>
       <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            {{ post_form }}
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">标题：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="title" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">简介：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="introduction" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">来源：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="source" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">作者：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="author" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">状态：</div>
+              </label>
+              <div class="col-sm-9">
+                <select class="form-control" name="status">
+                  <option value="1">available</option>
+                  <option value="0">unavailable</option>
+                </select>
+              </div>
+            </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -131,3 +216,33 @@
 <li><a href="/api-server/categories/{{ results.id }}/nodes/?ordering=id">浏览题库结点</a></li>
 {% endif %}
 {% endblock %}
+{% block script%}
+<script>
+     var url = location.href
+  var urls = url.split('/')
+   var c_id= urls[urls.length-2]
+    $(function () {
+        $('#edit_button').click(function(){
+           $.ajax({
+               url:"/api-server/categories/"+c_id+"/",
+               type:"GET",
+               dataType:"json",
+               data:{},
+               success:function(response){
+                      $('#e_title').val(response.title);
+                            $('#e_source').val(response.source);
+                    if(response.status==1)
+                            $("#e_status option[value=1]").attr("selected","selected");
+                    else
+                             $("#e_status option[value=0]").attr("selected","selected");
+                            $('#e_author').val(response.author);
+                            $('#e_introduction').val(response.introduction);
+               },
+               error:function (response) {
+                    console.log(response);
+                }
+           });
+        });
+    });
+</script>
+{%endblock%}

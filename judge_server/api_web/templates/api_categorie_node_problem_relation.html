@@ -5,7 +5,9 @@
 {% load rest_framework %}
 
 {% block title %}维护题目连接 - SDUSTOJ API{% endblock %}
-
+{%block css%}
+ <link rel="stylesheet" href='{% static "assets/jquery-ui.min.css" %}'>
+{%endblock%}
 {% block body %}
 {% if style != 'list' %}
 <script>
@@ -39,18 +41,26 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Create</h4>
+        <h4 class="modal-title" id="myModalLabel">创建</h4>
       </div>
       <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            {{ post_form }}
+            <div class="form-group">
+                            <label class="col-sm-2 control-label ">
+                               <div class="text-left">问题：</div>
+                            </label>
+                            <div class="col-sm-10">
+                                <input id="tags" class="form-control" name="problem" placeholder="请输入问题的标题或ID">
+
+                            </div>
+            </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -70,6 +80,7 @@
 {% endblock %}
 
 {% block script %}
+<script src='{% static "assets/jquery-ui.min.js" %}'></script>
 <script>
 var url = location.href
 var urls = url.split('/')
@@ -99,6 +110,44 @@ $('.btn-oj-delete').click(function() {
     }
   })
 })
+    $('#creat-button').click(function(){
+        $( "#tags" ).autocomplete({
+      source:function(request, response){
+          $.ajax({
+              url:"/api-server/problems/",
+              data:{
+                  search: request.term
+              },
+              dataType:"json",
+              type:"GET",
+              success:function(data){
+                  if(data.count==0)
+                  {
+                      var ite=["没有找到该题目"]
+                      response(ite);
+                  }
+                        else {
+                    response($.map(data.results,function(item){
+                            var name = item.title;
+                                var id=item.id;
+                            return {
+                                label:'Problem '+id+'：'+name,//下拉框显示值
+                                value:id,//选中后，填充到下拉框的值
+                            }
+                        }));
+                  }
 
+
+              },
+                error:function(data){
+                  alert('请求失败');
+              }
+          })
+      },
+      minLength: 1,
+      select: function( event, ui ) {
+      }, delay: 300,//延迟500ms便于输入
+    });
+    });
 </script>
 {% endblock %}

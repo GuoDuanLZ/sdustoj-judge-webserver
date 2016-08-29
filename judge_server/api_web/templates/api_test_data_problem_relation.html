@@ -47,23 +47,23 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Create</h4>
+        <h4 class="modal-title" id="myModalLabel">创建</h4>
       </div>
       <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
             <div class="form-group">
-                  <label class="col-sm-2 control-label ">Test data</label>
-                  <div class="col-sm-10">
+                  <label class="col-sm-3 control-label "><div class="text-left">测试数据：</div></label>
+                  <div class="col-sm-9">
                     <select class="form-control" name="test_data" id="test-data-choices"></select>
                   </div>
                 </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -94,13 +94,13 @@
     type: 'GET',
     url: '/api-server/problems/'+ pid +'/',
     data: 'json',
-    success(response) {
+    success:function(response) {
       mid = response.meta_problem
       $.ajax({
         type: 'GET',
         url: '/api-server/meta-problems/'+mid+'/test-data/',
         data: 'json',
-        success(response) {
+        success:function(response) {
           for(var i = 0; i < response.results.length; ++i) {
             $('#test-data-choices').append('<option value="'+response.results[i].id+'" selected>'+response.results[i].id+': '+response.results[i].title+'</option>')
           }
