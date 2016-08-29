@@ -72,17 +72,53 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Edit</h4>
+        <h4 class="modal-title" id="myModalLabel">编辑</h4>
       </div>
       <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
-            {{ put_form }}
+             {% csrf_token %}
+             <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">标题：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="title" class="form-control" type="text" id="e_title">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">简介：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="introduction" class="form-control" type="text" id="e_introduction">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">状态：</div>
+              </label>
+              <div class="col-sm-9">
+                <select class="form-control" name="status" id="e_status">
+                  <option value="1">available</option>
+                  <option value="0">unavailable</option>
+                </select>
+              </div>
+            </div>
+              <div class="form-group">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">父节点：</div>
+              </label>
+              <div class="col-sm-9">
+                <select class="form-control" name="parent" id="e_parent">
+                </select>
+              </div>
+            </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -124,18 +160,53 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Create</h4>
+        <h4 class="modal-title" id="myModalLabel">创建</h4>
       </div>
       <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            {{ post_form }}
+             <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">标题：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="title" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group ">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">简介：</div>
+              </label>
+              <div class="col-sm-9">
+                <input name="introduction" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">状态：</div>
+              </label>
+              <div class="col-sm-9">
+                <select class="form-control" name="status">
+                  <option value="1">available</option>
+                  <option value="0">unavailable</option>
+                </select>
+              </div>
+            </div>
+              <div class="form-group">
+              <label class="col-sm-3 control-label ">
+                <div class="text-left">父节点：</div>
+              </label>
+              <div class="col-sm-9">
+                <select class="form-control" name="parent" id="parent">
+                </select>
+              </div>
+            </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -165,21 +236,87 @@
   var cid = urls[urls.length-3]
   $('#cat-d').attr('href', '/api-server/categories/'+cid+'/')
   $('#n-d').attr('href', '/api-server/categories/'+cid+'/nodes/?ordering=id')
+ $('#creat-button').one('click',function () {
+        $.ajax({
+            url:"/api-server/categories/"+cid+"/nodes/",
+            type:"GET",
+            dataType:"json",
+            data:{},
+            success:function(data){
+                  $('#parent').append('<option value="">空节点(选择即为根节点)</option>');
+                    $.each(data.results, function (i, item) {
+                        $('#parent').append(function () {
+                            var op = '<option value="' + item.id + '">Node'+item.id+':'+ item.title + '</option>'
+                            return op;
+                        });
+                    });
+            },
+            error:function(){
+
+            },
+        })
+    });
 {% else %}
+ var url = location.href
+  var urls = url.split('/')
+  var cid = urls[urls.length-4]
+    var id=urls[urls.length-2]
 $.ajax({
     type: 'GET',
     url: '/api-server/categories/{{ results.category }}/nodes/?parent={{ results.id }}&limit=9999',
     dataType: 'json',
     success: function(response) {
-      ret = response.results
+      ret = response.results;
       for(var i = 0; i < ret.length; ++i) {
         var node = ret[i]
         $('#children').append('<tr><td><a href="/api-server/categories/{{ results.category }}/nodes/'+node.id+'/">'+node.id+'</a></td><td><a href="/api-server/categories/{{ results.category }}/nodes/'+node.id+'/">'+node.title+'</a></td><td>'+node.introduction+'</td><td><p>来源：'+node.source+'</p><p>作者：'+node.author+'</p></td><td><p>'+node.create_time+'</p><p>'+node.update_time+'</p></td></tr>')
       }
     }
 
-
   })
+$('#edit_button').one('click',function () {
+        $.ajax({
+            url:"/api-server/categories/"+cid+"/nodes/",
+            type:"GET",
+            dataType:"json",
+            data:{},
+            success:function(data){
+                  $('#e_parent').append('<option value="">空节点(选择即为根节点)</option>');
+                    $.each(data.results, function (i, item) {
+                        $('#e_parent').append(function () {
+                            var op = '<option value="' + item.id + '">Node'+item.id+':'+ item.title + '</option>'
+                            return op;
+                        });
+                    });
+            },
+            error:function(){
+
+            },
+        })
+         $.ajax({
+            url:"/api-server/categories/"+cid+"/nodes/"+id+"/",
+            type:"GET",
+            dataType:"json",
+            data:{},
+            success:function(data){
+                    $('#e_title').val(data.title);
+                    $('#e_introduction').val(data.introduction);
+                    $('#e_status').each(function(i,item){
+                        var op=$(this).val();
+                        if(op==item.status)
+                            $(this).prop('selected','selected');
+                    });
+                    $('#e_parent').each(function(i,item){
+                        var op=$(this).val();
+                        if(op==item.status)
+                            $(this).prop('selected','selected');
+                    });
+            },
+            error:function(){
+
+            },
+        })
+    });
 {% endif %}
 </script>
 {% endblock %}
