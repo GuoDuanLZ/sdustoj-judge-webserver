@@ -42,17 +42,46 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Edit</h4>
+        <h4 class="modal-title" id="myModalLabel">编辑</h4>
       </div>
       <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
-            {{ put_form }}
+              {% csrf_token %}
+             <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                      <div class="text-left">编程环境ID：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="eid" class="form-control" type="text" id="eid">
+                      <span class="help-block">供各Judge机决定编译方式的唯一标识符。</span>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-3 control-label ">
+                    <div class="text-left">状态：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <select class="form-control" name="status" id="status">
+                          <option value="1">available</option>
+                          <option value="0">unavailable</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                     <div class="text-left">编程环境名称：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="language" class="form-control" type="text" id="language">
+                      <span class="help-block">阅读题目以及提交题目时对外显示的编程环境名称。</span>
+                  </div>
+              </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -87,18 +116,46 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Create</h4>
+        <h4 class="modal-title" id="ModalLabel">创建</h4>
       </div>
       <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
         <div class="modal-body">
           <fieldset>
             {% csrf_token %}
-            {{ post_form }}
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                      <div class="text-left">编程环境ID：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="eid" class="form-control" type="text">
+                      <span class="help-block">供各Judge机决定编译方式的唯一标识符。</span>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-3 control-label ">
+                    <div class="text-left">状态：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <select class="form-control" name="status">
+                          <option value="1">available</option>
+                          <option value="0">unavailable</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group ">
+                  <label class="col-sm-3 control-label ">
+                     <div class="text-left">编程环境名称：</div>
+                  </label>
+                  <div class="col-sm-9">
+                      <input name="language" class="form-control" type="text">
+                      <span class="help-block">阅读题目以及提交题目时对外显示的编程环境名称。</span>
+                  </div>
+              </div>
           </fieldset>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
         </div>
       </form>
     </div>
@@ -113,3 +170,27 @@
 <li><a class="btn btn-primary" href="/api-server/environments/">编程环境</a></li>
 <li><a href="/api-server/machines/">评测机配置</a></li>
 {% endblock %}
+{%block script%}
+<script>
+    $(function () {
+       $('#edit_button').click(function () {
+          $.ajax({
+              url:"",
+              type:"GET",
+              dataType:"json",
+              data:{},
+              success:function(data){
+                  $('#eid').val(data.eid);
+                  $('#status').each(function (i,item) {
+                        var op=$(this).val();
+                        if(op==data.status)
+                            $(this).prop('selected','selected');
+                    });
+                  $('#language').val(data.language);
+              }
+
+          })
+       });
+    });
+</script>
+{%endblock%}
