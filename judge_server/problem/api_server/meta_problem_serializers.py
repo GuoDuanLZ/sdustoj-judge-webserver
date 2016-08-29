@@ -73,7 +73,9 @@ class TestDataListSerializer(serializers.ModelSerializer):
         test_out = validated_data.pop('test_out')
         if test_out is not None:
             test_out = test_out.encode('utf-8')
+        print('dlfjkhsdkgasdkjfhgasdkfjhasdgfkjasdhfkasdjhfasdkjfhasdkfjhasdgkfsdahf')
         instance = super().create(validated_data)
+        print('dlfjkhsdkgasdkjfhgasdkfjhasdgfkjasdhfkasdjhfasdkjfhasdkfjhasdgkfsdahf')
         documents.TestData.set_data(str(instance.meta_problem_id),
                                     str(instance.id),
                                     test_in,
@@ -92,10 +94,10 @@ class TestDataDetailSerializer(serializers.ModelSerializer):
         read_only_fields = resource_read_only + ('number_problem', 'meta_problem', 'in_size', 'out_size',)
 
     def update(self, instance, validated_data):
-        test_in = validated_data.pop('test_in')
+        test_in = validated_data.pop('get_test_in')
         if test_in is not None:
             test_in = test_in.encode('utf-8')
-        test_out = validated_data.pop('test_out')
+        test_out = validated_data.pop('get_test_out')
         if test_out is not None:
             test_out = test_out.encode('utf-8')
         instance = super().update(instance, validated_data)

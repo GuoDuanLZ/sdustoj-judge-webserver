@@ -42,7 +42,7 @@
             <td><a href="/api-server/problems/{{ i.problem }}/">{{ i.problem }}</a></td>
             <td><a href="/api-server/submission-code-info/{{ i.id }}/">{{ i.language }}</a></td>
             <td>{{ i.client }}::{{ i.user }}</td>
-            <td><a {% if i.status == 'Compile Error' %}href="/api-server/submission-messages/{{ i.id }}/"{% else %}href="/api-server/submission-details/{{ i.id }}/"{% endif %}>{{ i.status }}</a></td>
+            <td><a {% if i.status == 'Compile Error' or i.status == 'Invalid Word' %}href="/api-server/submission-messages/{{ i.id }}/"{% else %}href="/api-server/submission-details/{{ i.id }}/"{% endif %}>{{ i.status }}</a></td>
             <td>{{ i.contest }}</td>
             <td>{{ i.submit_time }}</td>
         </tr>

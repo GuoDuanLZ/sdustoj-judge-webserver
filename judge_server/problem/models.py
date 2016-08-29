@@ -10,6 +10,7 @@ from client.models import Client
 from django.db import transaction
 
 from json import loads
+from .tasks import send_data_insert
 
 
 # Meta Problem #########################################################################################################
@@ -182,6 +183,7 @@ class Problem(Resource, SourceMixin, StatusMixin):
         for (mid, tid, test_in, test_out) in test_mongo:
             TestDataMongodb.set_data(mid, tid, test_in, test_out)
 
+        send_data_insert.delay(str(meta_problem.id))
         return problem
 
 

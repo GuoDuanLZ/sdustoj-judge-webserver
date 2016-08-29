@@ -43,6 +43,9 @@ class TestData(mongoengine.Document):
 
     @staticmethod
     def set_data(mid, tid, test_in=False, test_out=False):
+        t_data = get_mongodb_data(TestData, tid=tid)
+        if t_data is not None:
+            t_data.delete()
         test_data = get_mongodb_data(TestData, mid=mid, tid=tid)
         if test_data is None:
             test_data = TestData(mid=mid, tid=tid)

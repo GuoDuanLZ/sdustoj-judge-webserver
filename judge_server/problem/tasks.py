@@ -56,6 +56,8 @@ def _send_message(machines, info):
     import redis
     from judge_server.redis_connections import pool
 
+    print(machines, info)
+
     r = redis.Redis(connection_pool=pool)
     for name in machines:
         r.rpush(name, dumps(info))
@@ -64,9 +66,9 @@ def _send_message(machines, info):
 
 
 @shared_task
-def send_data_insert(mid=None, tid=None, machine_name=None, info=None):
+def send_data_insert(mid=None, tid=None, machine_name=None):
     machines = _get_data_machines_to_inform(mid, tid, machine_name)
-
+    info = _get_data_insert_info(mid, tid)
     _send_message(machines, info)
     return machines
 
