@@ -10,7 +10,7 @@ import json
 
 
 def homepage(request):
-    return render_with_user_info(request, 'html/homepage.html')
+    return HttpResponseRedirect('/api-server/')
 
 
 def sign_in(request):

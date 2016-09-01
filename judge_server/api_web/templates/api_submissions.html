@@ -11,9 +11,6 @@
 {% block body %}
 {% if True %}
 {% if style != 'list' %}
-<script>
-  location.href = '/api-server/submissions/?ordering=-id'
-</script>
 <table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
   <tbody>
   {% for i, j in results.items %}
