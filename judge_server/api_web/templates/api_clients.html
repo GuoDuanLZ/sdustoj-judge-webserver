@@ -1,0 +1,157 @@
+{% extends "api_meta.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load rest_framework %}
+
+{% block title %}Web端 - SDUSTOJ{% endblock %}
+
+{% block body %}
+{% if True %}
+{% if style != 'list' %}
+<h1>Web端详情</h1>
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+  <tr>
+    <th>ID</th>
+    <td>{{ results.id }}</td>
+  </tr>
+  <tr>
+    <th>全名</th>
+    <td><pre>{{ results.full_name }}</pre></td>
+  </tr>
+  <tr>
+    <th>最后更新数据时间</th>
+    <td>{{ results.last_update_time }}</td>
+  </tr>
+  <tr>
+    <th>创建者</th>
+    <td>{{ results.creator }}</td>
+  </tr>
+  <tr>
+    <th>创建时间</th>
+    <td>{{ results.create_time }}</td>
+  </tr>
+  <tr>
+    <th>最后更新</th>
+    <td>{{ results.updater }}</td>
+  </tr>
+  <tr>
+    <th>最后更新时间</th>
+    <td>{{ results.update_time }}</td>
+  </tr>
+</table>
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">编辑</h4>
+      </div>
+      <form action="{{ request.get_full_path }}" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {%csrf_token%}
+            <div class="form-group ">
+              <label class="col-sm-2 control-label ">
+                <div class="text-left">全名：</div>
+              </label>
+              <div class="col-sm-10">
+                <input name="full_name" class="form-control" type="text" id="d_title"  value="{{ results.full_name }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label ">
+                <div class="text-left">状态：</div>
+              </label>
+              <div class="col-sm-10">
+                <select class="form-control" name="status" id="d_status">
+                  <option value="1">available</option>
+                  <option value="0">unavailable</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% else %}
+<table class="am-table .am-table-striped .am-table-hover .am-scrollable-horizontal .am-text-nowrap">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>全名</th>
+            <th>创建/更新时间</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i in results %}
+        <tr>
+            <td><a href="/api-server/clients/{{ i.id }}/">{{ i.id }}</a></td>
+            <td><a href="/api-server/clients/{{ i.id }}/">{{ i.full_name }}</a></td>
+            <td>
+                <p>{{ i.create_time }}</p>
+                <p>{{ i.update_time }}</p>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="mModalLabel">创建</h4>
+      </div>
+      <form action="{{ request.get_full_path }}" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            {%csrf_token%}
+            <div class="form-group ">
+              <label class="col-sm-2 control-label ">
+                <div class="text-left">全名：</div>
+              </label>
+              <div class="col-sm-10">
+                <input name="full_name" class="form-control" type="text" id="d_title"  value="{{ results.full_name }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label ">
+                <div class="text-left">状态：</div>
+              </label>
+              <div class="col-sm-10">
+                <select class="form-control" name="status">
+                  <option value="1">available</option>
+                  <option value="0">unavailable</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">确定</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block cur %}Web端管理{% endblock %}
+
+{% block cur_nav %}
+<li><a class="btn btn-primary" href="{{ request.get_full_path }}">Web端管理</a></li>
+{% endblock %}
