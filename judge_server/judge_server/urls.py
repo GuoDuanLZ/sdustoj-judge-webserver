@@ -17,11 +17,13 @@ from django.conf.urls import url, include
 
 from . import api_server_urls
 from . import api_judge_urls
+from . import api_client_urls
 
 from web import urls as web_urls
 
 urlpatterns = [
     url(r'^api-judge/', include(api_judge_urls)),
     url(r'^api-server/', include(api_server_urls)),
+    url(r'^api-client/', include(api_client_urls)),
     url(r'^', include(web_urls)),
 ]
