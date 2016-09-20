@@ -34,7 +34,7 @@
     <tbody>
     {% for i in results %}
         <tr>
-            <td><a>{{ i.id }}</a></td>
+            <td><a href="{{ request.get_full_path }}{{ i.id }}/">{{ i.id }}</a></td>
             <td>{{ i.word }}</td>
         </tr>
     {% endfor %}

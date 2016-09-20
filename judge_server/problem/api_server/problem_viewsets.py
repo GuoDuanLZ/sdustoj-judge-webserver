@@ -152,6 +152,19 @@ class InvalidWordListViewSet(NestedResourceListViewSet):
     renderer_classes = (JSONRenderer, ProblemInvalidWordRenderer, BrowsableAPIRenderer, AdminRenderer)
 
 
+class InvalidWordDetailViewSet(NestedResourceDetailViewSet):
+    queryset = InvalidWord.objects.all()
+    serializer_class = InvalidWordSerializer
+    permission_classes = (ProblemAdminEditable,)
+
+    parent_queryset = Problem.objects.all()
+    parent_lookup = 'problem_pk'
+    parent_pk_field = 'id'
+    parent_related_name = 'problem'
+
+    renderer_classes = (JSONRenderer, ProblemInvalidWordRenderer, BrowsableAPIRenderer, AdminRenderer)
+
+
 class LimitDetailViewSet(NestedResourceDetailViewSet):
     queryset = Limit.objects.all()
     serializer_class = LimitDetailSerializer
